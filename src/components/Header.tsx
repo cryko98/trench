@@ -82,7 +82,7 @@ export function Header() {
             </span>
             <span className="mt-1 flex items-center gap-1.5">
               <span className="rounded bg-mint/10 px-1.5 py-0.5 font-mono text-[9px] font-black tracking-[0.18em] text-mint">
-                $TS
+                $socials
               </span>
               <span className="font-mono text-[9px] tracking-[0.14em] text-muted">SOLANA</span>
             </span>
