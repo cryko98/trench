@@ -1,36 +1,38 @@
 @import "tailwindcss";
 
 /*
- * Trench Feed palette, taken from the $TF banner:
- * near-black green trenches, mint neon, violet glow.
- * Action colours stay in pump.fun's mint range.
+ * Palette sampled straight from the $TF logo: neon aqua-mint (#90ffd0),
+ * lavender glow (#a090e0) and the dark teal trench it sits in.
  */
 :root {
-  --background: #0a1410;
-  --surface: #101a16;
-  --surface-2: #18251f;
-  --border: #1e2e27;
-  --foreground: #f1fbf6;
-  --muted: #8ba79a;
-  --green: #86efac;
-  --green-ink: #052e16;
-  --green-dim: #34d399;
-  --violet: #a855f7;
-  --violet-dim: #7c3aed;
-  --red: #f87171;
+  --background: #071310;
+  --surface: #0d1b18;
+  --surface-2: #142521;
+  --surface-3: #1b302a;
+  --border: #1c302a;
+  --border-soft: #172723;
+  --foreground: #e9fbf4;
+  --muted: #7f9a91;
+  --mint: #90ffd0;
+  --mint-dim: #52e0b0;
+  --mint-ink: #04221a;
+  --lav: #a090e0;
+  --lav-dim: #7d6bc4;
+  --red: #ff7b7b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-line: var(--border);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-mint: var(--green);
-  --color-mint-ink: var(--green-ink);
-  --color-mint-dim: var(--green-dim);
-  --color-violet: var(--violet);
+  --color-mint: var(--mint);
+  --color-mint-dim: var(--mint-dim);
+  --color-mint-ink: var(--mint-ink);
+  --color-lav: var(--lav);
   --color-loss: var(--red);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -46,44 +48,104 @@ body {
   color: var(--foreground);
 }
 
+/* Trench floor: two soft glows plus the logo's halftone dot grid. */
 body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  background-image:
+    radial-gradient(42rem 26rem at 12% -8%, rgba(144, 255, 208, 0.07), transparent 65%),
+    radial-gradient(38rem 24rem at 88% -4%, rgba(160, 144, 224, 0.08), transparent 60%),
+    radial-gradient(circle at center, rgba(144, 255, 208, 0.05) 0.5px, transparent 0.5px);
+  background-size: auto, auto, 22px 22px;
+  background-attachment: fixed;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 
 ::selection {
-  background: var(--green);
-  color: var(--green-ink);
+  background: var(--mint);
+  color: var(--mint-ink);
 }
 
+/* ---------- surfaces ---------- */
+
 .tf-card {
-  background: var(--surface);
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(144, 255, 208, 0.035), rgba(144, 255, 208, 0) 45%),
+    var(--surface);
   border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(233, 251, 244, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.tf-card-hover:hover {
+  border-color: rgba(144, 255, 208, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(233, 251, 244, 0.05),
+    0 6px 22px -10px rgba(144, 255, 208, 0.35);
+  transform: translateY(-1px);
+}
+
+.tf-inset {
+  background: rgba(4, 12, 10, 0.55);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
 }
 
-/* Small uppercase mono labels, like the banner's tagline plate. */
+/* ---------- type ---------- */
+
 .tf-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
+/* Mint tick in front of a section label. */
+.tf-label::before {
+  content: "";
+  width: 3px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--mint);
+  box-shadow: 0 0 8px rgba(144, 255, 208, 0.6);
+}
+
+.tf-label-plain::before {
+  display: none;
+}
+
+/* Banner-style wordmark: mint with a lavender offset. */
+.tf-neon {
+  color: var(--mint);
+  text-shadow:
+    0 0 14px rgba(144, 255, 208, 0.5),
+    2px 2px 0 rgba(160, 144, 224, 0.65);
+}
+
+/* ---------- controls ---------- */
+
 .tf-input {
-  background: var(--surface-2);
-  border: 1px solid transparent;
+  background: rgba(4, 12, 10, 0.6);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.8rem;
   width: 100%;
   outline: none;
   font-size: 0.875rem;
-  transition: border-color 100ms ease;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
 .tf-input:focus {
-  border-color: var(--green);
+  border-color: rgba(144, 255, 208, 0.55);
+  box-shadow: 0 0 0 3px rgba(144, 255, 208, 0.1);
 }
 
 .tf-input::placeholder {
@@ -94,14 +156,19 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: 0.4rem;
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.875rem;
-  padding: 0.5rem 0.9rem;
-  transition: background 100ms ease, color 100ms ease, box-shadow 100ms ease;
+  padding: 0.5rem 0.95rem;
+  transition: background 120ms ease, box-shadow 120ms ease, transform 120ms ease,
+    border-color 120ms ease, color 120ms ease;
   cursor: pointer;
   white-space: nowrap;
+}
+
+.tf-btn:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .tf-btn:disabled {
@@ -110,33 +177,38 @@ body {
 }
 
 .tf-btn-primary {
-  background: var(--green);
-  color: var(--green-ink);
+  background: linear-gradient(180deg, #b6ffe2, var(--mint));
+  color: var(--mint-ink);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
 }
 
 .tf-btn-primary:hover:not(:disabled) {
-  background: #a7f3c4;
-  box-shadow: 0 0 18px rgba(134, 239, 172, 0.25);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 0 22px -4px rgba(144, 255, 208, 0.65);
 }
 
-.tf-btn-violet {
-  background: var(--violet);
-  color: #faf5ff;
+.tf-btn-lav {
+  background: linear-gradient(180deg, #b6a8ec, var(--lav));
+  color: #150c2a;
 }
 
-.tf-btn-violet:hover:not(:disabled) {
-  background: #b975f8;
-  box-shadow: 0 0 18px rgba(168, 85, 247, 0.3);
+.tf-btn-lav:hover:not(:disabled) {
+  box-shadow: 0 0 22px -4px rgba(160, 144, 224, 0.7);
 }
 
 .tf-btn-ghost {
   background: var(--surface-2);
+  border: 1px solid var(--border);
   color: var(--foreground);
 }
 
 .tf-btn-ghost:hover:not(:disabled) {
-  background: #23332b;
+  background: var(--surface-3);
+  border-color: rgba(144, 255, 208, 0.3);
 }
+
+/* ---------- chips ---------- */
 
 .tf-chip {
   display: inline-flex;
@@ -144,7 +216,8 @@ body {
   gap: 0.25rem;
   border-radius: 6px;
   background: var(--surface-2);
-  padding: 0.125rem 0.4rem;
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.4rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 10px;
   font-weight: 700;
@@ -154,26 +227,63 @@ body {
 }
 
 .tf-chip-mint {
-  background: rgba(134, 239, 172, 0.12);
-  color: var(--green);
+  background: rgba(144, 255, 208, 0.12);
+  border-color: rgba(144, 255, 208, 0.25);
+  color: var(--mint);
 }
 
-.tf-chip-violet {
-  background: rgba(168, 85, 247, 0.15);
-  color: #d8b4fe;
+.tf-chip-lav {
+  background: rgba(160, 144, 224, 0.15);
+  border-color: rgba(160, 144, 224, 0.3);
+  color: #cbbcf5;
 }
 
-/* Banner-style neon wordmark. */
-.tf-neon {
-  color: var(--green);
-  text-shadow: 0 0 12px rgba(134, 239, 172, 0.45), 2px 2px 0 rgba(168, 85, 247, 0.55);
+/* ---------- bits ---------- */
+
+.tf-ring {
+  box-shadow: 0 0 0 1px rgba(144, 255, 208, 0.25);
+}
+
+.tf-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(4, 12, 10, 0.7);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+}
+
+.tf-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--lav), var(--mint));
+  box-shadow: 0 0 12px rgba(144, 255, 208, 0.45);
+  transition: width 400ms ease;
 }
 
 @keyframes tf-live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(134, 239, 172, 0.5); }
-  50% { opacity: 0.55; box-shadow: 0 0 0 5px rgba(134, 239, 172, 0); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(144, 255, 208, 0.55); }
+  50% { opacity: 0.5; box-shadow: 0 0 0 5px rgba(144, 255, 208, 0); }
 }
 
 .tf-live-dot {
-  animation: tf-live-pulse 1.6s ease-in-out infinite;
+  animation: tf-live-pulse 1.7s ease-in-out infinite;
+}
+
+@keyframes tf-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.tf-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.tf-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(144, 255, 208, 0.08), transparent);
+  animation: tf-shimmer 1.4s infinite;
 }

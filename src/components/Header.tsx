@@ -23,7 +23,7 @@ export function Header() {
             alt="Trench Feed"
             width={36}
             height={36}
-            className="rounded-lg"
+            className="rounded-lg border border-mint/20"
             priority
           />
           <span className="hidden flex-col leading-none sm:flex">
@@ -42,7 +42,7 @@ export function Header() {
                 href={item.href}
                 className={`rounded-lg px-2.5 py-1.5 text-sm font-semibold transition sm:px-3 ${
                   active
-                    ? "bg-surface-2 text-foreground"
+                    ? "bg-mint/10 text-mint shadow-[0_0_18px_-6px_rgba(144,255,208,0.8)]"
                     : "text-muted hover:bg-surface-2/60 hover:text-foreground"
                 }`}
               >

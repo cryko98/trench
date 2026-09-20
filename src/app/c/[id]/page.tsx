@@ -36,7 +36,7 @@ export default async function CommunityPage({ params }: PageProps<"/c/[id]">) {
               <h1 className="truncate text-lg font-black">{community.name}</h1>
               <span className="tf-chip">${community.token?.symbol ?? "???"}</span>
               {community.token?.bonding && (
-                <span className="tf-chip tf-chip-violet">On curve</span>
+                <span className="tf-chip tf-chip-lav">On curve</span>
               )}
             </div>
             {community.description && (
@@ -57,7 +57,7 @@ export default async function CommunityPage({ params }: PageProps<"/c/[id]">) {
               <CopyAddress address={community.ca} />
             </div>
             {community.minTokens > 0 && (
-              <p className="mt-2 text-xs text-violet">
+              <p className="mt-2 text-xs text-lav">
                 Holding at least {community.minTokens.toLocaleString()} $
                 {community.token?.symbol ?? "tokens"} is required.
               </p>

@@ -84,7 +84,7 @@ export function TokenCard({
   const up = (token?.change24h ?? 0) >= 0;
 
   return (
-    <div className="mt-3 overflow-hidden rounded-xl border border-line bg-background/50">
+    <div className="tf-inset mt-3 overflow-hidden">
       <div className="flex items-center gap-3 p-3">
         <CoinImage token={token} />
 
@@ -98,7 +98,7 @@ export function TokenCard({
               {token ? `$${token.symbol}` : "Unknown coin"}
             </Link>
             {token && <span className="truncate text-xs text-muted">{token.name}</span>}
-            {token?.bonding && <span className="tf-chip tf-chip-violet">On curve</span>}
+            {token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
           </div>
           <CopyAddress address={ca} className="mt-1" />
         </div>
@@ -124,16 +124,16 @@ export function TokenCard({
               <Stat label="Market cap" value={formatUsd(token.marketCap)} />
               <div className="text-right">
                 <div className="tf-label">Bonding curve</div>
-                <div className="text-sm font-bold tabular-nums text-violet">
+                <div className="text-sm font-black tabular-nums text-mint">
                   {token.progress === null ? "—" : `${token.progress.toFixed(1)}%`}
                 </div>
               </div>
             </div>
             {token.progress !== null && (
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
+              <div className="tf-bar mt-2">
                 <div
-                  className="h-full rounded-full bg-violet"
-                  style={{ width: `${Math.max(1, token.progress)}%` }}
+                  className="tf-bar-fill"
+                  style={{ width: `${Math.max(2, token.progress)}%` }}
                 />
               </div>
             )}

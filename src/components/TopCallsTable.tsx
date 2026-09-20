@@ -6,8 +6,8 @@ import { CoinImage, CopyAddress } from "./TokenCard";
 import { TimeAgo } from "./TimeAgo";
 
 function rankStyle(i: number) {
-  if (i === 0) return "bg-mint text-mint-ink";
-  if (i === 1) return "bg-violet/25 text-violet";
+  if (i === 0) return "bg-mint text-mint-ink shadow-[0_0_16px_-4px_rgba(144,255,208,0.9)]";
+  if (i === 1) return "bg-lav/20 text-lav";
   if (i === 2) return "bg-surface-2 text-mint";
   return "bg-surface-2 text-muted";
 }
@@ -28,7 +28,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
         <li key={post.id}>
           <Link
             href={`/post/${post.id}`}
-            className="tf-card flex items-center gap-3 p-3 transition hover:border-mint/40"
+            className="tf-card tf-card-hover flex items-center gap-3 p-3"
           >
             <span
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black tabular-nums ${rankStyle(i)}`}
@@ -43,7 +43,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
                 <span className="font-bold">
                   ${post.token?.symbol ?? post.callToken?.symbol ?? "???"}
                 </span>
-                {post.token?.bonding && <span className="tf-chip tf-chip-violet">On curve</span>}
+                {post.token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
                 <span className="text-xs text-muted">
                   {formatUsd(post.callMcap)} → {formatUsd(post.token?.marketCap ?? null)}
                 </span>

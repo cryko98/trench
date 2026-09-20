@@ -161,7 +161,7 @@ export function Composer({
                           ${shownToken.symbol}
                           <span className="font-normal text-muted">{shownToken.name}</span>
                           {shownToken.bonding && (
-                            <span className="tf-chip tf-chip-violet">On curve</span>
+                            <span className="tf-chip tf-chip-lav">On curve</span>
                           )}
                         </div>
                         <div className="text-xs text-muted">

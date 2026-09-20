@@ -78,7 +78,7 @@ export function CommunityCard({ community }: { community: CommunityView }) {
   return (
     <Link
       href={`/c/${state.id}`}
-      className="tf-card flex items-center gap-3 p-3 transition hover:border-mint/40"
+      className="tf-card tf-card-hover flex items-center gap-3 p-3"
     >
       <CoinImage token={state.token} size={44} />
 
@@ -87,7 +87,7 @@ export function CommunityCard({ community }: { community: CommunityView }) {
           <span className="truncate font-bold">{state.name}</span>
           <span className="tf-chip">${state.token?.symbol ?? "???"}</span>
           {state.isMember && <span className="tf-chip tf-chip-mint">Member</span>}
-          {state.token?.bonding && <span className="tf-chip tf-chip-violet">On curve</span>}
+          {state.token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
         </div>
         <p className="mt-0.5 truncate text-xs text-muted">
           {state.description || `Holders of $${state.token?.symbol ?? "this coin"} only`}
@@ -101,7 +101,7 @@ export function CommunityCard({ community }: { community: CommunityView }) {
           </span>
           <span>{formatUsd(state.token?.marketCap ?? null)} MC</span>
           {state.minTokens > 0 && (
-            <span className="text-violet">min {state.minTokens.toLocaleString()} tokens</span>
+            <span className="text-lav">min {state.minTokens.toLocaleString()} tokens</span>
           )}
         </div>
       </div>

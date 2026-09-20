@@ -93,12 +93,12 @@ export function PostCard({
 
   return (
     <article
-      className={`tf-card p-4 transition ${clickable ? "cursor-pointer hover:border-mint/30" : ""}`}
+      className={`tf-card p-4 ${clickable ? "tf-card-hover cursor-pointer" : ""}`}
       onClick={clickable ? () => router.push(`/post/${post.id}`) : undefined}
     >
       <div className="flex gap-3">
         <Link href={`/u/${post.author}`} onClick={(e) => e.stopPropagation()}>
-          <Avatar profile={post.profile} />
+          <Avatar profile={post.profile} className="tf-ring" />
         </Link>
 
         <div className="min-w-0 flex-1">
@@ -114,7 +114,7 @@ export function PostCard({
             <span className="text-muted">·</span>
             <TimeAgo ts={post.createdAt} className="text-muted" />
             {post.ca && (
-              <span className="ml-1 rounded-md bg-violet/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet">
+              <span className="tf-chip tf-chip-lav ml-1">
                 Call
               </span>
             )}

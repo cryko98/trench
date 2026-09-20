@@ -138,6 +138,16 @@ export async function getTopCalls(limit = 25, scan = 200): Promise<TopCall[]> {
     .slice(0, limit);
 }
 
+/** Headline counters for the hero strip. */
+export async function getStats() {
+  const [posts, calls, communities] = await Promise.all([
+    store.zcard(K.feed),
+    store.zcard(K.allCalls),
+    store.zcard(K.communities),
+  ]);
+  return { posts, calls, communities };
+}
+
 export async function getCommunity(id: string): Promise<Community | null> {
   return await store.get<Community>(K.community(id));
 }
