@@ -3,7 +3,7 @@ import { TopCallsTable } from "@/components/TopCallsTable";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Top calls — Trench Feed" };
+export const metadata = { title: "Top calls — Trench Socials" };
 
 export default async function TopCallsPage() {
   const calls = await getTopCalls(30);

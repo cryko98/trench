@@ -41,7 +41,12 @@ yarn-error.log*
 next-env.d.ts
 
 # keep the template, ignore real secrets
-!.env.example
 
 # local dev store snapshot
 .data/
+
+.vercel
+.env*
+
+# keep the template, ignore real secrets
+!.env.example

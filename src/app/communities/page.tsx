@@ -4,7 +4,7 @@ import { CommunityList } from "@/components/CommunityList";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Communities — Trench Feed" };
+export const metadata = { title: "Communities — Trench Socials" };
 
 export default async function CommunitiesPage() {
   const viewer = await getSessionWallet();

@@ -64,7 +64,7 @@ export default async function HomePage() {
 
           <div className="min-w-0">
             <h1 className="text-2xl font-black leading-none tracking-tight sm:text-3xl">
-              <span className="tf-neon">TRENCH</span> FEED
+              <span className="tf-neon">TRENCH</span> SOCIALS
             </h1>
             <p className="tf-label tf-label-plain mt-2 inline-block rounded border border-mint/25 bg-mint/5 px-2 py-1 text-mint">
               Posting from the trenches

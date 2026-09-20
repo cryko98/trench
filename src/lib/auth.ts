@@ -5,7 +5,7 @@ const COOKIE = "tf_session";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 function secret() {
-  const s = process.env.AUTH_SECRET || "trench-feed-dev-secret-change-me-please-0000";
+  const s = process.env.AUTH_SECRET || "trench-socials-dev-secret-change-me-please-0000";
   return new TextEncoder().encode(s);
 }
 
