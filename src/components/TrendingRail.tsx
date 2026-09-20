@@ -3,6 +3,7 @@ import type { TokenSnapshot } from "@/lib/types";
 import type { TopCall } from "@/lib/data";
 import { formatMultiple, formatPct, formatUsd } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
+import { LiveLaunches } from "./LiveLaunches";
 
 export function TrendingRail({
   calls,
@@ -13,6 +14,8 @@ export function TrendingRail({
 }) {
   return (
     <aside className="space-y-4">
+      <LiveLaunches />
+
       {topCalls.length > 0 && (
         <div className="tf-card overflow-hidden">
           <div className="flex items-center justify-between border-b border-line px-3 py-2.5">
@@ -107,7 +110,7 @@ export function TrendingRail({
           </li>
         </ul>
         <p className="mt-3 border-t border-line pt-2 text-[11px] text-muted">
-          Market data by DexScreener and pump.fun. Nothing here is financial advice.
+          Market data by DexScreener, Jupiter and pump.fun. Nothing here is financial advice.
         </p>
       </div>
     </aside>

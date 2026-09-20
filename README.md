@@ -15,6 +15,9 @@ contract address, and open token-gated communities for the coins you hold.
   multiple since the call.
 - **Communities** — anyone holding a coin can open its community; other holders can join and post
   there. Membership is checked against the wallet's on-chain balance, with an optional minimum.
+- **Fresh launches** — a live rail of pump.fun coins the second they launch, streamed over
+  PumpPortal's public websocket, with the launch market cap in USD. One click opens the coin page
+  with the composer ready to call it.
 - **Replies** — every post has a comment thread.
 
 ## Stack
@@ -27,6 +30,7 @@ contract address, and open token-gated communities for the coins you hold.
 | Storage | Upstash Redis (free tier) — with an in-memory fallback for local dev |
 | Market data | DexScreener → Jupiter → on-chain bonding curve → pump.fun API |
 | Token gating | `getTokenAccountsByOwner` over JSON-RPC, cached |
+| Live stream | PumpPortal public websocket (new launches + migrations) |
 
 ### How a coin is resolved
 
@@ -40,6 +44,12 @@ Coins are looked up in this order, and the first source that answers wins (resul
    `6EF8rrec…wF6P`) is read and decoded directly, giving price, market cap and curve progress even
    for a coin no indexer knows yet. This is also where curve progress comes from.
 4. **pump.fun's frontend API** — last resort only; it rate limits hard.
+
+On top of that, the browser keeps one shared websocket to
+`wss://pumpportal.fun/api/data` for the two methods that are free without an API key:
+`subscribeNewToken` (the Fresh launches rail) and `subscribeMigration` (a called coin
+graduating off the curve refreshes the feed). Trade streams need a funded PumpPortal key, so live
+prices keep coming from the cached REST snapshots instead.
 
 ## Run it
 

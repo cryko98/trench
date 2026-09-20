@@ -24,7 +24,7 @@ export type CurveState = {
 };
 
 /** SOL price in USD, cached for a minute. */
-async function getSolUsd(): Promise<number | null> {
+export async function getSolUsd(): Promise<number | null> {
   const cached = await store.get<number>("sol:usd");
   if (cached) return cached;
 

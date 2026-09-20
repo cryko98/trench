@@ -5,6 +5,7 @@ import type { PostView } from "@/lib/types";
 import { Composer } from "./Composer";
 import { PostCard } from "./PostCard";
 import { ProfileNudge } from "./ProfileNudge";
+import { subscribePump } from "@/lib/pumpPortal";
 
 const REFRESH_MS = 45_000;
 
@@ -59,6 +60,18 @@ export function Feed({
   useEffect(() => {
     const id = setInterval(() => void load(), REFRESH_MS);
     return () => clearInterval(id);
+  }, [load]);
+
+  // A called coin graduating off the curve changes its card, so refresh early.
+  useEffect(() => {
+    return subscribePump({
+      onMigration: (m) => {
+        setPosts((current) => {
+          if (current.some((p) => p.ca === m.mint)) void load();
+          return current;
+        });
+      },
+    });
   }, [load]);
 
   return (
