@@ -30,7 +30,7 @@ contract address, and open token-gated communities for the coins you hold.
 | Framework | Next.js 16 (App Router) + TypeScript + Tailwind v4 |
 | Wallets | `@solana/wallet-adapter-react` (Wallet Standard auto-detect) |
 | Auth | ed25519 message signature → JWT in an httpOnly cookie (`jose`) |
-| Storage | Upstash Redis (free tier) — with an in-memory fallback for local dev |
+| Storage | Upstash Redis (free tier) — with a local JSON snapshot as the dev fallback |
 | Market data | DexScreener → Jupiter → on-chain bonding curve → pump.fun API |
 | Token gating | `getTokenAccountsByOwner` over JSON-RPC, cached |
 | Live stream | PumpPortal public websocket (new launches + migrations) |
@@ -62,8 +62,9 @@ cp .env.example .env.local   # fill in the values below
 npm run dev
 ```
 
-Without Redis credentials the app uses an in-memory store: everything works, but data resets when
-the server restarts. That is fine for local development.
+Without Redis credentials the app falls back to a JSON snapshot in `.data/store.json`, so a local
+dev server keeps its posts and profiles across restarts. That file belongs to one machine, so a
+deployment where everyone sees the same feed needs the two Upstash variables below.
 
 ### Environment
 

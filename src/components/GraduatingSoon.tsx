@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { Graduating } from "@/lib/graduating";
-import { MIGRATION_SOL } from "@/lib/graduating";
+import { MIGRATION_SOL, type Graduating } from "@/lib/constants";
 import { subscribePump } from "@/lib/pumpPortal";
 import { formatUsd } from "@/lib/format";
 import { CoinImage } from "./TokenCard";

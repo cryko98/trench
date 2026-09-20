@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Trench Feed — $TF",
     description: "Call coins. Track market caps. Talk trenches.",
     type: "website",
-    images: ["/logo.jpg"],
+    images: ["/logo.png"],
   },
 };
 

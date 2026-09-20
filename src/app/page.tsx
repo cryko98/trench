@@ -49,16 +49,16 @@ export default async function HomePage() {
           <div className="relative shrink-0">
             <div
               aria-hidden
-              className="absolute inset-0 rounded-2xl blur-xl"
+              className="absolute inset-0 rounded-full blur-xl"
               style={{ background: "radial-gradient(circle, rgba(144,255,208,0.45), transparent 70%)" }}
             />
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt=""
               width={88}
               height={88}
               priority
-              className="relative rounded-2xl border border-mint/25"
+              className="relative rounded-full"
             />
           </div>
 

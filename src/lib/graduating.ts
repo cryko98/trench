@@ -1,9 +1,10 @@
 import { store } from "./store";
 import { getToken } from "./token";
 import type { TokenSnapshot } from "./types";
+import { MIGRATION_SOL, type Graduating } from "./constants";
 
-/** SOL a pump.fun curve has to collect before the coin migrates. */
-export const MIGRATION_SOL = 85;
+export { MIGRATION_SOL };
+export type { Graduating };
 
 const CACHE_SECONDS = 45;
 const CANDIDATE_KEY = "graduating:list";
@@ -15,17 +16,6 @@ type PumpCoin = {
   image_uri?: string;
   real_sol_reserves?: number;
   usd_market_cap?: number;
-};
-
-export type Graduating = {
-  mint: string;
-  symbol: string;
-  name: string;
-  image: string | null;
-  marketCap: number | null;
-  /** 0-100, how close the curve is to migrating. */
-  progress: number;
-  solRaised: number;
 };
 
 /**

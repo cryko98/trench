@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { TokenSnapshot } from "@/lib/types";
 import type { TopCall } from "@/lib/data";
-import type { Graduating } from "@/lib/graduating";
+import type { Graduating } from "@/lib/constants";
 import { formatMultiple } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { GraduatingSoon } from "./GraduatingSoon";

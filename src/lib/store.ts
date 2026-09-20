@@ -1,3 +1,5 @@
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { Redis } from "@upstash/redis";
 
 /**
@@ -7,6 +9,16 @@ import { Redis } from "@upstash/redis";
  */
 
 type ZMember = { member: string; score: number };
+
+function debounce(fn: () => void, ms: number) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(fn, ms);
+    // Never hold the process open just to write a snapshot.
+    timer.unref?.();
+  };
+}
 
 interface Store {
   get<T>(key: string): Promise<T | null>;
@@ -75,10 +87,47 @@ class UpstashStore implements Store {
 
 type MemEntry = { value: unknown; expires?: number };
 
-class MemoryStore implements Store {
+class LocalStore implements Store {
   private kv = new Map<string, MemEntry>();
   private zsets = new Map<string, Map<string, number>>();
   private sets = new Map<string, Set<string>>();
+  private flush: () => void = () => {};
+
+  constructor(private file?: string) {
+    if (!file) return;
+    this.load();
+    this.flush = debounce(() => this.save(), 250);
+  }
+
+  private load() {
+    try {
+      const raw = readFileSync(this.file!, "utf8");
+      const data = JSON.parse(raw) as {
+        kv?: [string, MemEntry][];
+        zsets?: [string, [string, number][]][];
+        sets?: [string, string[]][];
+      };
+      this.kv = new Map(data.kv ?? []);
+      this.zsets = new Map((data.zsets ?? []).map(([k, v]) => [k, new Map(v)]));
+      this.sets = new Map((data.sets ?? []).map(([k, v]) => [k, new Set(v)]));
+    } catch {
+      // No snapshot yet, or it is unreadable — start empty.
+    }
+  }
+
+  private save() {
+    try {
+      mkdirSync(dirname(this.file!), { recursive: true });
+      const data = {
+        kv: [...this.kv.entries()],
+        zsets: [...this.zsets.entries()].map(([k, v]) => [k, [...v.entries()]]),
+        sets: [...this.sets.entries()].map(([k, v]) => [k, [...v]]),
+      };
+      writeFileSync(this.file!, JSON.stringify(data));
+    } catch {
+      // Read-only filesystem (a serverless host, say) — stay in memory.
+    }
+  }
 
   private alive(key: string) {
     const e = this.kv.get(key);
@@ -112,22 +161,27 @@ class MemoryStore implements Store {
   }
   async set(key: string, value: unknown, opts?: { ex?: number }) {
     this.kv.set(key, { value, expires: opts?.ex ? Date.now() + opts.ex * 1000 : undefined });
+    this.flush();
   }
   async del(key: string) {
     this.kv.delete(key);
     this.zsets.delete(key);
     this.sets.delete(key);
+    this.flush();
   }
   async incr(key: string) {
     const cur = Number((this.alive(key)?.value as number) ?? 0) + 1;
     this.kv.set(key, { value: cur });
+    this.flush();
     return cur;
   }
   async zadd(key: string, member: string, score: number) {
     this.z(key).set(member, score);
+    this.flush();
   }
   async zrem(key: string, member: string) {
     this.z(key).delete(member);
+    this.flush();
   }
   async zrange(key: string, start: number, stop: number, rev: boolean) {
     const sorted: ZMember[] = [...this.z(key).entries()]
@@ -142,12 +196,15 @@ class MemoryStore implements Store {
   async zincrby(key: string, member: string, by: number) {
     const z = this.z(key);
     z.set(member, (z.get(member) ?? 0) + by);
+    this.flush();
   }
   async sadd(key: string, member: string) {
     this.s(key).add(member);
+    this.flush();
   }
   async srem(key: string, member: string) {
     this.s(key).delete(member);
+    this.flush();
   }
   async smembers(key: string) {
     return [...this.s(key)];
@@ -171,11 +228,22 @@ export const usingRedis = Boolean(url && token);
 // Keep one instance across hot reloads in dev so the memory store survives.
 const globalForStore = globalThis as unknown as { __tfStore?: Store };
 
+/**
+ * Upstash in production. Without it, a JSON snapshot next to the project so a
+ * local dev server keeps its posts and profiles across restarts. That file is
+ * per-instance, so a deployment still needs Upstash for a shared feed.
+ */
 export const store: Store =
   globalForStore.__tfStore ??
   (globalForStore.__tfStore = usingRedis
     ? new UpstashStore(new Redis({ url: url!, token: token! }))
-    : new MemoryStore());
+    : new LocalStore(resolve(process.cwd(), process.env.TF_DATA_FILE || ".data/store.json")));
+
+if (!usingRedis && process.env.NODE_ENV !== "production") {
+  console.warn(
+    "[trench] No UPSTASH_REDIS_REST_URL/TOKEN — using the local .data/store.json snapshot. Set both for a shared, deployable feed."
+  );
+}
 
 export const K = {
   user: (wallet: string) => `user:${wallet}`,
