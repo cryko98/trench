@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* Trench Feed — dark trenches, Solana gradient accents. */
+:root {
+  --background: #07090a;
+  --surface: #0e1113;
+  --surface-2: #14181b;
+  --border: #1f262a;
+  --foreground: #e8eef2;
+  --muted: #7b8a93;
+  --green: #14f195;
+  --purple: #9945ff;
+  --red: #ff5f56;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-sol-green: var(--green);
+  --color-sol-purple: var(--purple);
+  --color-loss: var(--red);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  background-image:
+    radial-gradient(60rem 30rem at 15% -10%, rgba(153, 69, 255, 0.10), transparent 60%),
+    radial-gradient(50rem 28rem at 90% 0%, rgba(20, 241, 149, 0.08), transparent 55%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(20, 241, 149, 0.25);
+}
+
+.tf-gradient-text {
+  background: linear-gradient(95deg, var(--purple) 0%, var(--green) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tf-gradient-bg {
+  background: linear-gradient(95deg, var(--purple) 0%, var(--green) 100%);
+}
+
+.tf-card {
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.tf-input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.tf-input:focus {
+  border-color: color-mix(in srgb, var(--green) 55%, var(--border));
+  box-shadow: 0 0 0 3px rgba(20, 241, 149, 0.10);
+}
+
+.tf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  transition: opacity 120ms ease, background 120ms ease, border-color 120ms ease;
+  cursor: pointer;
+}
+
+.tf-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tf-btn-primary {
+  color: #041014;
+  background: linear-gradient(95deg, var(--purple) 0%, var(--green) 100%);
+}
+
+.tf-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.tf-btn-ghost {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.tf-btn-ghost:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--green) 45%, var(--border));
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 999px;
+}
+
+@keyframes tf-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(20, 241, 149, 0.35); }
+  100% { box-shadow: 0 0 0 12px rgba(20, 241, 149, 0); }
+}
+
+.tf-live {
+  animation: tf-pulse-ring 1.8s ease-out infinite;
+}
