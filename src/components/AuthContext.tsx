@@ -20,6 +20,17 @@ type AuthState = {
 
 const Ctx = createContext<AuthState | null>(null);
 
+/** Reads the session-backed profile, or null when signed out. */
+async function loadMe(): Promise<Profile | null> {
+  try {
+    const res = await fetch("/api/me", { cache: "no-store" });
+    const json = (await res.json()) as { profile: Profile | null };
+    return json.profile;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { publicKey, signMessage, disconnect, connected } = useWallet();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -28,20 +39,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    try {
-      const res = await fetch("/api/me", { cache: "no-store" });
-      const json = (await res.json()) as { profile: Profile | null };
-      setProfile(json.profile);
-    } catch {
-      setProfile(null);
-    } finally {
-      setLoading(false);
-    }
+    const next = await loadMe();
+    setProfile(next);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    let active = true;
+    loadMe().then((next) => {
+      if (!active) return;
+      setProfile(next);
+      setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const signIn = useCallback(async () => {
     if (!publicKey || !signMessage) {

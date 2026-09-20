@@ -8,7 +8,6 @@ export function TimeAgo({ ts, className = "" }: { ts: number; className?: string
   const [label, setLabel] = useState(() => timeAgo(ts));
 
   useEffect(() => {
-    setLabel(timeAgo(ts));
     const id = setInterval(() => setLabel(timeAgo(ts)), 30_000);
     return () => clearInterval(id);
   }, [ts]);

@@ -19,8 +19,7 @@ export function Composer({
   const { profile } = useAuth();
   const [text, setText] = useState("");
   const [caInput, setCaInput] = useState(presetCa ?? "");
-  const [token, setToken] = useState<TokenSnapshot | null>(null);
-  const [tokenLoading, setTokenLoading] = useState(false);
+  const [resolved, setResolved] = useState<{ ca: string; token: TokenSnapshot | null } | null>(null);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const areaRef = useRef<HTMLTextAreaElement>(null);
@@ -32,29 +31,30 @@ export function Composer({
     return extractCa(text);
   }, [caInput, text]);
 
+  // Debounced lookup of whatever address is currently in play.
   useEffect(() => {
-    if (!ca) {
-      setToken(null);
-      return;
-    }
+    if (!ca) return;
     let cancelled = false;
-    setTokenLoading(true);
     const id = setTimeout(async () => {
+      let token: TokenSnapshot | null = null;
       try {
         const res = await fetch(`/api/token/${ca}`);
         const json = (await res.json()) as { token: TokenSnapshot | null };
-        if (!cancelled) setToken(json.token ?? null);
+        token = json.token ?? null;
       } catch {
-        if (!cancelled) setToken(null);
-      } finally {
-        if (!cancelled) setTokenLoading(false);
+        token = null;
       }
+      if (!cancelled) setResolved({ ca, token });
     }, 400);
     return () => {
       cancelled = true;
       clearTimeout(id);
     };
   }, [ca]);
+
+  // Only show market data that belongs to the address currently in the box.
+  const shownToken = resolved && resolved.ca === ca ? resolved.token : null;
+  const tokenLoading = Boolean(ca) && resolved?.ca !== ca;
 
   const submit = async () => {
     if (!text.trim() || posting) return;
@@ -71,7 +71,7 @@ export function Composer({
       onPosted(json.post);
       setText("");
       setCaInput(presetCa ?? "");
-      setToken(null);
+      setResolved(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not post");
     } finally {
@@ -119,33 +119,33 @@ export function Composer({
 
           {ca && (
             <div className="mt-2 flex items-center gap-3 rounded-xl border border-line bg-surface-2/60 p-2.5">
-              {token?.image ? (
-                <img src={token.image} alt="" className="h-9 w-9 rounded-lg object-cover" />
+              {shownToken?.image ? (
+                <img src={shownToken.image} alt="" className="h-9 w-9 rounded-lg object-cover" />
               ) : (
                 <div className="tf-gradient-bg flex h-9 w-9 items-center justify-center rounded-lg text-xs font-black text-black/80">
-                  {(token?.symbol ?? "?").slice(0, 2)}
+                  {(shownToken?.symbol ?? "?").slice(0, 2)}
                 </div>
               )}
               <div className="min-w-0 flex-1 text-sm">
-                {tokenLoading && !token ? (
+                {tokenLoading && !shownToken ? (
                   <span className="text-muted">Loading market data…</span>
-                ) : token ? (
+                ) : shownToken ? (
                   <>
                     <div className="truncate font-bold">
-                      ${token.symbol} <span className="font-normal text-muted">{token.name}</span>
+                      ${shownToken.symbol} <span className="font-normal text-muted">{shownToken.name}</span>
                     </div>
                     <div className="text-xs text-muted">
                       Calling at{" "}
                       <span className="font-semibold text-foreground">
-                        {formatUsd(token.marketCap)}
+                        {formatUsd(shownToken.marketCap)}
                       </span>{" "}
                       MC ·{" "}
                       <span
                         className={
-                          (token.change24h ?? 0) >= 0 ? "text-sol-green" : "text-loss"
+                          (shownToken.change24h ?? 0) >= 0 ? "text-sol-green" : "text-loss"
                         }
                       >
-                        {formatPct(token.change24h)} 24h
+                        {formatPct(shownToken.change24h)} 24h
                       </span>
                     </div>
                   </>
