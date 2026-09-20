@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { clusterApiUrl } from "@solana/web3.js";
 import { AuthProvider } from "./AuthContext";
+import { CoinViewerProvider } from "./CoinViewer";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const endpoint = useMemo(
@@ -16,7 +17,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={[]} autoConnect>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <CoinViewerProvider>{children}</CoinViewerProvider>
+        </AuthProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

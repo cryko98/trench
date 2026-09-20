@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { TokenSnapshot } from "@/lib/types";
 import type { TopCall } from "@/lib/data";
 import type { Graduating } from "@/lib/graduating";
-import { formatMultiple, formatPct, formatUsd } from "@/lib/format";
+import { formatMultiple } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { GraduatingSoon } from "./GraduatingSoon";
+import { MostCalledRow } from "./MostCalledRow";
 
 export function TrendingRail({
   calls,
@@ -67,30 +68,7 @@ export function TrendingRail({
           <ul className="divide-y divide-line">
             {calls.map(({ ca, token }, i) => (
               <li key={ca}>
-                <Link
-                  href={`/coin/${ca}`}
-                  className="flex items-center gap-2.5 px-3.5 py-2.5 transition hover:bg-surface-2/50"
-                >
-                  <span className="w-3 font-mono text-[11px] font-bold text-muted">{i + 1}</span>
-                  <CoinImage token={token} size={30} className="tf-ring" />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-bold">${token?.symbol ?? "???"}</div>
-                    <div className="text-[11px] text-muted">
-                      {formatUsd(token?.marketCap ?? null)} MC
-                    </div>
-                  </div>
-                  {token?.bonding ? (
-                    <span className="tf-chip tf-chip-lav">curve</span>
-                  ) : (
-                    <span
-                      className={`text-[11px] font-bold tabular-nums ${
-                        (token?.change24h ?? 0) >= 0 ? "text-mint" : "text-loss"
-                      }`}
-                    >
-                      {formatPct(token?.change24h ?? null)}
-                    </span>
-                  )}
-                </Link>
+                <MostCalledRow ca={ca} token={token} rank={i + 1} />
               </li>
             ))}
           </ul>

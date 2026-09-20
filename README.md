@@ -18,6 +18,9 @@ contract address, and open token-gated communities for the coins you hold.
 - **Fresh launches** — a live rail of pump.fun coins the second they launch, streamed over
   PumpPortal's public websocket, with the launch market cap in USD. One click opens the coin page
   with the composer ready to call it.
+- **Coin window** — clicking a coin anywhere opens an in-page window with live stats and an
+  embedded DexScreener chart. pump.fun itself refuses to be framed (`X-Frame-Options`), so it gets
+  a button that opens it in a new tab.
 - **Replies** — every post has a comment thread.
 
 ## Stack

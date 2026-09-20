@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { useCoinViewer } from "./CoinViewer";
 import type { TokenSnapshot } from "@/lib/types";
 import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress } from "@/lib/format";
 
@@ -80,6 +80,7 @@ export function TokenCard({
   ca: string;
   callMcap: number | null;
 }) {
+  const viewer = useCoinViewer();
   const multiple = callMultiple(callMcap, token?.marketCap ?? null);
   const up = (token?.change24h ?? 0) >= 0;
 
@@ -90,13 +91,16 @@ export function TokenCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <Link
-              href={`/coin/${ca}`}
-              className="truncate font-bold hover:text-mint"
-              onClick={(e) => e.stopPropagation()}
+            <button
+              className="truncate font-bold transition hover:text-mint"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                viewer.open(ca);
+              }}
             >
               {token ? `$${token.symbol}` : "Unknown coin"}
-            </Link>
+            </button>
             {token && <span className="truncate text-xs text-muted">{token.name}</span>}
             {token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
           </div>
@@ -161,15 +165,16 @@ export function TokenCard({
           Called at <span className="font-semibold text-foreground">{formatUsd(callMcap)}</span> MC
         </span>
         <div className="flex items-center gap-3">
-          <a
-            href={token?.pairUrl ?? `https://dexscreener.com/solana/${ca}`}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-foreground"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            className="transition hover:text-mint"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              viewer.open(ca);
+            }}
           >
-            Chart ↗
-          </a>
+            Chart
+          </button>
           <a
             href={`https://pump.fun/coin/${ca}`}
             target="_blank"

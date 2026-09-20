@@ -9,9 +9,11 @@ import { TokenCard } from "./TokenCard";
 import { TimeAgo } from "./TimeAgo";
 import { useAuth } from "./AuthContext";
 import { isSolanaAddress } from "@/lib/format";
+import { useCoinViewer } from "./CoinViewer";
 
 /** Renders post text, turning contract addresses and links into chips. */
 function PostText({ text }: { text: string }) {
+  const viewer = useCoinViewer();
   const parts = text.split(/(\s+)/);
   return (
     <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed">
@@ -19,14 +21,17 @@ function PostText({ text }: { text: string }) {
         const bare = part.replace(/[.,!?;:()[\]]+$/g, "");
         if (isSolanaAddress(bare)) {
           return (
-            <Link
+            <button
               key={i}
-              href={`/coin/${bare}`}
               className="font-mono text-sm text-mint hover:underline"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                viewer.open(bare);
+              }}
             >
               {bare.slice(0, 4)}…{bare.slice(-4)}
-            </Link>
+            </button>
           );
         }
         if (/^https?:\/\//i.test(bare)) {
