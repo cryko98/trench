@@ -71,7 +71,10 @@ export async function getCurveState(mint: string): Promise<CurveState | null> {
         jsonrpc: "2.0",
         id: 1,
         method: "getAccountInfo",
-        params: [pda.toBase58(), { encoding: "base64" }],
+        // "confirmed", not the default "finalized": a coin launched seconds
+        // ago has no finalized account yet, and those are exactly the ones
+        // people are calling.
+        params: [pda.toBase58(), { encoding: "base64", commitment: "confirmed" }],
       }),
     });
     if (!res.ok) return null;

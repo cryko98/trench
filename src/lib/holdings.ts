@@ -30,7 +30,8 @@ export async function getTokenBalance(wallet: string, mint: string): Promise<num
         jsonrpc: "2.0",
         id: 1,
         method: "getTokenAccountsByOwner",
-        params: [wallet, { mint }, { encoding: "jsonParsed" }],
+        // A wallet that just bought should be able to join right away.
+        params: [wallet, { mint }, { encoding: "jsonParsed", commitment: "confirmed" }],
       }),
     });
     if (!res.ok) return null;
