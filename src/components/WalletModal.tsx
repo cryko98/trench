@@ -55,7 +55,7 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
             {available.map((w) => (
               <li key={w.adapter.name}>
                 <button
-                  className="flex w-full items-center gap-3 rounded-xl border border-line bg-surface-2 px-3 py-3 text-left transition hover:border-sol-green/50"
+                  className="flex w-full items-center gap-3 rounded-xl border border-line bg-surface-2 px-3 py-3 text-left transition hover:border-mint/50"
                   onClick={() => {
                     select(w.adapter.name);
                     onClose();
@@ -80,7 +80,7 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
                     href={l.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-between rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold transition hover:border-sol-green/50"
+                    className="flex items-center justify-between rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold transition hover:border-mint/50"
                   >
                     {l.name} <span className="text-muted">Install ↗</span>
                   </a>

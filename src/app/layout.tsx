@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: "Trench Feed — $TF",
   description:
     "The Solana trenches, in one feed. Connect your wallet, call coins with live market caps, and let the trenches reply.",
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
     title: "Trench Feed — $TF",
     description: "Call coins. Track market caps. Talk trenches.",
     type: "website",
+    images: ["/logo.jpg"],
   },
 };
 
@@ -36,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Header />
           <main className="flex-1">{children}</main>
           <footer className="border-t border-line py-6 text-center text-xs text-muted">
-            Trench Feed · $TF · built on Solana · market data by DexScreener
+            Trench Feed · $TF · built on Solana · data by DexScreener &amp; pump.fun
           </footer>
         </Providers>
       </body>

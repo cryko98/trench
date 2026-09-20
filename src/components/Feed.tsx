@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { PostView } from "@/lib/types";
 import { Composer } from "./Composer";
 import { PostCard } from "./PostCard";
+import { ProfileNudge } from "./ProfileNudge";
 
 const REFRESH_MS = 45_000;
 
@@ -11,6 +12,9 @@ export function Feed({
   initialPosts,
   wallet,
   ca,
+  community,
+  composerPlaceholder,
+  title = "Live feed",
   showComposer = true,
   onlyCalls = false,
   emptyMessage = "Nothing here yet. Be the first to call something.",
@@ -18,6 +22,10 @@ export function Feed({
   initialPosts: PostView[];
   wallet?: string;
   ca?: string;
+  /** Show and post into a token-gated community. */
+  community?: string;
+  composerPlaceholder?: string;
+  title?: string;
   showComposer?: boolean;
   /** Keep only posts that carry a contract address. */
   onlyCalls?: boolean;
@@ -30,8 +38,9 @@ export function Feed({
     const params = new URLSearchParams({ limit: "30" });
     if (wallet) params.set("wallet", wallet);
     if (ca) params.set("ca", ca);
+    if (community) params.set("community", community);
     return params.toString();
-  }, [wallet, ca]);
+  }, [wallet, ca, community]);
 
   const load = useCallback(async () => {
     setRefreshing(true);
@@ -54,15 +63,19 @@ export function Feed({
 
   return (
     <div className="space-y-4">
+      {showComposer && <ProfileNudge />}
+
       {showComposer && (
         <Composer
           presetCa={ca}
+          communityId={community}
+          placeholder={composerPlaceholder}
           onPosted={(post) => setPosts((prev) => [post, ...prev.filter((p) => p.id !== post.id)])}
         />
       )}
 
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-muted">Live feed</h2>
+        <h2 className="tf-label">{title}</h2>
         <button
           className="text-xs text-muted transition hover:text-foreground"
           onClick={() => void load()}

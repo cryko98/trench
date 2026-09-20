@@ -1,7 +1,15 @@
 import { store, K } from "./store";
+import { getCurveState } from "./pumpCurve";
 import type { TokenSnapshot } from "./types";
 
 const CACHE_SECONDS = 30;
+/** Short negative cache so a dead address cannot hammer the upstream APIs. */
+const MISS_CACHE_SECONDS = 20;
+
+/** DexScreener's id for the pump.fun bonding curve itself. */
+const CURVE_DEX_IDS = new Set(["pumpfun", "pump", "pumpdotfun"]);
+
+type Cached = TokenSnapshot | { miss: true };
 
 type DexPair = {
   chainId: string;
@@ -17,14 +25,54 @@ type DexPair = {
   info?: { imageUrl?: string };
 };
 
-/**
- * Live market data for a Solana mint, from DexScreener (free, no key).
- * Cached briefly so a busy feed does not hammer the API.
- */
-export async function getToken(mint: string): Promise<TokenSnapshot | null> {
-  const cached = await store.get<TokenSnapshot>(K.token(mint));
-  if (cached) return cached;
+type JupToken = {
+  id?: string;
+  name?: string;
+  symbol?: string;
+  icon?: string;
+  usdPrice?: number;
+  mcap?: number;
+  fdv?: number;
+  liquidity?: number;
+  launchpad?: string;
+  graduatedAt?: string | null;
+  graduatedPool?: string | null;
+  stats1h?: { priceChange?: number };
+  stats24h?: { priceChange?: number; buyVolume?: number; sellVolume?: number };
+};
 
+type PumpCoin = {
+  mint?: string;
+  name?: string;
+  symbol?: string;
+  image_uri?: string;
+  usd_market_cap?: number;
+  complete?: boolean;
+  total_supply?: number;
+};
+
+function empty(mint: string): TokenSnapshot {
+  return {
+    mint,
+    name: "Unknown",
+    symbol: "???",
+    image: null,
+    priceUsd: null,
+    marketCap: null,
+    liquidity: null,
+    volume24h: null,
+    change24h: null,
+    change1h: null,
+    pairUrl: null,
+    dex: null,
+    source: "dexscreener",
+    bonding: false,
+    progress: null,
+    updatedAt: Date.now(),
+  };
+}
+
+async function fromDexScreener(mint: string): Promise<TokenSnapshot | null> {
   let pairs: DexPair[] = [];
   try {
     const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${mint}`, {
@@ -42,9 +90,11 @@ export async function getToken(mint: string): Promise<TokenSnapshot | null> {
 
   // Deepest liquidity wins — that is the pair people actually trade.
   const best = pairs.sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+  const dexId = (best.dexId ?? "").toLowerCase();
+  const bonding = CURVE_DEX_IDS.has(dexId);
 
-  const snapshot: TokenSnapshot = {
-    mint,
+  return {
+    ...empty(mint),
     name: best.baseToken?.name ?? "Unknown",
     symbol: best.baseToken?.symbol ?? "???",
     image: best.info?.imageUrl ?? null,
@@ -54,10 +104,156 @@ export async function getToken(mint: string): Promise<TokenSnapshot | null> {
     volume24h: best.volume?.h24 ?? null,
     change24h: best.priceChange?.h24 ?? null,
     change1h: best.priceChange?.h1 ?? null,
-    pairUrl: best.url ?? `https://dexscreener.com/solana/${mint}`,
-    dex: best.dexId ?? null,
-    updatedAt: Date.now(),
+    pairUrl: bonding
+      ? `https://pump.fun/coin/${mint}`
+      : best.url ?? `https://dexscreener.com/solana/${mint}`,
+    dex: bonding ? "pump.fun curve" : best.dexId ?? null,
+    source: "dexscreener",
+    bonding,
   };
+}
+
+/**
+ * Jupiter's token API indexes pump.fun launches within seconds, is free and
+ * far more forgiving than pump.fun's own frontend API.
+ */
+async function fromJupiter(mint: string): Promise<TokenSnapshot | null> {
+  let token: JupToken | null = null;
+  try {
+    const res = await fetch(`https://lite-api.jup.ag/tokens/v2/search?query=${mint}`, {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as JupToken[] | { data?: JupToken[] };
+    const rows = Array.isArray(json) ? json : json.data ?? [];
+    token = rows.find((t) => t.id === mint) ?? null;
+  } catch {
+    return null;
+  }
+
+  if (!token) return null;
+
+  const onPump = (token.launchpad ?? "").toLowerCase().includes("pump");
+  const graduated = Boolean(token.graduatedAt || token.graduatedPool);
+  const bonding = onPump && !graduated;
+  const volume24h =
+    token.stats24h?.buyVolume !== undefined || token.stats24h?.sellVolume !== undefined
+      ? (token.stats24h.buyVolume ?? 0) + (token.stats24h.sellVolume ?? 0)
+      : null;
+
+  return {
+    ...empty(mint),
+    name: token.name ?? "Unknown",
+    symbol: token.symbol ?? "???",
+    image: token.icon ?? null,
+    priceUsd: token.usdPrice ?? null,
+    marketCap: token.mcap ?? token.fdv ?? null,
+    liquidity: token.liquidity ?? null,
+    volume24h,
+    change24h: token.stats24h?.priceChange ?? null,
+    change1h: token.stats1h?.priceChange ?? null,
+    pairUrl: onPump
+      ? `https://pump.fun/coin/${mint}`
+      : `https://dexscreener.com/solana/${mint}`,
+    dex: bonding ? "pump.fun curve" : token.launchpad ?? null,
+    source: "jupiter",
+    bonding,
+  };
+}
+
+/** Last resort: pump.fun's own frontend API (it rate limits aggressively). */
+async function fromPumpApi(mint: string): Promise<TokenSnapshot | null> {
+  try {
+    const res = await fetch(`https://frontend-api-v3.pump.fun/coins/${mint}`, {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const coin = (await res.json()) as PumpCoin;
+    if (!coin?.mint) return null;
+
+    const onCurve = coin.complete !== true;
+    const marketCap = coin.usd_market_cap ?? null;
+    const supply = coin.total_supply ?? null;
+
+    return {
+      ...empty(mint),
+      name: coin.name ?? "Unknown",
+      symbol: coin.symbol ?? "???",
+      image: coin.image_uri ?? null,
+      priceUsd: marketCap && supply ? marketCap / (supply / 1e6) : null,
+      marketCap,
+      pairUrl: `https://pump.fun/coin/${mint}`,
+      dex: onCurve ? "pump.fun curve" : "pump.fun",
+      source: "pumpfun",
+      bonding: onCurve,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Anything the chain knows, even for a coin nothing has indexed yet: the
+ * bonding curve account itself carries price, market cap and curve progress.
+ */
+async function fromChain(mint: string): Promise<TokenSnapshot | null> {
+  const curve = await getCurveState(mint);
+  if (!curve || curve.complete) return null;
+
+  return {
+    ...empty(mint),
+    priceUsd: null,
+    marketCap: curve.marketCapUsd,
+    pairUrl: `https://pump.fun/coin/${mint}`,
+    dex: "pump.fun curve",
+    source: "onchain",
+    bonding: true,
+    progress: curve.progress,
+  };
+}
+
+/**
+ * Live market data for a Solana mint.
+ *
+ * DexScreener first (deepest stats for anything trading on a DEX, and it also
+ * lists the pump.fun curve), then Jupiter (indexes pump.fun launches in
+ * seconds, free and generous), then the bonding curve account read straight
+ * from the chain, and pump.fun's own API only as a last resort. Coins still on
+ * the curve get their progress from the chain. Snapshots are cached briefly so
+ * a busy feed never hammers an upstream.
+ */
+export async function getToken(mint: string): Promise<TokenSnapshot | null> {
+  const cached = await store.get<Cached>(K.token(mint));
+  if (cached) return "miss" in cached ? null : cached;
+
+  let snapshot =
+    (await fromDexScreener(mint)) ?? (await fromJupiter(mint)) ?? (await fromChain(mint));
+
+  // Jupiter may know a pump.fun coin that DexScreener reported without market
+  // data, and the chain knows the curve even when no indexer does.
+  if (snapshot && snapshot.marketCap === null && snapshot.source === "dexscreener") {
+    const better = await fromJupiter(mint);
+    if (better?.marketCap) snapshot = { ...snapshot, ...better, source: "jupiter" };
+  }
+
+  if (!snapshot) snapshot = await fromPumpApi(mint);
+
+  if (!snapshot) {
+    await store.set(K.token(mint), { miss: true }, { ex: MISS_CACHE_SECONDS });
+    return null;
+  }
+
+  // Curve progress and a chain-accurate market cap for coins still bonding.
+  if (snapshot.bonding && snapshot.progress === null) {
+    const curve = await getCurveState(mint);
+    if (curve) {
+      snapshot.progress = curve.progress;
+      snapshot.marketCap = snapshot.marketCap ?? curve.marketCapUsd;
+      if (curve.complete) snapshot.bonding = false;
+    }
+  }
 
   await store.set(K.token(mint), snapshot, { ex: CACHE_SECONDS });
   return snapshot;

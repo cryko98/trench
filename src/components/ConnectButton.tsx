@@ -46,7 +46,7 @@ export function ConnectButton() {
     return (
       <div className="relative">
         <button
-          className="flex items-center gap-2 rounded-xl border border-line bg-surface-2 py-1 pl-1 pr-3 transition hover:border-sol-green/50"
+          className="flex items-center gap-2 rounded-xl border border-line bg-surface-2 py-1 pl-1 pr-3 transition hover:border-mint/50"
           onClick={(e) => {
             e.stopPropagation();
             setMenuOpen((v) => !v);

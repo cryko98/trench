@@ -9,7 +9,7 @@ import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress } from
 function Stat({ label, value, className = "" }: { label: string; value: string; className?: string }) {
   return (
     <div>
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted">{label}</div>
+      <div className="tf-label">{label}</div>
       <div className={`text-sm font-bold tabular-nums ${className}`}>{value}</div>
     </div>
   );
@@ -32,50 +32,73 @@ export function CopyAddress({ address, className = "" }: { address: string; clas
       title={address}
     >
       {shortAddress(address, 5)}
-      <span className={copied ? "text-sol-green" : ""}>{copied ? "copied" : "copy"}</span>
+      <span className={copied ? "text-mint" : ""}>{copied ? "copied" : "copy"}</span>
     </button>
+  );
+}
+
+export function CoinImage({
+  token,
+  size = 44,
+  className = "",
+}: {
+  token: Pick<TokenSnapshot, "image" | "symbol"> | null;
+  size?: number;
+  className?: string;
+}) {
+  if (token?.image) {
+    return (
+      <img
+        src={token.image}
+        alt=""
+        style={{ width: size, height: size }}
+        className={`shrink-0 rounded-lg object-cover ${className}`}
+      />
+    );
+  }
+  return (
+    <div
+      style={{ width: size, height: size, fontSize: size / 3 }}
+      className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-black text-mint ${className}`}
+    >
+      {(token?.symbol ?? "?").slice(0, 2)}
+    </div>
   );
 }
 
 /**
  * The coin card under a call: live market cap plus how the call is doing
- * relative to the market cap it was posted at.
+ * relative to the market cap it was posted at. Coins still on the pump.fun
+ * bonding curve show curve progress instead of DEX stats.
  */
 export function TokenCard({
   token,
   ca,
   callMcap,
-  compact = false,
 }: {
   token: TokenSnapshot | null;
   ca: string;
   callMcap: number | null;
-  compact?: boolean;
 }) {
   const multiple = callMultiple(callMcap, token?.marketCap ?? null);
   const up = (token?.change24h ?? 0) >= 0;
 
   return (
-    <div className="mt-3 overflow-hidden rounded-xl border border-line bg-surface-2/60">
+    <div className="mt-3 overflow-hidden rounded-xl border border-line bg-background/50">
       <div className="flex items-center gap-3 p-3">
-        {token?.image ? (
-          <img src={token.image} alt="" className="h-11 w-11 rounded-lg object-cover" />
-        ) : (
-          <div className="tf-gradient-bg flex h-11 w-11 items-center justify-center rounded-lg text-sm font-black text-black/80">
-            {(token?.symbol ?? "?").slice(0, 2)}
-          </div>
-        )}
+        <CoinImage token={token} />
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Link
               href={`/coin/${ca}`}
-              className="truncate font-bold hover:text-sol-green"
+              className="truncate font-bold hover:text-mint"
               onClick={(e) => e.stopPropagation()}
             >
               {token ? `$${token.symbol}` : "Unknown coin"}
             </Link>
             {token && <span className="truncate text-xs text-muted">{token.name}</span>}
+            {token?.bonding && <span className="tf-chip tf-chip-violet">On curve</span>}
           </div>
           <CopyAddress address={ca} className="mt-1" />
         </div>
@@ -83,10 +106,10 @@ export function TokenCard({
         {multiple !== null && (
           <div
             className={`rounded-lg px-2.5 py-1.5 text-center ${
-              multiple >= 1 ? "bg-sol-green/10 text-sol-green" : "bg-loss/10 text-loss"
+              multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
             }`}
           >
-            <div className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
               Since call
             </div>
             <div className="text-sm font-black tabular-nums">{formatMultiple(multiple)}</div>
@@ -95,19 +118,41 @@ export function TokenCard({
       </div>
 
       {token ? (
-        <div className="grid grid-cols-2 gap-3 border-t border-line px-3 py-2.5 sm:grid-cols-4">
-          <Stat label="Market cap" value={formatUsd(token.marketCap)} />
-          <Stat
-            label="24h"
-            value={formatPct(token.change24h)}
-            className={up ? "text-sol-green" : "text-loss"}
-          />
-          {!compact && <Stat label="Liquidity" value={formatUsd(token.liquidity)} />}
-          {!compact && <Stat label="Vol 24h" value={formatUsd(token.volume24h)} />}
-        </div>
+        token.bonding ? (
+          <div className="border-t border-line px-3 py-2.5">
+            <div className="flex items-end justify-between">
+              <Stat label="Market cap" value={formatUsd(token.marketCap)} />
+              <div className="text-right">
+                <div className="tf-label">Bonding curve</div>
+                <div className="text-sm font-bold tabular-nums text-violet">
+                  {token.progress === null ? "—" : `${token.progress.toFixed(1)}%`}
+                </div>
+              </div>
+            </div>
+            {token.progress !== null && (
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                <div
+                  className="h-full rounded-full bg-violet"
+                  style={{ width: `${Math.max(1, token.progress)}%` }}
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 border-t border-line px-3 py-2.5 sm:grid-cols-4">
+            <Stat label="Market cap" value={formatUsd(token.marketCap)} />
+            <Stat
+              label="24h"
+              value={formatPct(token.change24h)}
+              className={up ? "text-mint" : "text-loss"}
+            />
+            <Stat label="Liquidity" value={formatUsd(token.liquidity)} />
+            <Stat label="Vol 24h" value={formatUsd(token.volume24h)} />
+          </div>
+        )
       ) : (
         <div className="border-t border-line px-3 py-2.5 text-xs text-muted">
-          No market data yet — the coin may still be on the bonding curve.
+          No market data for this address.
         </div>
       )}
 

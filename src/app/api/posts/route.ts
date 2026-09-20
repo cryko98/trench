@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
 import { getSessionWallet } from "@/lib/auth";
-import { getFeed, hydratePosts } from "@/lib/data";
+import { getCommunity, getFeed, hydratePosts, meetsGate } from "@/lib/data";
 import { getToken } from "@/lib/token";
 import { extractCa, isSolanaAddress } from "@/lib/format";
 import type { Post } from "@/lib/types";
@@ -24,6 +24,7 @@ export async function GET(req: Request) {
     offset: Math.max(Number(searchParams.get("offset") ?? 0), 0),
     wallet: searchParams.get("wallet") ?? undefined,
     ca: searchParams.get("ca") ?? undefined,
+    community: searchParams.get("community") ?? undefined,
   });
   return NextResponse.json({ posts });
 }
@@ -37,12 +38,39 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Slow down, anon" }, { status: 429 });
   }
 
-  const body = (await req.json()) as { text?: string; ca?: string };
+  const body = (await req.json()) as { text?: string; ca?: string; communityId?: string };
   const text = (body.text ?? "").trim().slice(0, MAX_LEN);
   if (!text) return NextResponse.json({ error: "Say something" }, { status: 400 });
 
+  // Community posts are gated: member, and still holding the coin.
+  const communityId = body.communityId?.trim() || null;
+  if (communityId) {
+    const community = await getCommunity(communityId);
+    if (!community) return NextResponse.json({ error: "Community not found" }, { status: 404 });
+
+    const members = await store.smembers(K.communityMembers(communityId));
+    if (!members.includes(wallet)) {
+      return NextResponse.json({ error: "Join the community first" }, { status: 403 });
+    }
+
+    const gate = await meetsGate(wallet, community);
+    if (!gate.ok) {
+      return NextResponse.json(
+        {
+          error:
+            gate.balance === null
+              ? "Could not verify your balance right now, try again"
+              : `You no longer hold enough $${community.name} coin to post here`,
+        },
+        { status: 403 }
+      );
+    }
+  }
+
+  // A post is only a call when the composer explicitly attached a coin;
+  // a plain thought stays a plain thought even if it mentions an address.
   const rawCa = (body.ca ?? "").trim();
-  const ca = rawCa && isSolanaAddress(rawCa) ? rawCa : extractCa(text);
+  const ca = rawCa ? (isSolanaAddress(rawCa) ? rawCa : extractCa(rawCa)) : null;
 
   // Snapshot the market cap so the call can be scored later.
   let callMcap: number | null = null;
@@ -62,14 +90,22 @@ export async function POST(req: Request) {
     ca,
     callMcap,
     callToken,
+    communityId,
     createdAt: Date.now(),
   };
 
   await store.set(K.post(post.id), post);
-  await store.zadd(K.feed, post.id, post.createdAt);
   await store.zadd(K.userPosts(wallet), post.id, post.createdAt);
+
+  if (communityId) {
+    await store.zadd(K.communityPosts(communityId), post.id, post.createdAt);
+  } else {
+    await store.zadd(K.feed, post.id, post.createdAt);
+  }
+
   if (ca) {
     await store.zadd(K.callPosts(ca), post.id, post.createdAt);
+    await store.zadd(K.allCalls, post.id, post.createdAt);
     await store.zincrby(K.callIndex, ca, 1);
   }
   await store.set(cooldownKey, 1, { ex: COOLDOWN_SECONDS });

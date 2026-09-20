@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { Profile } from "@/lib/types";
 
-const SIZES = { sm: 32, md: 40, lg: 72 } as const;
+const SIZES = { xs: 20, sm: 32, md: 40, lg: 72 } as const;
 
 export function Avatar({
   profile,
@@ -30,7 +30,7 @@ export function Avatar({
         />
       ) : (
         <div
-          className="tf-gradient-bg flex h-full w-full items-center justify-center font-bold text-black/80"
+          className="flex h-full w-full items-center justify-center bg-surface-2 font-bold text-mint"
           style={{ fontSize: px / 2.8 }}
         >
           {initials}

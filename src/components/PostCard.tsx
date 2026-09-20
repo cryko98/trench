@@ -22,7 +22,7 @@ function PostText({ text }: { text: string }) {
             <Link
               key={i}
               href={`/coin/${bare}`}
-              className="font-mono text-sm text-sol-green hover:underline"
+              className="font-mono text-sm text-mint hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
               {bare.slice(0, 4)}…{bare.slice(-4)}
@@ -36,7 +36,7 @@ function PostText({ text }: { text: string }) {
               href={bare}
               target="_blank"
               rel="noreferrer"
-              className="text-sol-green hover:underline"
+              className="text-mint hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
               {bare.length > 40 ? `${bare.slice(0, 40)}…` : bare}
@@ -93,7 +93,7 @@ export function PostCard({
 
   return (
     <article
-      className={`tf-card p-4 transition ${clickable ? "cursor-pointer hover:border-sol-green/30" : ""}`}
+      className={`tf-card p-4 transition ${clickable ? "cursor-pointer hover:border-mint/30" : ""}`}
       onClick={clickable ? () => router.push(`/post/${post.id}`) : undefined}
     >
       <div className="flex gap-3">
@@ -114,7 +114,7 @@ export function PostCard({
             <span className="text-muted">·</span>
             <TimeAgo ts={post.createdAt} className="text-muted" />
             {post.ca && (
-              <span className="ml-1 rounded-md bg-sol-purple/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sol-purple">
+              <span className="ml-1 rounded-md bg-violet/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet">
                 Call
               </span>
             )}
@@ -139,8 +139,8 @@ export function PostCard({
 
           <div className="mt-3 flex items-center gap-5 text-sm text-muted">
             <button
-              className={`inline-flex items-center gap-1.5 transition hover:text-sol-green ${
-                liked ? "text-sol-green" : ""
+              className={`inline-flex items-center gap-1.5 transition hover:text-mint ${
+                liked ? "text-mint" : ""
               }`}
               onClick={(e) => {
                 e.stopPropagation();
