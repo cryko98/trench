@@ -258,6 +258,7 @@ export const K = {
   comment: (id: string) => `comment:${id}`,
   callIndex: "calls:index",
   allCalls: "calls:posts",
+  peak: (postId: string) => `peak:${postId}`,
   callPosts: (ca: string) => `call:${ca}:posts`,
   token: (mint: string) => `token:${mint}`,
   balance: (wallet: string, mint: string) => `bal:${wallet}:${mint}`,

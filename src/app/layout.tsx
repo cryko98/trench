@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "Trench Socials — $socials",
   description:
     "The Solana trenches, in one feed. Connect your wallet, call coins with live market caps, and let the trenches reply.",
+  twitter: {
+    card: "summary_large_image",
+  },
   openGraph: {
     title: "Trench Socials — $socials",
     description: "Call coins. Track market caps. Talk trenches.",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionWallet } from "@/lib/auth";
 import { getCommunity, getFeed, hydrateCommunity } from "@/lib/data";
-import { formatUsd } from "@/lib/format";
+import { formatUsd, ticker } from "@/lib/format";
 import { Feed } from "@/components/Feed";
 import { JoinButton } from "@/components/CommunityCard";
 import { CoinImage, CopyAddress } from "@/components/TokenCard";
@@ -34,7 +34,7 @@ export default async function CommunityPage({ params }: PageProps<"/c/[id]">) {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="truncate text-lg font-black">{community.name}</h1>
-              <span className="tf-chip">${community.token?.symbol ?? "???"}</span>
+              <span className="tf-chip">{ticker(community.token?.symbol)}</span>
               {community.token?.bonding && (
                 <span className="tf-chip tf-chip-lav">On curve</span>
               )}

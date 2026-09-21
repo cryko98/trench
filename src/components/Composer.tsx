@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Avatar } from "./Avatar";
 import { CoinImage } from "./TokenCard";
-import { extractCa, formatPct, formatUsd, isSolanaAddress } from "@/lib/format";
+import { extractCa, formatPct, formatUsd, isSolanaAddress, ticker } from "@/lib/format";
 import type { PostView, TokenSnapshot } from "@/lib/types";
 
 const MAX_LEN = 500;
@@ -158,7 +158,7 @@ export function Composer({
                     ) : shownToken ? (
                       <>
                         <div className="flex items-center gap-2 truncate font-bold">
-                          ${shownToken.symbol}
+                          {ticker(shownToken.symbol)}
                           <span className="font-normal text-muted">{shownToken.name}</span>
                           {shownToken.bonding && (
                             <span className="tf-chip tf-chip-lav">On curve</span>

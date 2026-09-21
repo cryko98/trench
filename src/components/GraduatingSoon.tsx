@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { MIGRATION_SOL, type Graduating } from "@/lib/constants";
 import { subscribePump } from "@/lib/pumpPortal";
-import { formatUsd } from "@/lib/format";
+import { formatUsd, ticker } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { useCoinViewer } from "./CoinViewer";
 
@@ -104,7 +104,7 @@ export function GraduatingSoon({ initial = [] }: { initial?: Graduating[] }) {
                     <CoinImage token={coin} size={32} className="tf-ring" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="truncate text-sm font-bold">${coin.symbol}</span>
+                        <span className="truncate text-sm font-bold">{ticker(coin.symbol)}</span>
                         {justMigrated && <span className="tf-chip tf-chip-mint">migrated</span>}
                       </div>
                       <div className="truncate text-[11px] text-muted">{coin.name}</div>

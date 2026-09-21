@@ -26,6 +26,11 @@ export function formatMultiple(x: number | null): string {
   return `${x >= 10 ? x.toFixed(0) : x.toFixed(2)}x`;
 }
 
+/** Some tickers already carry the dollar sign (e.g. "$WIF"), so add at most one. */
+export function ticker(symbol: string | null | undefined): string {
+  return "$" + (symbol ?? "???").replace(/^\$+/, "");
+}
+
 export function shortAddress(addr: string, size = 4): string {
   if (!addr) return "";
   if (addr.length <= size * 2 + 3) return addr;

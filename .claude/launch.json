@@ -4,8 +4,12 @@
     {
       "name": "trench-socials",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3010,
+      "autoPort": true
     }
   ]
 }

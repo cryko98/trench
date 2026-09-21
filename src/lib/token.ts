@@ -72,6 +72,39 @@ function empty(mint: string): TokenSnapshot {
   };
 }
 
+/**
+ * Picks the pair that represents the coin.
+ *
+ * Deepest liquidity alone is not safe: a single broken or manipulated pool can
+ * quote a price thousands of times off (a Bonk/JUP pool once reported $0.0158
+ * against $0.0000032 everywhere else) and would poison every call scored off
+ * it. So the price is sanity-checked against the median of the liquid pairs,
+ * and outliers are dropped before the deepest one wins.
+ */
+function pickPair(pairs: DexPair[]): DexPair | null {
+  const byLiquidity = [...pairs].sort(
+    (a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0)
+  );
+  if (byLiquidity.length < 3) return byLiquidity[0] ?? null;
+
+  const top = byLiquidity.slice(0, 8);
+  const prices = top
+    .map((p) => Number(p.priceUsd))
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .sort((a, b) => a - b);
+  if (prices.length < 3) return byLiquidity[0];
+
+  const median = prices[Math.floor(prices.length / 2)];
+  const sane = top.filter((p) => {
+    const price = Number(p.priceUsd);
+    if (!Number.isFinite(price) || price <= 0) return false;
+    const ratio = price / median;
+    return ratio > 0.34 && ratio < 3;
+  });
+
+  return sane[0] ?? byLiquidity[0];
+}
+
 async function fromDexScreener(mint: string): Promise<TokenSnapshot | null> {
   let pairs: DexPair[] = [];
   try {
@@ -81,15 +114,21 @@ async function fromDexScreener(mint: string): Promise<TokenSnapshot | null> {
     });
     if (!res.ok) return null;
     const json = (await res.json()) as { pairs?: DexPair[] | null };
-    pairs = (json.pairs ?? []).filter((p) => p.chainId === "solana");
+    // Only pairs where this mint is the base token: in a pair where it is the
+    // quote (SOL/MINT), every stat describes the other coin.
+    pairs = (json.pairs ?? []).filter(
+      (p) =>
+        p.chainId === "solana" &&
+        p.baseToken?.address?.toLowerCase() === mint.toLowerCase()
+    );
   } catch {
     return null;
   }
 
   if (pairs.length === 0) return null;
 
-  // Deepest liquidity wins — that is the pair people actually trade.
-  const best = pairs.sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+  const best = pickPair(pairs);
+  if (!best) return null;
   const dexId = (best.dexId ?? "").toLowerCase();
   const bonding = CURVE_DEX_IDS.has(dexId);
 

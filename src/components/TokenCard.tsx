@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useCoinViewer } from "./CoinViewer";
 import type { TokenSnapshot } from "@/lib/types";
-import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress } from "@/lib/format";
+import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress, ticker } from "@/lib/format";
 
 function Stat({ label, value, className = "" }: { label: string; value: string; className?: string }) {
   return (
@@ -75,13 +75,17 @@ export function TokenCard({
   token,
   ca,
   callMcap,
+  peakMcap = null,
 }: {
   token: TokenSnapshot | null;
   ca: string;
   callMcap: number | null;
+  /** Highest market cap seen since the call. */
+  peakMcap?: number | null;
 }) {
   const viewer = useCoinViewer();
   const multiple = callMultiple(callMcap, token?.marketCap ?? null);
+  const peak = callMultiple(callMcap, peakMcap);
   const up = (token?.change24h ?? 0) >= 0;
 
   return (
@@ -99,7 +103,7 @@ export function TokenCard({
                 viewer.open(ca);
               }}
             >
-              {token ? `$${token.symbol}` : "Unknown coin"}
+              {token ? ticker(token.symbol) : "Unknown coin"}
             </button>
             {token && <span className="truncate text-xs text-muted">{token.name}</span>}
             {token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
@@ -108,15 +112,25 @@ export function TokenCard({
         </div>
 
         {multiple !== null && (
-          <div
-            className={`rounded-lg px-2.5 py-1.5 text-center ${
-              multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
-            }`}
-          >
-            <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
-              Since call
+          <div className="flex shrink-0 items-stretch gap-1.5">
+            <div
+              className={`rounded-lg px-2.5 py-1.5 text-center ${
+                multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
+              }`}
+            >
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
+                Now
+              </div>
+              <div className="text-sm font-black tabular-nums">{formatMultiple(multiple)}</div>
             </div>
-            <div className="text-sm font-black tabular-nums">{formatMultiple(multiple)}</div>
+            {peak !== null && peak > multiple * 1.05 && (
+              <div className="rounded-lg bg-lav/15 px-2.5 py-1.5 text-center text-lav">
+                <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
+                  Peak
+                </div>
+                <div className="text-sm font-black tabular-nums">{formatMultiple(peak)}</div>
+              </div>
+            )}
           </div>
         )}
       </div>

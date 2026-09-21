@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { TopCall } from "@/lib/data";
-import { formatMultiple, formatUsd } from "@/lib/format";
+import { formatMultiple, formatUsd, ticker } from "@/lib/format";
 import { Avatar } from "./Avatar";
 import { CoinImage, CopyAddress } from "./TokenCard";
 import { TimeAgo } from "./TimeAgo";
@@ -24,7 +24,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
 
   return (
     <ol className="space-y-2">
-      {calls.map(({ post, multiple }, i) => (
+      {calls.map(({ post, multiple, peakMultiple }, i) => (
         <li key={post.id}>
           <Link
             href={`/post/${post.id}`}
@@ -41,12 +41,15 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-x-2">
                 <span className="font-bold">
-                  ${post.token?.symbol ?? post.callToken?.symbol ?? "???"}
+                  {ticker(post.token?.symbol ?? post.callToken?.symbol)}
                 </span>
                 {post.token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
                 <span className="text-xs text-muted">
                   {formatUsd(post.callMcap)} → {formatUsd(post.token?.marketCap ?? null)}
                 </span>
+                {post.peakMcap !== null && peakMultiple > multiple * 1.05 && (
+                  <span className="text-xs text-lav">peak {formatUsd(post.peakMcap)}</span>
+                )}
               </div>
 
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
@@ -61,13 +64,18 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
               </div>
             </div>
 
-            <span
-              className={`shrink-0 rounded-lg px-3 py-1.5 text-base font-black tabular-nums ${
-                multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
-              }`}
-            >
-              {formatMultiple(multiple)}
-            </span>
+            <div className="shrink-0 text-right">
+              <span className="rounded-lg bg-lav/15 px-3 py-1.5 text-base font-black tabular-nums text-lav">
+                {formatMultiple(peakMultiple)}
+              </span>
+              <div
+                className={`mt-1 font-mono text-[10px] tabular-nums ${
+                  multiple >= 1 ? "text-mint" : "text-loss"
+                }`}
+              >
+                now {formatMultiple(multiple)}
+              </div>
+            </div>
           </Link>
         </li>
       ))}

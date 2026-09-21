@@ -1,7 +1,7 @@
 "use client";
 
 import type { TokenSnapshot } from "@/lib/types";
-import { formatPct, formatUsd } from "@/lib/format";
+import { formatPct, formatUsd, ticker } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { useCoinViewer } from "./CoinViewer";
 
@@ -25,7 +25,7 @@ export function MostCalledRow({
       <span className="w-3 font-mono text-[11px] font-bold text-muted">{rank}</span>
       <CoinImage token={token} size={30} className="tf-ring" />
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-bold">${token?.symbol ?? "???"}</div>
+        <div className="truncate text-sm font-bold">{ticker(token?.symbol)}</div>
         <div className="text-[11px] text-muted">{formatUsd(token?.marketCap ?? null)} MC</div>
       </div>
       {token?.bonding ? (

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { TokenSnapshot } from "@/lib/types";
 import type { TopCall } from "@/lib/data";
 import type { Graduating } from "@/lib/constants";
-import { formatMultiple } from "@/lib/format";
+import { formatMultiple, ticker } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { GraduatingSoon } from "./GraduatingSoon";
 import { MostCalledRow } from "./MostCalledRow";
@@ -32,7 +32,7 @@ export function TrendingRail({
             </Link>
           </div>
           <ul className="divide-y divide-line">
-            {topCalls.map(({ post, multiple }, i) => (
+            {topCalls.map(({ post, peakMultiple }, i) => (
               <li key={post.id}>
                 <Link
                   href={`/post/${post.id}`}
@@ -42,16 +42,16 @@ export function TrendingRail({
                   <CoinImage token={post.token} size={30} className="tf-ring" />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-bold">
-                      ${post.token?.symbol ?? post.callToken?.symbol ?? "???"}
+                      {ticker(post.token?.symbol ?? post.callToken?.symbol)}
                     </div>
                     <div className="truncate text-[11px] text-muted">by {post.profile.name}</div>
                   </div>
                   <span
                     className={`rounded-md px-1.5 py-0.5 text-xs font-black tabular-nums ${
-                      multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
+                      peakMultiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
                     }`}
                   >
-                    {formatMultiple(multiple)}
+                    {formatMultiple(peakMultiple)}
                   </span>
                 </Link>
               </li>

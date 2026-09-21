@@ -140,7 +140,14 @@ export function PostCard({
             <PostText text={post.text} />
           </div>
 
-          {post.ca && <TokenCard token={post.token} ca={post.ca} callMcap={post.callMcap} />}
+          {post.ca && (
+            <TokenCard
+              token={post.token}
+              ca={post.ca}
+              callMcap={post.callMcap}
+              peakMcap={post.peakMcap}
+            />
+          )}
 
           <div className="mt-3 flex items-center gap-5 text-sm text-muted">
             <button

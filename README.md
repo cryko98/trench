@@ -11,8 +11,10 @@ contract address, and open token-gated communities for the coins you hold.
 - **Coin calls** — paste any Solana contract address, including pump.fun coins that are still on
   the bonding curve. The post renders a live coin card with market cap, 24h change, liquidity and
   curve progress. The market cap at post time is snapshotted, so every call shows its multiple.
-- **Top calls** — leaderboard of the calls that ran the furthest: caller, ticker, contract and the
-  multiple since the call.
+- **Top calls** — leaderboard of the calls that ran the furthest, scored on the peak market cap
+  reached after the call (not just where it sits now), plus a board of the best callers.
+- **Share cards** — every post and profile generates its own social image: the coin, the entry and
+  current market cap, the multiple and the caller.
 - **Communities** — anyone holding a coin can open its community; other holders can join and post
   there. Membership is checked against the wallet's on-chain balance, with an optional minimum.
 - **Fresh launches** — a live rail of pump.fun coins the second they launch, streamed over

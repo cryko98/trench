@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getSessionWallet } from "@/lib/auth";
 import { getFeed } from "@/lib/data";
 import { getToken } from "@/lib/token";
-import { isSolanaAddress } from "@/lib/format";
+import { isSolanaAddress, ticker } from "@/lib/format";
 import { Feed } from "@/components/Feed";
 import { TokenCard } from "@/components/TokenCard";
 
@@ -23,7 +23,7 @@ export default async function CoinPage({ params }: PageProps<"/coin/[ca]">) {
         <h1 className="text-xl font-black">
           {token ? (
             <>
-              ${token.symbol} <span className="font-normal text-muted">{token.name}</span>
+              {ticker(token.symbol)} <span className="font-normal text-muted">{token.name}</span>
             </>
           ) : (
             "Unknown coin"

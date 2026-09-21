@@ -9,6 +9,7 @@ import type {
   Post,
   PostView,
   Profile,
+  TokenSnapshot,
 } from "./types";
 import { callMultiple, shortAddress } from "./format";
 
@@ -57,13 +58,47 @@ export async function hydratePosts(posts: Post[], viewer: string | null): Promis
     })
   );
 
+  const peaks = await trackPeaks(posts, tokens);
+
   return posts.map((p, i) => ({
     ...p,
     communityId: p.communityId ?? null,
     profile: profiles.get(p.author) ?? defaultProfile(p.author),
     token: p.ca ? tokens.get(p.ca) ?? null : null,
+    peakMcap: peaks.get(p.id) ?? null,
     ...meta[i],
   }));
+}
+
+/**
+ * Highest market cap a call has seen. Every render samples the live price and
+ * raises the stored peak, so a coin that ran and dumped still shows what the
+ * call was worth at its best — no background job required.
+ */
+async function trackPeaks(
+  posts: Post[],
+  tokens: Map<string, TokenSnapshot>
+): Promise<Map<string, number>> {
+  const calls = posts.filter((p) => p.ca && p.callMcap);
+  if (calls.length === 0) return new Map();
+
+  const stored = await store.mget<number>(calls.map((p) => K.peak(p.id)));
+  const peaks = new Map<string, number>();
+
+  await Promise.all(
+    calls.map(async (post, i) => {
+      const live = tokens.get(post.ca!)?.marketCap ?? null;
+      const previous = stored[i] ?? post.callMcap ?? 0;
+      // A single sample cannot realistically be 20x the last one; anything
+      // that wild is a bad quote, and a peak can never be walked back.
+      const sane = live !== null && live <= previous * 20 ? live : 0;
+      const peak = Math.max(previous, sane);
+      peaks.set(post.id, peak);
+      if (peak > (stored[i] ?? 0)) await store.set(K.peak(post.id), peak);
+    })
+  );
+
+  return peaks;
 }
 
 export async function getFeed(
@@ -114,7 +149,10 @@ export async function getTrendingCalls(limit = 6) {
 
 export type TopCall = {
   post: PostView;
+  /** Where the call stands right now. */
   multiple: number;
+  /** The best it ever got. */
+  peakMultiple: number;
 };
 
 /**
@@ -132,9 +170,51 @@ export async function getTopCalls(limit = 25, scan = 200): Promise<TopCall[]> {
   const views = await hydratePosts(posts, null);
 
   return views
-    .map((post) => ({ post, multiple: callMultiple(post.callMcap, post.token?.marketCap ?? null) }))
-    .filter((row): row is TopCall => row.multiple !== null)
-    .sort((a, b) => b.multiple - a.multiple)
+    .map((post) => ({
+      post,
+      multiple: callMultiple(post.callMcap, post.token?.marketCap ?? null),
+      peakMultiple: callMultiple(post.callMcap, post.peakMcap),
+    }))
+    .filter((row): row is TopCall => row.multiple !== null && row.peakMultiple !== null)
+    .sort((a, b) => b.peakMultiple - a.peakMultiple)
+    .slice(0, limit);
+}
+
+export type Caller = {
+  profile: Profile;
+  calls: number;
+  /** Best peak multiple this wallet ever called. */
+  best: number;
+  /** Average peak multiple across their calls. */
+  average: number;
+  /** Share of calls that at least doubled. */
+  hitRate: number;
+};
+
+/**
+ * Wallets ranked by how their calls played out. A caller needs more than one
+ * call to rank, so a single lucky post does not top the board.
+ */
+export async function getTopCallers(limit = 10, scan = 300): Promise<Caller[]> {
+  const rows = await getTopCalls(scan, scan);
+  if (rows.length === 0) return [];
+
+  const byWallet = new Map<string, { profile: Profile; peaks: number[] }>();
+  for (const row of rows) {
+    const entry = byWallet.get(row.post.author) ?? { profile: row.post.profile, peaks: [] };
+    entry.peaks.push(row.peakMultiple);
+    byWallet.set(row.post.author, entry);
+  }
+
+  return [...byWallet.values()]
+    .map(({ profile, peaks }) => ({
+      profile,
+      calls: peaks.length,
+      best: Math.max(...peaks),
+      average: peaks.reduce((sum, x) => sum + x, 0) / peaks.length,
+      hitRate: peaks.filter((x) => x >= 2).length / peaks.length,
+    }))
+    .sort((a, b) => b.average * Math.min(b.calls, 5) - a.average * Math.min(a.calls, 5))
     .slice(0, limit);
 }
 

@@ -52,6 +52,8 @@ export type Comment = {
 
 export type PostView = Post & {
   profile: Profile;
+  /** Highest market cap seen since the call was posted. */
+  peakMcap: number | null;
   likes: number;
   liked: boolean;
   comments: number;

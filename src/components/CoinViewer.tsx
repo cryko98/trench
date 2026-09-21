@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { TokenSnapshot } from "@/lib/types";
-import { formatPct, formatUsd } from "@/lib/format";
+import { formatPct, formatUsd, ticker } from "@/lib/format";
 import { CoinImage, CopyAddress } from "./TokenCard";
 
 type ViewerState = { open: (ca: string) => void };
@@ -74,7 +74,7 @@ function CoinModal({ ca, onClose }: { ca: string; onClose: () => void }) {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="truncate text-lg font-black">
-                {loading ? "Loading…" : token ? `$${token.symbol}` : "Unknown coin"}
+                {loading ? "Loading…" : token ? ticker(token.symbol) : "Unknown coin"}
               </span>
               {token && <span className="truncate text-sm text-muted">{token.name}</span>}
               {token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}

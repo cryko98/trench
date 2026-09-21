@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { CommunityView } from "@/lib/types";
-import { formatUsd } from "@/lib/format";
+import { formatUsd, ticker } from "@/lib/format";
 import { CoinImage } from "./TokenCard";
 import { useAuth } from "./AuthContext";
 
@@ -85,7 +85,7 @@ export function CommunityCard({ community }: { community: CommunityView }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2">
           <span className="truncate font-bold">{state.name}</span>
-          <span className="tf-chip">${state.token?.symbol ?? "???"}</span>
+          <span className="tf-chip">{ticker(state.token?.symbol)}</span>
           {state.isMember && <span className="tf-chip tf-chip-mint">Member</span>}
           {state.token?.bonding && <span className="tf-chip tf-chip-lav">On curve</span>}
         </div>
