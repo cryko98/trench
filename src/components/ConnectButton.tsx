@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAuth } from "./AuthContext";
 import { WalletModal } from "./WalletModal";
@@ -14,6 +15,8 @@ export function ConnectButton() {
   const { profile, loading, signIn, signingIn, signOut, needsSignIn, error } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const autoSignIn = useRef(false);
 
   // Connect as soon as a wallet is picked in the modal.
@@ -39,12 +42,28 @@ export function ConnectButton() {
     return () => window.removeEventListener(CONNECT_WALLET_EVENT, onAsk);
   }, []);
 
+  const place = useCallback(() => {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    // Clear the sticky header, not just the button.
+    const header = triggerRef.current?.closest("header")?.getBoundingClientRect();
+    const top = Math.max(rect.bottom, header?.bottom ?? 0) + 8;
+    setMenuPosition({ top, right: window.innerWidth - rect.right });
+  }, []);
+
   useEffect(() => {
     if (!menuOpen) return;
+    place();
     const close = () => setMenuOpen(false);
     window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, [menuOpen]);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [menuOpen, place]);
 
   if (loading) {
     return <div className="h-9 w-32 animate-pulse rounded-xl bg-surface-2" />;
@@ -54,6 +73,7 @@ export function ConnectButton() {
     return (
       <div className="relative">
         <button
+          ref={triggerRef}
           className="flex items-center gap-2 rounded-xl border border-line bg-surface-2 py-1 pl-1 pr-3 transition hover:border-mint/50"
           onClick={(e) => {
             e.stopPropagation();
@@ -64,8 +84,17 @@ export function ConnectButton() {
           <span className="max-w-28 truncate text-sm font-semibold">{profile.name}</span>
         </button>
 
-        {menuOpen && (
-          <div className="tf-card absolute right-0 z-40 mt-2 w-56 overflow-hidden p-1 text-sm">
+        {/* In a portal, anchored under the button: the header's backdrop-blur
+            would otherwise paint over the top of the menu. */}
+        {menuOpen &&
+          typeof document !== "undefined" &&
+          createPortal(
+            <div
+              // .tf-card sets position: relative, so pin it inline instead
+              className="tf-card z-50 w-56 overflow-hidden p-1 text-sm"
+              style={{ position: "fixed", top: menuPosition.top, right: menuPosition.right }}
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="px-3 py-2">
               <div className="truncate font-semibold">@{profile.handle}</div>
               <div className="font-mono text-xs text-muted">{shortAddress(profile.wallet, 6)}</div>
@@ -86,8 +115,9 @@ export function ConnectButton() {
             >
               Disconnect
             </button>
-          </div>
-        )}
+            </div>,
+            document.body
+          )}
       </div>
     );
   }
