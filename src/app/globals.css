@@ -2,7 +2,7 @@
 
 /*
  * Palette sampled straight from the $socials logo: neon aqua-mint (#90ffd0),
- * lavender glow (#a090e0) and the dark teal trench it sits in.
+ * the logo's violet (#9040f0) and the dark teal trench it sits in.
  */
 :root {
   --background: #071310;
@@ -16,8 +16,11 @@
   --mint: #90ffd0;
   --mint-dim: #52e0b0;
   --mint-ink: #04221a;
-  --lav: #a090e0;
-  --lav-dim: #7d6bc4;
+  /* straight off the logo: the circle behind the helmet */
+  --lav: #9040f0;
+  --lav-deep: #7838c8;
+  /* lighter tint, so violet text stays readable on the dark surface */
+  --lav-text: #bb8cff;
   --red: #ff7b7b;
 }
 
@@ -32,7 +35,8 @@
   --color-mint: var(--mint);
   --color-mint-dim: var(--mint-dim);
   --color-mint-ink: var(--mint-ink);
-  --color-lav: var(--lav);
+  --color-lav: var(--lav-text);
+  --color-lav-solid: var(--lav);
   --color-loss: var(--red);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -53,7 +57,7 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   background-image:
     radial-gradient(42rem 26rem at 12% -8%, rgba(144, 255, 208, 0.07), transparent 65%),
-    radial-gradient(38rem 24rem at 88% -4%, rgba(160, 144, 224, 0.08), transparent 60%),
+    radial-gradient(38rem 24rem at 88% -4%, rgba(144, 64, 240, 0.10), transparent 60%),
     radial-gradient(circle at center, rgba(144, 255, 208, 0.05) 0.5px, transparent 0.5px);
   background-size: auto, auto, 22px 22px;
   background-attachment: fixed;
@@ -122,12 +126,12 @@ body {
   display: none;
 }
 
-/* Banner-style wordmark: mint with a lavender offset. */
+/* Wordmark: mint with the logo's violet offset. */
 .tf-neon {
   color: var(--mint);
   text-shadow:
     0 0 14px rgba(144, 255, 208, 0.5),
-    2px 2px 0 rgba(160, 144, 224, 0.65);
+    2px 2px 0 rgba(144, 64, 240, 0.7);
 }
 
 /* ---------- controls ---------- */
@@ -189,12 +193,12 @@ body {
 }
 
 .tf-btn-lav {
-  background: linear-gradient(180deg, #b6a8ec, var(--lav));
+  background: linear-gradient(180deg, #b47dff, var(--lav));
   color: #150c2a;
 }
 
 .tf-btn-lav:hover:not(:disabled) {
-  box-shadow: 0 0 22px -4px rgba(160, 144, 224, 0.7);
+  box-shadow: 0 0 22px -4px rgba(144, 64, 240, 0.7);
 }
 
 .tf-btn-ghost {
@@ -233,12 +237,16 @@ body {
 }
 
 .tf-chip-lav {
-  background: rgba(160, 144, 224, 0.15);
-  border-color: rgba(160, 144, 224, 0.3);
-  color: #cbbcf5;
+  background: rgba(144, 64, 240, 0.18);
+  border-color: rgba(144, 64, 240, 0.45);
+  color: var(--lav-text);
 }
 
 /* ---------- bits ---------- */
+
+.tf-ring-violet {
+  box-shadow: 0 0 0 1px rgba(144, 64, 240, 0.45);
+}
 
 .tf-ring {
   box-shadow: 0 0 0 1px rgba(144, 255, 208, 0.25);
@@ -255,7 +263,7 @@ body {
 .tf-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--lav), var(--mint));
+  background: linear-gradient(90deg, var(--lav-deep), var(--lav) 35%, var(--mint));
   box-shadow: 0 0 12px rgba(144, 255, 208, 0.45);
   transition: width 400ms ease;
 }

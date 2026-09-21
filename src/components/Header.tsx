@@ -51,7 +51,7 @@ export function Header() {
         className="pointer-events-none absolute inset-x-0 -bottom-px h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(144,255,208,0.45), rgba(160,144,224,0.35), transparent)",
+            "linear-gradient(90deg, transparent, rgba(144,255,208,0.45), rgba(144,64,240,0.5), transparent)",
         }}
       />
 
@@ -61,7 +61,10 @@ export function Header() {
             <span
               aria-hidden
               className="absolute inset-0 rounded-full opacity-60 blur-md transition-opacity group-hover:opacity-100"
-              style={{ background: "radial-gradient(circle, rgba(144,255,208,0.55), transparent 70%)" }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(144,64,240,0.6), rgba(144,255,208,0.3) 60%, transparent 75%)",
+              }}
             />
             <Image
               src="/logo.png"

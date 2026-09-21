@@ -15,7 +15,7 @@ export function MobileNav() {
         className="pointer-events-none absolute inset-x-0 -top-px h-px"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(144,255,208,0.4), rgba(160,144,224,0.3), transparent)",
+            "linear-gradient(90deg, transparent, rgba(144,255,208,0.4), rgba(144,64,240,0.45), transparent)",
         }}
       />
       <ul className="flex items-stretch">

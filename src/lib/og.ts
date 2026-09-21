@@ -13,7 +13,8 @@ export const og = {
   muted: "#7f9a91",
   mint: "#90ffd0",
   mintInk: "#04221a",
-  lav: "#a090e0",
+  lav: "#bb8cff",
+  lavSolid: "#9040f0",
   loss: "#ff7b7b",
 };
 

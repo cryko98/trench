@@ -55,7 +55,7 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "space-between",
           background: og.bg,
-          backgroundImage: `radial-gradient(900px 430px at 6% -12%, rgba(144,255,208,0.16), transparent 60%), radial-gradient(800px 400px at 96% 0%, rgba(160,144,224,0.18), transparent 60%)`,
+          backgroundImage: `radial-gradient(900px 430px at 6% -12%, rgba(144,255,208,0.16), transparent 60%), radial-gradient(800px 400px at 96% 0%, rgba(144,64,240,0.22), transparent 60%)`,
           padding: 56,
           color: og.text,
         }}

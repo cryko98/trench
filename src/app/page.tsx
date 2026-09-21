@@ -48,7 +48,7 @@ export default async function HomePage() {
         <div
           aria-hidden
           className="pointer-events-none absolute -left-24 bottom-[-6rem] h-56 w-56 rounded-full opacity-20 blur-3xl"
-          style={{ background: "radial-gradient(circle, #a090e0, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, #9040f0, transparent 70%)" }}
         />
 
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
@@ -56,7 +56,10 @@ export default async function HomePage() {
             <div
               aria-hidden
               className="absolute inset-0 rounded-full blur-xl"
-              style={{ background: "radial-gradient(circle, rgba(144,255,208,0.45), transparent 70%)" }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(144,64,240,0.55), rgba(144,255,208,0.28) 55%, transparent 72%)",
+              }}
             />
             <Image
               src="/logo.png"

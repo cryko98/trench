@@ -101,7 +101,7 @@ export function GraduatingSoon({ initial = [] }: { initial?: Graduating[] }) {
                     <span className="w-3 shrink-0 font-mono text-[11px] font-bold text-muted">
                       {i + 1}
                     </span>
-                    <CoinImage token={coin} size={32} className="tf-ring" />
+                    <CoinImage token={coin} size={32} className="tf-ring-violet" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="truncate text-sm font-bold">{ticker(coin.symbol)}</span>
