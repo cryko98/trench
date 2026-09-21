@@ -12,8 +12,19 @@ import type {
   TokenSnapshot,
 } from "./types";
 import { callMultiple, shortAddress } from "./format";
+import { RADAR_AUTHOR } from "./constants";
+
+export const RADAR_PROFILE: Profile = {
+  wallet: RADAR_AUTHOR,
+  name: "Trench Radar",
+  handle: "radar",
+  avatar: "/logo.png",
+  bio: "Automated reports from the trenches.",
+  createdAt: 0,
+};
 
 export function defaultProfile(wallet: string): Profile {
+  if (wallet === RADAR_AUTHOR) return RADAR_PROFILE;
   return {
     wallet,
     name: shortAddress(wallet),
@@ -25,6 +36,7 @@ export function defaultProfile(wallet: string): Profile {
 }
 
 export async function getProfile(wallet: string): Promise<Profile> {
+  if (wallet === RADAR_AUTHOR) return RADAR_PROFILE;
   const p = await store.get<Profile>(K.user(wallet));
   return p ? { ...defaultProfile(wallet), ...p } : defaultProfile(wallet);
 }
@@ -35,6 +47,7 @@ export async function getProfiles(wallets: string[]): Promise<Map<string, Profil
   const rows = await store.mget<Profile>(unique.map(K.user));
   const map = new Map<string, Profile>();
   unique.forEach((w, i) => {
+    if (w === RADAR_AUTHOR) return map.set(w, RADAR_PROFILE);
     map.set(w, rows[i] ? { ...defaultProfile(w), ...rows[i]! } : defaultProfile(w));
   });
   return map;
@@ -164,7 +177,9 @@ export async function getTopCalls(limit = 25, scan = 200): Promise<TopCall[]> {
   if (ids.length === 0) return [];
 
   const rows = await store.mget<Post>(ids.map(K.post));
-  const posts = rows.filter((p): p is Post => Boolean(p?.ca) && Boolean(p?.callMcap));
+  const posts = rows.filter(
+    (p): p is Post => Boolean(p?.ca) && Boolean(p?.callMcap) && p!.author !== RADAR_AUTHOR
+  );
   if (posts.length === 0) return [];
 
   const views = await hydratePosts(posts, null);

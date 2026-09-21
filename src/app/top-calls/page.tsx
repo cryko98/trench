@@ -21,8 +21,10 @@ export default async function TopCallsPage() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <TopCallsTable calls={calls} />
-        <div className="lg:sticky lg:top-[4.5rem] lg:self-start">
+        <div className="min-w-0">
+          <TopCallsTable calls={calls} />
+        </div>
+        <div className="min-w-0 lg:sticky lg:top-[4.5rem] lg:self-start">
           <TopCallers callers={callers} />
         </div>
       </div>

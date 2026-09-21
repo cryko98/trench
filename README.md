@@ -23,6 +23,8 @@ contract address, and open token-gated communities for the coins you hold.
 - **Coin window** — clicking a coin anywhere opens an in-page window with live stats and an
   embedded DexScreener chart. pump.fun itself refuses to be framed (`X-Frame-Options`), so it gets
   a button that opens it in a new tab.
+- **Trench Radar** — the feed reports on itself: when a call crosses 2x, 5x, 10x… or a called coin
+  graduates off the bonding curve, the site posts it, so the feed has a pulse between human posts.
 - **Replies** — every post has a comment thread.
 
 ## Stack

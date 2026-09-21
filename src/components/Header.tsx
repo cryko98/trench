@@ -5,12 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "./ConnectButton";
-
-const NAV = [
-  { href: "/", label: "Feed" },
-  { href: "/top-calls", label: "Top calls" },
-  { href: "/communities", label: "Communities" },
-];
+import { NAV } from "./nav";
 
 /** Live SOL price chip — the same cached number the coin cards use. */
 function SolPrice() {
@@ -89,7 +84,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="ml-1 flex items-center gap-0.5 overflow-x-auto rounded-xl border border-line bg-surface/60 p-1">
+        <nav className="ml-1 hidden items-center gap-0.5 rounded-xl border border-line bg-surface/60 p-1 sm:flex">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (

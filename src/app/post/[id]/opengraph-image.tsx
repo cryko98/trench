@@ -19,6 +19,11 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const multiple = post ? callMultiple(post.callMcap, post.token?.marketCap ?? null) : null;
   const peak = post ? callMultiple(post.callMcap, post.peakMcap) : null;
   const showPeak = peak !== null && multiple !== null && peak > multiple * 1.05;
+  const avatar = post?.profile.avatar
+    ? post.profile.avatar.startsWith("/")
+      ? `${origin}${post.profile.avatar}`
+      : post.profile.avatar
+    : null;
 
   return new ImageResponse(
     (
@@ -168,9 +173,9 @@ export default async function Image({ params }: { params: Promise<{ id: string }
 
         {/* caller row */}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          {post?.profile.avatar ? (
+          {avatar ? (
             <img
-              src={post.profile.avatar}
+              src={avatar}
               width={64}
               height={64}
               style={{ borderRadius: 999, border: `2px solid ${og.line}` }}

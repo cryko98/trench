@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
 import { getSessionWallet } from "@/lib/auth";
 import { getCommunity, getFeed, hydratePosts, meetsGate } from "@/lib/data";
+import { sweepRadar } from "@/lib/radar";
 import { getToken } from "@/lib/token";
 import { extractCa, isSolanaAddress } from "@/lib/format";
 import type { Post } from "@/lib/types";
@@ -19,6 +20,11 @@ function newId() {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const viewer = await getSessionWallet();
+
+  // Let the radar report on existing calls while the feed is being read.
+  const isGlobal =
+    !searchParams.get("wallet") && !searchParams.get("ca") && !searchParams.get("community");
+  if (isGlobal) await sweepRadar().catch(() => undefined);
   const posts = await getFeed(viewer, {
     limit: Math.min(Number(searchParams.get("limit") ?? 30), 50),
     offset: Math.max(Number(searchParams.get("offset") ?? 0), 0),

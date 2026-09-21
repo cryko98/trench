@@ -90,10 +90,10 @@ export function TokenCard({
 
   return (
     <div className="tf-inset mt-3 overflow-hidden">
-      <div className="flex items-center gap-3 p-3">
+      <div className="flex flex-wrap items-center gap-3 p-3">
         <CoinImage token={token} />
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-40">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <button
               className="truncate font-bold transition hover:text-mint"
@@ -112,7 +112,7 @@ export function TokenCard({
         </div>
 
         {multiple !== null && (
-          <div className="flex shrink-0 items-stretch gap-1.5">
+          <div className="flex shrink-0 items-stretch gap-1.5 ml-auto">
             <div
               className={`rounded-lg px-2.5 py-1.5 text-center ${
                 multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"

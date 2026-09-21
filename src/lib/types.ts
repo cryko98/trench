@@ -39,6 +39,8 @@ export type Post = {
   callToken: { name: string; symbol: string; image: string | null } | null;
   /** Set when the post belongs to a token-gated community. */
   communityId: string | null;
+  /** Set when the site itself posted this, rather than a wallet. */
+  radar?: { kind: "milestone" | "migration"; postId?: string; x?: number };
   createdAt: number;
 };
 

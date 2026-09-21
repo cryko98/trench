@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSessionWallet } from "@/lib/auth";
 import { getFeed, getStats, getTopCalls, getTrendingCalls } from "@/lib/data";
 import { getGraduatingCoins } from "@/lib/graduating";
+import { sweepRadar } from "@/lib/radar";
 import { formatMultiple } from "@/lib/format";
 import { Feed } from "@/components/Feed";
 import { TrendingRail } from "@/components/TrendingRail";
@@ -20,6 +21,7 @@ function HeroStat({ label, value }: { label: string; value: string }) {
 
 export default async function HomePage() {
   const viewer = await getSessionWallet();
+  await sweepRadar().catch(() => undefined);
   const [posts, calls, topCalls, graduating, stats] = await Promise.all([
     getFeed(viewer, { limit: 30 }),
     getTrendingCalls(),
@@ -90,8 +92,10 @@ export default async function HomePage() {
       </section>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <Feed initialPosts={posts} />
-        <div className="lg:sticky lg:top-[4.5rem] lg:self-start">
+        <div className="min-w-0">
+          <Feed initialPosts={posts} />
+        </div>
+        <div className="min-w-0 lg:sticky lg:top-[4.5rem] lg:self-start">
           <TrendingRail calls={calls} topCalls={topCalls} graduating={graduating} />
         </div>
       </div>

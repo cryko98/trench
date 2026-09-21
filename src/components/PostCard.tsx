@@ -9,6 +9,7 @@ import { TokenCard } from "./TokenCard";
 import { TimeAgo } from "./TimeAgo";
 import { useAuth } from "./AuthContext";
 import { isSolanaAddress } from "@/lib/format";
+import { RADAR_AUTHOR } from "@/lib/constants";
 import { useCoinViewer } from "./CoinViewer";
 
 /** Renders post text, turning contract addresses and links into chips. */
@@ -65,6 +66,7 @@ export function PostCard({
 }) {
   const router = useRouter();
   const { profile: me } = useAuth();
+  const isRadar = post.author === RADAR_AUTHOR;
   const [likes, setLikes] = useState(post.likes);
   const [liked, setLiked] = useState(post.liked);
   const [busy, setBusy] = useState(false);
@@ -102,28 +104,40 @@ export function PostCard({
       onClick={clickable ? () => router.push(`/post/${post.id}`) : undefined}
     >
       <div className="flex gap-3">
-        <Link href={`/u/${post.author}`} onClick={(e) => e.stopPropagation()}>
+        {isRadar ? (
           <Avatar profile={post.profile} className="tf-ring" />
-        </Link>
+        ) : (
+          <Link href={`/u/${post.author}`} onClick={(e) => e.stopPropagation()}>
+            <Avatar profile={post.profile} className="tf-ring" />
+          </Link>
+        )}
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 text-sm">
-            <Link
-              href={`/u/${post.author}`}
-              className="truncate font-bold hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {post.profile.name}
-            </Link>
-            <span className="truncate text-muted">@{post.profile.handle}</span>
+            {isRadar ? (
+              <span className="truncate font-bold">{post.profile.name}</span>
+            ) : (
+              <Link
+                href={`/u/${post.author}`}
+                className="truncate font-bold hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {post.profile.name}
+              </Link>
+            )}
+            {isRadar ? (
+              <span className="tf-chip tf-chip-mint">Radar</span>
+            ) : (
+              <span className="truncate text-muted">@{post.profile.handle}</span>
+            )}
             <span className="text-muted">·</span>
             <TimeAgo ts={post.createdAt} className="text-muted" />
-            {post.ca && (
+            {post.ca && !isRadar && (
               <span className="tf-chip tf-chip-lav ml-1">
                 Call
               </span>
             )}
-            {me?.wallet === post.author && (
+            {!isRadar && me?.wallet === post.author && (
               <button
                 className="ml-auto text-xs text-muted hover:text-loss"
                 onClick={(e) => {
@@ -139,6 +153,16 @@ export function PostCard({
           <div className="mt-1.5">
             <PostText text={post.text} />
           </div>
+
+          {post.radar?.postId && (
+            <Link
+              href={`/post/${post.radar.postId}`}
+              className="mt-1 inline-block text-xs text-muted transition hover:text-mint"
+              onClick={(e) => e.stopPropagation()}
+            >
+              see the original call →
+            </Link>
+          )}
 
           {post.ca && (
             <TokenCard

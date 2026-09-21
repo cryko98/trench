@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
+import { MobileNav } from "@/components/MobileNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,8 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Providers>
           <Header />
-          <main className="flex-1">{children}</main>
-          <footer className="border-t border-line py-6 text-center text-xs text-muted">
+          <main className="flex-1 pb-16 sm:pb-0">{children}</main>
+          <MobileNav />
+          <footer className="border-t border-line pb-20 pt-6 text-center text-xs text-muted sm:pb-6">
             Trench Socials · $socials · built on Solana · data by DexScreener &amp; pump.fun
           </footer>
         </Providers>
