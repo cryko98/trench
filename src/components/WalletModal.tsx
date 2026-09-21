@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletReadyState } from "@solana/wallet-adapter-base";
 
@@ -13,7 +14,6 @@ const INSTALL_LINKS = [
 
 export function WalletModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { wallets, select } = useWallet();
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -21,20 +21,21 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  if (!open) return null;
+  // Rendered only on click, but guard anyway so SSR never touches document.
+  if (!open || typeof document === "undefined") return null;
 
   const available = wallets.filter(
     (w) =>
       w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
   );
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:items-center"
       onClick={onClose}
     >
       <div
-        className="tf-card w-full max-w-sm p-5"
+        className="tf-card my-auto w-full max-w-sm p-5"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -90,6 +91,7 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
