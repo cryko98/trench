@@ -69,7 +69,7 @@ export function Header() {
               width={40}
               height={40}
               priority
-              className="relative rounded-full"
+              className="relative"
             />
           </span>
           <span className="hidden flex-col leading-none sm:flex">

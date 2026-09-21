@@ -61,7 +61,7 @@ export default async function Image() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
-          <img src={`${origin}/logo.png`} width={116} height={116} style={{ borderRadius: 999 }} />
+          <img src={`${origin}/logo.png`} width={116} height={116} />
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <div style={{ display: "flex", fontSize: 62, fontWeight: 800, letterSpacing: -1 }}>
               TRENCH <span style={{ color: og.mint, marginLeft: 14 }}>SOCIALS</span>

@@ -43,7 +43,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
       >
         {/* brand row */}
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <img src={`${origin}/logo.png`} width={64} height={64} style={{ borderRadius: 999 }} />
+          <img src={`${origin}/logo.png`} width={64} height={64} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", fontSize: 30, fontWeight: 800, letterSpacing: -0.5 }}>
               TRENCH <span style={{ color: og.mint, marginLeft: 10 }}>SOCIALS</span>

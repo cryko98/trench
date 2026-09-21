@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
           style={{ background: "radial-gradient(circle, #90ffd0, transparent 70%)" }}
         />
         <div className="relative flex items-center gap-4">
-          <Image src="/logo.png" alt="" width={64} height={64} className="rounded-full" />
+          <Image src="/logo.png" alt="" width={64} height={64} />
           <div>
             <h1 className="text-xl font-black tracking-tight sm:text-2xl">
               How <span className="tf-neon">Trench Socials</span> works

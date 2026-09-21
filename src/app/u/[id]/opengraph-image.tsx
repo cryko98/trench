@@ -66,7 +66,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <img src={`${origin}/logo.png`} width={56} height={56} style={{ borderRadius: 999 }} />
+          <img src={`${origin}/logo.png`} width={56} height={56} />
           <div style={{ display: "flex", fontSize: 26, fontWeight: 800 }}>
             TRENCH <span style={{ color: og.mint, marginLeft: 8 }}>SOCIALS</span>
           </div>

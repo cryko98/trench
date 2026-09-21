@@ -64,7 +64,7 @@ export default async function HomePage() {
               width={88}
               height={88}
               priority
-              className="relative rounded-full"
+              className="relative"
             />
           </div>
 
