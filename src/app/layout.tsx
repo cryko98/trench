@@ -31,10 +31,14 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Trench Socials — $socials",
     description: "Call coins. Track market caps. Talk trenches.",
     type: "website",
+    url: siteUrl(),
+    siteName: "Trench Socials",
+    locale: "en_US",
   },
 };
 
