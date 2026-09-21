@@ -151,12 +151,12 @@ export default function HowItWorksPage() {
       <Section label="Rewards" title="Good calls get paid">
         <p className="text-sm leading-relaxed text-muted">
           Every trade of $socials pays a creator reward, and that reward is not kept: it collects in
-          the reward wallet and is split each week between the callers whose calls ran the furthest.
-          A call counts for the week it was posted in, and is scored on its peak — a 6x call is
-          worth five points, a 2x one, a flat call nothing. The top ten share the pot in proportion
-          to their points, paid to the wallet they posted from.{" "}
+          the reward wallet and is split every day between the callers whose calls ran the furthest.
+          A call counts for the day it was posted on, and is scored on its peak — a 6x call is worth
+          five points, a 2x one, a flat call nothing. The top ten share the pot in proportion to
+          their points, paid to the wallet they posted from.{" "}
           <Link href="/rewards" className="text-mint hover:underline">
-            See the running pot and this week&apos;s standings →
+            See the running pot and today&apos;s standings →
           </Link>
         </p>
       </Section>

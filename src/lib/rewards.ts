@@ -5,7 +5,7 @@ import type { Profile } from "./types";
 
 /**
  * Creator rewards from $socials flow into one wallet, and a share of that pool
- * goes to the callers whose calls ran the furthest during the week.
+ * goes to the callers whose calls ran the furthest that day.
  *
  * The site only ever *computes and publishes* the split. Payouts are sent by
  * the treasury wallet itself — no key ever touches this server.
@@ -14,7 +14,7 @@ import type { Profile } from "./types";
 /** How many callers share the pot. */
 export const REWARD_PLACES = 10;
 
-/** Share of the pool paid out each week, the rest rolls over. */
+/** Share of the pool paid out each day, the rest rolls over. */
 export const PAYOUT_RATIO = Number(process.env.NEXT_PUBLIC_REWARD_PAYOUT_RATIO ?? 0.5);
 
 export const TREASURY = process.env.NEXT_PUBLIC_REWARD_WALLET ?? "";
@@ -25,7 +25,7 @@ const RPC =
   "https://api.mainnet-beta.solana.com";
 
 export type RewardEpoch = {
-  /** Monday 00:00 UTC of the running week. */
+  /** 00:00 UTC of the running day. */
   start: number;
   end: number;
   label: string;
@@ -35,7 +35,7 @@ export type RewardRow = {
   profile: Profile;
   calls: number;
   best: number;
-  /** Total x gained across the week's calls. */
+  /** Total x gained across the day's calls. */
   score: number;
   /** Share of the payout, 0-1. */
   share: number;
@@ -50,14 +50,17 @@ export type Payout = {
   at: number;
 };
 
+/** Rewards run on UTC days: the board resets at midnight UTC. */
 export function currentEpoch(now = Date.now()): RewardEpoch {
   const d = new Date(now);
-  const day = (d.getUTCDay() + 6) % 7; // Monday = 0
-  const start = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day);
-  const end = start + 7 * 24 * 60 * 60 * 1000;
-  const fmt = (t: number) =>
-    new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-  return { start, end, label: `${fmt(start)} – ${fmt(end - 1)}` };
+  const start = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  const end = start + 24 * 60 * 60 * 1000;
+  const label = new Date(start).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+  return { start, end, label };
 }
 
 /** SOL sitting in the reward wallet right now. */
@@ -93,7 +96,7 @@ export async function getPoolSol(): Promise<number | null> {
 }
 
 /**
- * The week's standings. A caller's score is the total multiple gained across
+ * The day's standings. A caller's score is the total multiple gained across
  * the calls they made inside the epoch, so one 10x counts as much as nine 2x,
  * and a call that went nowhere adds nothing.
  */

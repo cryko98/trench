@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Caller rewards — Trench Socials",
   description:
-    "Creator rewards from $socials go back to the callers: every week the best calls on Trench Socials share the pot.",
+    "Creator rewards from $socials go back to the callers: every day the best calls on Trench Socials share the pot.",
 };
 
 function sol(n: number | null, digits = 2) {
@@ -63,14 +63,14 @@ export default async function RewardsPage() {
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted">
             Every trade of $socials pays a creator reward. That reward is not kept — it collects in
-            the reward wallet, and each week it is split between the callers whose calls ran the
+            the reward wallet, and every day it is split between the callers whose calls ran the
             furthest. Post good calls, take a cut.
           </p>
 
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             <Tile label="In the pot" value={sol(snap.pool)} sub={usd(snap.pool)} accent />
             <Tile
-              label="This week's payout"
+              label="Today's payout"
               value={sol(snap.payable)}
               sub={`${Math.round(snap.payoutRatio * 100)}% of the pot`}
             />
@@ -101,7 +101,7 @@ export default async function RewardsPage() {
 
       <section className="tf-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
-          <h2 className="tf-label">This week&apos;s standings</h2>
+          <h2 className="tf-label">Today&apos;s standings</h2>
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
             {snap.epoch.label} · UTC
           </span>
@@ -109,7 +109,7 @@ export default async function RewardsPage() {
 
         {snap.board.length === 0 ? (
           <p className="px-4 py-6 text-sm text-muted">
-            No scoring calls yet this week. Post a call — the week resets every Monday.
+            No scoring calls yet today. Post a call — the board resets at 00:00 UTC.
           </p>
         ) : (
           <ul className="divide-y divide-line">
@@ -157,7 +157,7 @@ export default async function RewardsPage() {
         )}
 
         <p className="border-t border-line px-4 py-2.5 text-[11px] text-muted">
-          Shares update live as the calls move, and are final when the week closes.
+          Shares update live as the calls move, and are final when the day closes.
         </p>
       </section>
 
@@ -165,8 +165,8 @@ export default async function RewardsPage() {
         <span className="tf-label">The rules</span>
         <ol className="mt-3 space-y-3 text-sm text-muted">
           <li>
-            <span className="text-foreground">1.</span> Only calls posted inside the running week
-            count. The week starts Monday 00:00 UTC.
+            <span className="text-foreground">1.</span> Only calls posted inside the running day
+            count. A new day starts at 00:00 UTC.
           </li>
           <li>
             <span className="text-foreground">2.</span> A call is scored on its{" "}
@@ -180,7 +180,7 @@ export default async function RewardsPage() {
           <li>
             <span className="text-foreground">4.</span> The top {REWARD_PLACES} split{" "}
             {Math.round(snap.payoutRatio * 100)}% of the pot in proportion to their points; the rest
-            rolls into next week.
+            rolls into tomorrow.
           </li>
           <li>
             <span className="text-foreground">5.</span> Payouts go to the wallet you posted from —
