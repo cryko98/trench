@@ -1,0 +1,71 @@
+"use client";
+
+import { useState } from "react";
+import { shortAddress } from "@/lib/format";
+
+const CA = process.env.NEXT_PUBLIC_TOKEN_CA ?? "";
+const X_URL = process.env.NEXT_PUBLIC_X_URL ?? "";
+
+function XLogo() {
+  return (
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+/** Contract address and socials for $socials itself. */
+export function TokenBar() {
+  const [copied, setCopied] = useState(false);
+
+  const copy = () => {
+    if (!CA) return;
+    void navigator.clipboard.writeText(CA).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    });
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      {CA ? (
+        <button
+          onClick={copy}
+          title={CA}
+          className="flex items-center gap-1.5 rounded-lg border border-mint/25 bg-mint/10 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-mint transition hover:bg-mint/20"
+        >
+          <span className="hidden sm:inline">CA</span>
+          <span>{shortAddress(CA, 4)}</span>
+          <span className="text-mint/70">{copied ? "copied" : "copy"}</span>
+        </button>
+      ) : (
+        <span
+          className="flex items-center gap-1.5 rounded-lg border border-line bg-surface/80 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted"
+          title="The contract address goes live at launch"
+        >
+          CA<span className="text-mint">coming soon</span>
+        </span>
+      )}
+
+      {X_URL ? (
+        <a
+          href={X_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Trench Socials on X"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-line bg-surface/80 text-muted transition hover:border-mint/40 hover:text-mint"
+        >
+          <XLogo />
+        </a>
+      ) : (
+        <span
+          aria-label="X account coming soon"
+          title="X account coming soon"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-line bg-surface/50 text-muted/50"
+        >
+          <XLogo />
+        </span>
+      )}
+    </div>
+  );
+}

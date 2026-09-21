@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ConnectButton } from "./ConnectButton";
 import { NAV } from "./nav";
+import { TokenBar } from "./TokenBar";
 
 /** Live SOL price chip — the same cached number the coin cards use. */
 function SolPrice() {
@@ -104,6 +105,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <TokenBar />
           <SolPrice />
           <ConnectButton />
         </div>

@@ -148,6 +148,19 @@ export default function HowItWorksPage() {
         </ul>
       </Section>
 
+      <Section label="Rewards" title="Good calls get paid">
+        <p className="text-sm leading-relaxed text-muted">
+          Every trade of $socials pays a creator reward, and that reward is not kept: it collects in
+          the reward wallet and is split each week between the callers whose calls ran the furthest.
+          A call counts for the week it was posted in, and is scored on its peak — a 6x call is
+          worth five points, a 2x one, a flat call nothing. The top ten share the pot in proportion
+          to their points, paid to the wallet they posted from.{" "}
+          <Link href="/rewards" className="text-mint hover:underline">
+            See the running pot and this week&apos;s standings →
+          </Link>
+        </p>
+      </Section>
+
       <Section label="Communities" title="Rooms only holders can enter">
         <ol className="space-y-4">
           <Step n={1} title="Open one">
