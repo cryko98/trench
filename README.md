@@ -26,6 +26,8 @@ contract address, and open token-gated communities for the coins you hold.
 - **Trench Radar** — the feed reports on itself: when a call crosses 2x, 5x, 10x… or a called coin
   graduates off the bonding curve, the site posts it, so the feed has a pulse between human posts.
 - **Images** — posts can carry a picture, downscaled in the browser and stored in Vercel Blob.
+- **Buying** — a Buy button on every coin opens Jupiter's swap widget with the coin preselected.
+  The swap is built, signed and sent by the visitor's own wallet; the site never holds funds or keys.
 - **Replies** — every post has a comment thread.
 
 ## Stack

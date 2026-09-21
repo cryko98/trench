@@ -7,6 +7,7 @@ import { useAuth } from "./AuthContext";
 import { WalletModal } from "./WalletModal";
 import { Avatar } from "./Avatar";
 import { shortAddress } from "@/lib/format";
+import { CONNECT_WALLET_EVENT } from "./BuyButton";
 
 export function ConnectButton() {
   const { connected, wallet, connect, connecting } = useWallet();
@@ -30,6 +31,13 @@ export function ConnectButton() {
     }
     if (!connected) autoSignIn.current = false;
   }, [needsSignIn, signingIn, signIn, connected]);
+
+  // The Jupiter swap widget asks us to open the wallet picker.
+  useEffect(() => {
+    const onAsk = () => setModalOpen(true);
+    window.addEventListener(CONNECT_WALLET_EVENT, onAsk);
+    return () => window.removeEventListener(CONNECT_WALLET_EVENT, onAsk);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;

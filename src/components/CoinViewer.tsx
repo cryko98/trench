@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { TokenSnapshot } from "@/lib/types";
 import { formatPct, formatUsd, ticker } from "@/lib/format";
 import { CoinImage, CopyAddress } from "./TokenCard";
+import { BuyButton } from "./BuyButton";
 
 type ViewerState = { open: (ca: string) => void };
 
@@ -143,13 +144,14 @@ function CoinModal({ ca, onClose }: { ca: string; onClose: () => void }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-line p-3">
+          <BuyButton mint={ca} symbol={token?.symbol} label={`Buy ${token ? ticker(token.symbol) : "coin"}`} />
           <a
             href={`https://pump.fun/coin/${ca}`}
             target="_blank"
             rel="noreferrer"
-            className="tf-btn tf-btn-primary"
+            className="tf-btn tf-btn-ghost"
           >
-            Open on pump.fun ↗
+            pump.fun ↗
           </a>
           <a
             href={token?.pairUrl ?? `https://dexscreener.com/solana/${ca}`}

@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { useCoinViewer } from "./CoinViewer";
+import { BuyButton } from "./BuyButton";
 import type { TokenSnapshot } from "@/lib/types";
 import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress, ticker } from "@/lib/format";
 
@@ -185,6 +186,11 @@ export function TokenCard({
           Called at <span className="font-semibold text-foreground">{formatUsd(callMcap)}</span> MC
         </span>
         <div className="flex items-center gap-3">
+          <BuyButton
+            mint={ca}
+            symbol={token?.symbol}
+            className="rounded-md bg-mint/10 px-2 py-0.5 text-[11px] font-bold text-mint transition hover:bg-mint/20"
+          />
           <button
             className="transition hover:text-mint"
             onClick={(e) => {
