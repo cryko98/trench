@@ -14,8 +14,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/** Canonical origin for social tags: the custom domain in production. */
+function siteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(//$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  return vercel ? `https://${vercel}` : "http://localhost:3000";
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(siteUrl()),
   title: "Trench Socials — $socials",
   description:
     "The Solana trenches, in one feed. Connect your wallet, call coins with live market caps, and let the trenches reply.",
