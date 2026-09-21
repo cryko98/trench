@@ -25,6 +25,7 @@ contract address, and open token-gated communities for the coins you hold.
   a button that opens it in a new tab.
 - **Trench Radar** — the feed reports on itself: when a call crosses 2x, 5x, 10x… or a called coin
   graduates off the bonding curve, the site posts it, so the feed has a pulse between human posts.
+- **Images** — posts can carry a picture, downscaled in the browser and stored in Vercel Blob.
 - **Replies** — every post has a comment thread.
 
 ## Stack
@@ -38,6 +39,7 @@ contract address, and open token-gated communities for the coins you hold.
 | Market data | DexScreener → Jupiter → on-chain bonding curve → pump.fun API |
 | Token gating | `getTokenAccountsByOwner` over JSON-RPC, cached |
 | Live stream | PumpPortal public websocket (new launches + migrations) |
+| Uploads | Vercel Blob (`BLOB_READ_WRITE_TOKEN`) |
 
 ### How a coin is resolved
 

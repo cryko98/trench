@@ -164,6 +164,24 @@ export function PostCard({
             </Link>
           )}
 
+          {post.image && (
+            <a
+              href={post.image}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 block overflow-hidden rounded-xl border border-line"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.image}
+                alt=""
+                loading="lazy"
+                className="max-h-[28rem] w-full bg-surface-2 object-cover"
+              />
+            </a>
+          )}
+
           {post.ca && (
             <TokenCard
               token={post.token}

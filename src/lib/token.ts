@@ -284,6 +284,9 @@ export async function getToken(mint: string): Promise<TokenSnapshot | null> {
     return null;
   }
 
+  // Every coin should show a logo, whatever source answered first.
+  if (!snapshot.image) snapshot.image = await resolveImage(mint);
+
   // Curve progress and a chain-accurate market cap for coins still bonding.
   if (snapshot.bonding && snapshot.progress === null) {
     const curve = await getCurveState(mint);
@@ -307,4 +310,37 @@ export async function getTokens(mints: string[]): Promise<Map<string, TokenSnaps
     if (snap) map.set(mint, snap);
   });
   return map;
+}
+
+const IMAGE_TTL_SECONDS = 60 * 60 * 24;
+const IMAGE_MISS_TTL_SECONDS = 60 * 30;
+
+/**
+ * A logo for every coin.
+ *
+ * DexScreener carries an image for established coins but rarely for fresh
+ * ones, so the other sources are asked in turn. Logos do not change, so the
+ * answer is cached for a day (a miss for half an hour, in case an indexer
+ * picks the coin up later).
+ */
+async function resolveImage(mint: string): Promise<string | null> {
+  const cached = await store.get<string>(K.image(mint));
+  if (cached !== null) return cached === "" ? null : cached;
+
+  const jup = await fromJupiter(mint);
+  let image = jup?.image ?? null;
+
+  if (!image) {
+    const pump = await fromPumpApi(mint);
+    image = pump?.image ?? null;
+  }
+
+  // DexScreener also serves logos under a predictable path; if it 404s the
+  // card falls back to the letter tile in the browser.
+  if (!image) image = `https://dd.dexscreener.com/ds-data/tokens/solana/${mint}.png`;
+
+  await store.set(K.image(mint), image ?? "", {
+    ex: image ? IMAGE_TTL_SECONDS : IMAGE_MISS_TTL_SECONDS,
+  });
+  return image;
 }

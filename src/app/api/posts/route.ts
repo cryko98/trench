@@ -13,6 +13,17 @@ export const dynamic = "force-dynamic";
 const MAX_LEN = 500;
 const COOLDOWN_SECONDS = 5;
 
+/** Blob URLs this deployment issued; anything else is not attached. */
+function isOwnUpload(url: string | undefined): boolean {
+  if (!url) return false;
+  try {
+    const { protocol, hostname } = new URL(url);
+    return protocol === "https:" && hostname.endsWith(".vercel-storage.com");
+  } catch {
+    return false;
+  }
+}
+
 function newId() {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -44,7 +55,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Slow down, anon" }, { status: 429 });
   }
 
-  const body = (await req.json()) as { text?: string; ca?: string; communityId?: string };
+  const body = (await req.json()) as {
+    text?: string;
+    ca?: string;
+    communityId?: string;
+    image?: string;
+  };
   const text = (body.text ?? "").trim().slice(0, MAX_LEN);
   if (!text) return NextResponse.json({ error: "Say something" }, { status: 400 });
 
@@ -89,10 +105,14 @@ export async function POST(req: Request) {
     }
   }
 
+  // Only images this deployment stored itself are accepted.
+  const image = isOwnUpload(body.image) ? body.image! : null;
+
   const post: Post = {
     id: newId(),
     author: wallet,
     text,
+    image,
     ca,
     callMcap,
     callToken,

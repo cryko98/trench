@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Avatar } from "./Avatar";
 import { CoinImage } from "./TokenCard";
@@ -8,6 +8,28 @@ import { extractCa, formatPct, formatUsd, isSolanaAddress, ticker } from "@/lib/
 import type { PostView, TokenSnapshot } from "@/lib/types";
 
 const MAX_LEN = 500;
+const MAX_IMAGE_PX = 1440;
+
+/** Shrinks a picked image so uploads stay small; GIFs pass through intact. */
+async function prepareImage(file: File): Promise<Blob> {
+  if (file.type === "image/gif") return file;
+
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, MAX_IMAGE_PX / Math.max(bitmap.width, bitmap.height));
+  if (scale === 1 && file.size < 900_000) return file;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return file;
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", 0.85)
+  );
+  return blob ?? file;
+}
 
 type Mode = "post" | "call";
 
@@ -30,6 +52,9 @@ export function Composer({
   const [resolved, setResolved] = useState<{ ca: string; token: TokenSnapshot | null } | null>(null);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   // A coin is only attached in call mode: an explicit address wins, otherwise
   // one pasted into the text is picked up as a convenience.
@@ -72,7 +97,7 @@ export function Composer({
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), ca, communityId }),
+        body: JSON.stringify({ text: text.trim(), ca, communityId, image }),
       });
       const json = (await res.json()) as { post?: PostView; error?: string };
       if (!res.ok || !json.post) throw new Error(json.error ?? "Could not post");
@@ -80,10 +105,30 @@ export function Composer({
       setText("");
       setCaInput(presetCa ?? "");
       setResolved(null);
+      setImage(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not post");
     } finally {
       setPosting(false);
+    }
+  };
+
+  const pickImage = async (file: File | undefined) => {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const prepared = await prepareImage(file);
+      const form = new FormData();
+      form.append("file", prepared, file.name.replace(/.[^.]+$/, "") + (prepared.type === "image/gif" ? ".gif" : ".jpg"));
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      const json = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !json.url) throw new Error(json.error ?? "Upload failed");
+      setImage(json.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -198,12 +243,45 @@ export function Composer({
             </>
           )}
 
+          {image && (
+            <div className="relative mt-2 overflow-hidden rounded-xl border border-line">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image} alt="" className="max-h-72 w-full object-cover" />
+              <button
+                className="absolute right-2 top-2 rounded-lg bg-black/70 px-2 py-1 text-xs font-bold text-foreground backdrop-blur"
+                onClick={() => setImage(null)}
+              >
+                Remove
+              </button>
+            </div>
+          )}
+
           {error && <p className="mt-2 text-sm text-loss">{error}</p>}
 
-          <div className="mt-3 flex items-center justify-between">
-            <span className={`text-xs tabular-nums ${remaining < 50 ? "text-loss" : "text-muted"}`}>
-              {missingCa ? "Paste a contract address" : remaining}
-            </span>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <button
+                className="tf-btn tf-btn-ghost !px-2.5 !py-1.5 text-xs"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                title="Attach an image"
+              >
+                {uploading ? "Uploading…" : "🖼 Image"}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                hidden
+                onChange={(e) => {
+                  void pickImage(e.target.files?.[0]);
+                  e.target.value = "";
+                }}
+              />
+              <span className={`text-xs tabular-nums ${remaining < 50 ? "text-loss" : "text-muted"}`}>
+                {missingCa ? "Paste a contract address" : remaining}
+              </span>
+            </div>
             <button
               className="tf-btn tf-btn-primary"
               onClick={() => void submit()}

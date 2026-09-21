@@ -261,6 +261,7 @@ export const K = {
   peak: (postId: string) => `peak:${postId}`,
   callPosts: (ca: string) => `call:${ca}:posts`,
   token: (mint: string) => `token:${mint}`,
+  image: (mint: string) => `img:${mint}`,
   balance: (wallet: string, mint: string) => `bal:${wallet}:${mint}`,
   community: (id: string) => `community:${id}`,
   communities: "communities",

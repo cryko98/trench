@@ -46,22 +46,28 @@ export function CoinImage({
   size?: number;
   className?: string;
 }) {
-  if (token?.image) {
+  // A logo URL can still 404 or time out (IPFS), so keep the tile as a net.
+  const [broken, setBroken] = useState(false);
+  const src = token?.image;
+
+  if (src && !broken) {
     return (
       <img
-        src={token.image}
+        src={src}
         alt=""
         style={{ width: size, height: size }}
-        className={`shrink-0 rounded-lg object-cover ${className}`}
+        className={`shrink-0 rounded-lg bg-surface-2 object-cover ${className}`}
+        onError={() => setBroken(true)}
       />
     );
   }
+
   return (
     <div
       style={{ width: size, height: size, fontSize: size / 3 }}
       className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-black text-mint ${className}`}
     >
-      {(token?.symbol ?? "?").slice(0, 2)}
+      {(token?.symbol ?? "?").replace(/^\$+/, "").slice(0, 2).toUpperCase()}
     </div>
   );
 }
