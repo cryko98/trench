@@ -101,7 +101,7 @@ export async function getPoolSol(): Promise<number | null> {
  * and a call that went nowhere adds nothing.
  */
 export async function getRewardBoard(epoch = currentEpoch()): Promise<RewardRow[]> {
-  const rows = await getTopCalls(400, 400);
+  const rows = await getTopCalls(200, 200);
   const inEpoch = rows.filter(
     (r) => r.post.createdAt >= epoch.start && r.post.createdAt < epoch.end
   );
@@ -142,8 +142,22 @@ export async function recordPayout(payout: Payout) {
   await store.zadd("rewards:payouts", id, payout.at);
 }
 
-/** Everything the rewards page needs, in one call. */
-export async function getRewardsSnapshot() {
+export type RewardsSnapshot = Awaited<ReturnType<typeof buildSnapshot>>;
+
+/**
+ * Everything the rewards page and the home rail need. Scoring walks every
+ * recent call, so the result is cached for a minute.
+ */
+export async function getRewardsSnapshot(): Promise<RewardsSnapshot> {
+  const cached = await store.get<RewardsSnapshot>("rewards:snapshot");
+  if (cached) return cached;
+
+  const snapshot = await buildSnapshot();
+  await store.set("rewards:snapshot", snapshot, { ex: 60 });
+  return snapshot;
+}
+
+async function buildSnapshot() {
   const epoch = currentEpoch();
   const [pool, board, payouts, solUsd] = await Promise.all([
     getPoolSol(),

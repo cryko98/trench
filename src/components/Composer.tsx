@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Avatar } from "./Avatar";
@@ -193,6 +194,13 @@ export function Composer({
                 spellCheck={false}
                 className="tf-input mt-2 font-mono text-xs"
               />
+
+              <p className="mt-1.5 text-[11px] text-muted">
+                This call scores for today&apos;s reward pot.{" "}
+                <Link href="/rewards" className="text-mint hover:underline">
+                  How it pays →
+                </Link>
+              </p>
 
               {ca && (
                 <div className="mt-2 flex items-center gap-3 rounded-xl border border-line bg-background/60 p-2.5">

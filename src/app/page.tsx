@@ -7,6 +7,8 @@ import { sweepRadar } from "@/lib/radar";
 import { formatMultiple } from "@/lib/format";
 import { Feed } from "@/components/Feed";
 import { TrendingRail } from "@/components/TrendingRail";
+import { RewardRail } from "@/components/RewardRail";
+import { getRewardsSnapshot } from "@/lib/rewards";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +24,13 @@ function HeroStat({ label, value }: { label: string; value: string }) {
 export default async function HomePage() {
   const viewer = await getSessionWallet();
   await sweepRadar().catch(() => undefined);
-  const [posts, calls, topCalls, graduating, stats] = await Promise.all([
+  const [posts, calls, topCalls, graduating, stats, rewards] = await Promise.all([
     getFeed(viewer, { limit: 30 }),
     getTrendingCalls(),
     getTopCalls(5, 100),
     getGraduatingCoins(5),
     getStats(),
+    getRewardsSnapshot(),
   ]);
 
   // The board ranks by peak, so the headline number has to be the peak too.
@@ -79,7 +82,23 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="relative mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <Link
+          href="/rewards"
+          className="relative mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-mint/25 bg-mint/[0.07] px-3.5 py-2.5 transition hover:border-mint/50 hover:bg-mint/[0.12]"
+        >
+          <span className="tf-chip tf-chip-mint">Daily rewards</span>
+          <span className="text-sm font-bold text-mint">
+            {rewards.payable === null
+              ? "Call coins, get paid"
+              : `${rewards.payable.toFixed(2)} SOL in today's pot`}
+          </span>
+          <span className="text-xs text-muted">
+            The $socials creator fees are split between the day&apos;s best callers.
+          </span>
+          <span className="ml-auto text-xs font-bold text-mint">How it pays →</span>
+        </Link>
+
+        <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           <HeroStat label="Posts" value={String(stats.posts)} />
           <HeroStat label="Calls" value={String(stats.calls)} />
           <HeroStat label="Best call" value={best ? formatMultiple(best) : "—"} />
@@ -97,7 +116,10 @@ export default async function HomePage() {
           <Feed initialPosts={posts} />
         </div>
         <div className="min-w-0 lg:sticky lg:top-[4.5rem] lg:self-start">
-          <TrendingRail calls={calls} topCalls={topCalls} graduating={graduating} />
+          <div className="space-y-4">
+            <RewardRail rewards={rewards} />
+            <TrendingRail calls={calls} topCalls={topCalls} graduating={graduating} />
+          </div>
         </div>
       </div>
     </div>
