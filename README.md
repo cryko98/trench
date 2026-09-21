@@ -102,6 +102,7 @@ free tier and Vercel's hobby tier cover a launch.
 | `/u/[wallet or handle]` | Profile and that wallet's posts |
 | `/coin/[ca]` | Live coin card + every call on that contract |
 | `/settings` | Edit your profile |
+| `/how-it-works` | Guide to everything a visitor can do |
 
 API routes live under `/api` — `auth/nonce`, `auth/verify`, `auth/logout`, `me`, `profile`,
 `posts`, `posts/[id]`, `posts/[id]/like`, `posts/[id]/comments`, `token/[mint]`, `top-calls`,

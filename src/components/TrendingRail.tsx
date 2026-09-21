@@ -76,7 +76,15 @@ export function TrendingRail({
       </div>
 
       <div className="tf-card p-3.5">
-        <h2 className="tf-label">How it works</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="tf-label">How it works</h2>
+          <Link
+            href="/how-it-works"
+            className="font-mono text-[10px] uppercase tracking-widest text-muted transition hover:text-mint"
+          >
+            Full guide ↗
+          </Link>
+        </div>
         <ol className="mt-3 space-y-2 text-sm text-muted">
           {[
             "Connect a Solana wallet — that is your account.",
