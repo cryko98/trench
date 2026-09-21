@@ -287,13 +287,26 @@ export async function getToken(mint: string): Promise<TokenSnapshot | null> {
   // Every coin should show a logo, whatever source answered first.
   if (!snapshot.image) snapshot.image = await resolveImage(mint);
 
-  // Curve progress and a chain-accurate market cap for coins still bonding.
-  if (snapshot.bonding && snapshot.progress === null) {
+  // Anything that looks like it is still on the curve is checked against the
+  // chain: the curve account is the only source that knows the moment it
+  // closes. A closed curve stops trading, so its pair's numbers freeze — the
+  // live pool has to take over or the call would be scored on a dead price.
+  if (snapshot.bonding) {
     const curve = await getCurveState(mint);
-    if (curve) {
+
+    if (curve && !curve.complete) {
       snapshot.progress = curve.progress;
       snapshot.marketCap = snapshot.marketCap ?? curve.marketCapUsd;
-      if (curve.complete) snapshot.bonding = false;
+    } else if (curve?.complete === true) {
+      // Only a positive answer flips it: an RPC hiccup must not "migrate" a
+      // coin that is still bonding.
+      snapshot.bonding = false;
+      snapshot.progress = null;
+
+      const pool = await fromJupiter(mint);
+      if (pool?.marketCap) {
+        snapshot = { ...snapshot, ...pool, bonding: false, progress: null, source: "jupiter" };
+      }
     }
   }
 
