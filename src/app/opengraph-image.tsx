@@ -9,8 +9,9 @@ export const alt = "Trench Socials — the Solana trenches in one feed";
 export const size = OG_SIZE;
 export const contentType = OG_TYPE;
 
-// The card carries live counters, so it is rendered per request.
-export const dynamic = "force-dynamic";
+// Live counters, but a preview crawler should never wait on our data fetches:
+// the card is regenerated at most every few minutes.
+export const revalidate = 300;
 
 function Tile({ label, value, color = og.text }: { label: string; value: string; color?: string }) {
   return (
