@@ -30,7 +30,8 @@ export default async function HomePage() {
     getStats(),
   ]);
 
-  const best = topCalls[0]?.multiple ?? null;
+  // The board ranks by peak, so the headline number has to be the peak too.
+  const best = topCalls[0]?.peakMultiple ?? null;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-5">

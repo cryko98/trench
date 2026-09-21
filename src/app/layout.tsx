@@ -35,7 +35,6 @@ export const metadata: Metadata = {
     title: "Trench Socials — $socials",
     description: "Call coins. Track market caps. Talk trenches.",
     type: "website",
-    images: ["/logo.png"],
   },
 };
 
