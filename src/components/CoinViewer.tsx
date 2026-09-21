@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { TokenSnapshot } from "@/lib/types";
 import { formatPct, formatUsd, ticker } from "@/lib/format";
 import { CoinImage, CopyAddress } from "./TokenCard";
+import { CLOSE_OVERLAYS_EVENT } from "./BuyButton";
 import { BuyButton } from "./BuyButton";
 
 type ViewerState = { open: (ca: string) => void };
@@ -49,9 +50,11 @@ function CoinModal({ ca, onClose }: { ca: string; onClose: () => void }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
+    window.addEventListener(CLOSE_OVERLAYS_EVENT, onClose);
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener(CLOSE_OVERLAYS_EVENT, onClose);
       document.body.style.overflow = "";
     };
   }, [onClose]);

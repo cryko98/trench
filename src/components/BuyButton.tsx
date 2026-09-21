@@ -7,6 +7,9 @@ const PLUGIN_SRC = "https://plugin.jup.ag/plugin-v1.js";
 
 /** Asks the header to open our own wallet picker. */
 export const CONNECT_WALLET_EVENT = "tf:connect-wallet";
+
+/** Tells any open overlay of ours to step aside for the swap widget. */
+export const CLOSE_OVERLAYS_EVENT = "tf:close-overlays";
 const SOL_MINT = "So11111111111111111111111111111111111111112";
 
 type JupiterPlugin = {
@@ -65,7 +68,9 @@ export function BuyButton({
 
   // Keep the widget's view of the wallet in step with ours.
   useEffect(() => {
-    window.Jupiter?.syncProps?.({ passthroughWalletContextState: wallet });
+    if (wallet.connected) {
+      window.Jupiter?.syncProps?.({ passthroughWalletContextState: wallet });
+    }
   }, [wallet]);
 
   const open = useCallback(async () => {
@@ -79,15 +84,26 @@ export function BuyButton({
       return;
     }
 
+    window.dispatchEvent(new Event(CLOSE_OVERLAYS_EVENT));
+
+    // Hand over our wallet when one is connected; otherwise let the widget
+    // run its own wallet picker, so a visitor can connect inside the swap.
+    const connected = wallet.connected && Boolean(wallet.publicKey);
+
     plugin.init({
       displayMode: "modal",
       formProps: {
         initialInputMint: SOL_MINT,
         initialOutputMint: mint,
       },
-      enableWalletPassthrough: true,
-      passthroughWalletContextState: wallet,
-      onRequestConnectWallet: () => window.dispatchEvent(new Event(CONNECT_WALLET_EVENT)),
+      ...(connected
+        ? {
+            enableWalletPassthrough: true,
+            passthroughWalletContextState: wallet,
+            onRequestConnectWallet: () =>
+              window.dispatchEvent(new Event(CONNECT_WALLET_EVENT)),
+          }
+        : {}),
     });
   }, [mint, wallet]);
 

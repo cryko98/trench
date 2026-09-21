@@ -65,8 +65,15 @@ export function ConnectButton() {
     };
   }, [menuOpen, place]);
 
+  const picker = <WalletModal open={modalOpen} onClose={() => setModalOpen(false)} />;
+
   if (loading) {
-    return <div className="h-9 w-32 animate-pulse rounded-xl bg-surface-2" />;
+    return (
+      <>
+        <div className="h-9 w-32 animate-pulse rounded-xl bg-surface-2" />
+        {picker}
+      </>
+    );
   }
 
   if (profile) {
@@ -118,6 +125,7 @@ export function ConnectButton() {
             </div>,
             document.body
           )}
+        {picker}
       </div>
     );
   }
@@ -129,6 +137,7 @@ export function ConnectButton() {
         <button className="tf-btn tf-btn-primary" onClick={() => void signIn()} disabled={signingIn}>
           {signingIn ? "Check wallet…" : "Sign in"}
         </button>
+        {picker}
       </div>
     );
   }
@@ -138,7 +147,7 @@ export function ConnectButton() {
       <button className="tf-btn tf-btn-primary" onClick={() => setModalOpen(true)}>
         {connecting ? "Connecting…" : "Connect wallet"}
       </button>
-      <WalletModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      {picker}
     </>
   );
 }

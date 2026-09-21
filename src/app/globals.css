@@ -265,6 +265,13 @@ body {
   50% { opacity: 0.5; box-shadow: 0 0 0 5px rgba(144, 255, 208, 0); }
 }
 
+/* Jupiter mounts its widget with no stacking context of its own, which put
+   it behind the coin window. */
+#jupiter-plugin-instance {
+  position: relative;
+  z-index: 100;
+}
+
 .tf-live-dot {
   animation: tf-live-pulse 1.7s ease-in-out infinite;
 }
