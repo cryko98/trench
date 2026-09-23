@@ -9,7 +9,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background/95 backdrop-blur-xl sm:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-surface/95 backdrop-blur-xl lg:hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 -top-px h-px"

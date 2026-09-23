@@ -57,9 +57,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Providers>
           <Header />
-          <main className="flex-1 pb-16 sm:pb-0">{children}</main>
+          <main className="flex-1 pb-20 lg:pb-0">{children}</main>
           <MobileNav />
-          <footer className="border-t border-line pb-20 pt-6 text-center text-xs text-muted sm:pb-6">
+          <footer className="border-t-2 border-ink/10 pb-24 pt-6 text-center text-xs text-muted lg:pb-6">
             Trench Socials · $socials · built on Solana · data by DexScreener &amp; pump.fun
           </footer>
         </Providers>

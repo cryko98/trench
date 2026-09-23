@@ -88,7 +88,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="ml-1 hidden items-center gap-0.5 rounded-full border border-line bg-surface/60 p-1 sm:flex">
+        <nav className="ml-1 hidden items-center gap-0.5 rounded-full border-2 border-ink bg-surface p-1 lg:flex">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
@@ -107,7 +107,7 @@ export function Header() {
           })}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex min-w-0 items-center gap-2">
           <TokenBar />
           <SolPrice />
           <ConnectButton />
