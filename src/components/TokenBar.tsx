@@ -32,18 +32,18 @@ export function TokenBar() {
         <button
           onClick={copy}
           title={CA}
-          className="flex items-center gap-1.5 rounded-lg border border-mint/25 bg-mint/10 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-mint transition hover:bg-mint/20"
+          className="flex items-center gap-1.5 rounded-full border-2 border-ink bg-mint px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-ink transition hover:bg-mint-soft"
         >
           <span className="hidden sm:inline">CA</span>
           <span>{shortAddress(CA, 4)}</span>
-          <span className="text-mint/70">{copied ? "copied" : "copy"}</span>
+          <span className="opacity-70">{copied ? "copied" : "copy"}</span>
         </button>
       ) : (
         <span
-          className="flex items-center gap-1.5 rounded-lg border border-line bg-surface/80 px-2 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-muted"
+          className="flex items-center gap-1.5 rounded-full border-2 border-ink bg-surface px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-ink"
           title="The contract address goes live at launch"
         >
-          CA<span className="text-mint">coming soon</span>
+          CA<span className="text-lav-deep">coming soon</span>
         </span>
       )}
 
@@ -53,7 +53,7 @@ export function TokenBar() {
           target="_blank"
           rel="noreferrer"
           aria-label="Trench Socials on X"
-          className="flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-line bg-surface/80 text-muted transition hover:border-mint/40 hover:text-mint"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-ink bg-surface text-ink transition hover:bg-sun"
         >
           <XLogo />
         </a>
@@ -61,7 +61,7 @@ export function TokenBar() {
         <span
           aria-label="X account coming soon"
           title="X account coming soon"
-          className="flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-line bg-surface/50 text-muted/50"
+          className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-ink/30 bg-surface/60 text-muted"
         >
           <XLogo />
         </span>

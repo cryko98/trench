@@ -6,9 +6,9 @@ import { CoinImage, CopyAddress } from "./TokenCard";
 import { TimeAgo } from "./TimeAgo";
 
 function rankStyle(i: number) {
-  if (i === 0) return "bg-mint text-mint-ink shadow-[0_0_16px_-4px_rgba(144,255,208,0.9)]";
-  if (i === 1) return "bg-lav/20 text-lav";
-  if (i === 2) return "bg-surface-2 text-mint";
+  if (i === 0) return "bg-sun text-ink";
+  if (i === 1) return "bg-lav text-white";
+  if (i === 2) return "bg-mint text-ink";
   return "bg-surface-2 text-muted";
 }
 
@@ -48,7 +48,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
                   {formatUsd(post.callMcap)} → {formatUsd(post.token?.marketCap ?? null)}
                 </span>
                 {post.peakMcap !== null && peakMultiple > multiple * 1.05 && (
-                  <span className="text-xs text-lav">peak {formatUsd(post.peakMcap)}</span>
+                  <span className="text-xs text-lav-deep">peak {formatUsd(post.peakMcap)}</span>
                 )}
               </div>
 
@@ -65,12 +65,12 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
             </div>
 
             <div className="shrink-0 text-right">
-              <span className="rounded-lg bg-lav/15 px-3 py-1.5 text-base font-bold tabular-nums text-lav">
+              <span className="rounded-full border-2 border-ink bg-lav px-3 py-1 text-base font-bold tabular-nums text-white">
                 {formatMultiple(peakMultiple)}
               </span>
               <div
                 className={`mt-1 font-mono text-[10px] tabular-nums ${
-                  multiple >= 1 ? "text-mint" : "text-loss"
+                  multiple >= 1 ? "text-mint-deep" : "text-loss"
                 }`}
               >
                 now {formatMultiple(multiple)}

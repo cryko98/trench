@@ -4,9 +4,9 @@ import { formatMultiple } from "@/lib/format";
 import { Avatar } from "./Avatar";
 
 function medal(i: number) {
-  if (i === 0) return "bg-mint text-mint-ink shadow-[0_0_16px_-4px_rgba(144,255,208,0.9)]";
-  if (i === 1) return "bg-lav/25 text-lav";
-  if (i === 2) return "bg-surface-3 text-mint";
+  if (i === 0) return "bg-sun text-ink";
+  if (i === 1) return "bg-lav text-white";
+  if (i === 2) return "bg-mint text-ink";
   return "bg-surface-2 text-muted";
 }
 
@@ -53,7 +53,7 @@ export function TopCallers({ callers, compact = false }: { callers: Caller[]; co
               </div>
 
               <div className="shrink-0 text-right">
-                <div className="text-sm font-bold tabular-nums text-mint">
+                <div className="text-sm font-bold tabular-nums text-mint-deep">
                   {formatMultiple(caller.average)}
                 </div>
                 <div className="font-mono text-[10px] text-muted">

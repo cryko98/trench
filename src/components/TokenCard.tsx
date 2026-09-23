@@ -33,7 +33,7 @@ export function CopyAddress({ address, className = "" }: { address: string; clas
       title={address}
     >
       {shortAddress(address, 5)}
-      <span className={copied ? "text-mint" : ""}>{copied ? "copied" : "copy"}</span>
+      <span className={copied ? "text-mint-deep" : ""}>{copied ? "copied" : "copy"}</span>
     </button>
   );
 }
@@ -66,7 +66,7 @@ export function CoinImage({
   return (
     <div
       style={{ width: size, height: size, fontSize: size / 3 }}
-      className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-bold text-mint ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-bold text-mint-deep ${className}`}
     >
       {(token?.symbol ?? "?").replace(/^\$+/, "").slice(0, 2).toUpperCase()}
     </div>
@@ -103,7 +103,7 @@ export function TokenCard({
         <div className="min-w-0 flex-1 basis-40">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <button
-              className="truncate font-bold transition hover:text-mint"
+              className="truncate font-bold transition hover:text-mint-deep"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -122,7 +122,7 @@ export function TokenCard({
           <div className="flex shrink-0 items-stretch gap-1.5 ml-auto">
             <div
               className={`rounded-lg px-2.5 py-1.5 text-center ${
-                multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
+                multiple >= 1 ? "bg-mint/10 text-mint-deep" : "bg-loss/10 text-loss"
               }`}
             >
               <div className="text-[11px] font-semibold opacity-80">
@@ -131,7 +131,7 @@ export function TokenCard({
               <div className="text-sm font-bold tabular-nums">{formatMultiple(multiple)}</div>
             </div>
             {peak !== null && peak > multiple * 1.05 && (
-              <div className="rounded-lg bg-lav/15 px-2.5 py-1.5 text-center text-lav">
+              <div className="rounded-lg bg-lav/15 px-2.5 py-1.5 text-center text-lav-deep">
                 <div className="text-[11px] font-semibold opacity-80">
                   Peak
                 </div>
@@ -149,7 +149,7 @@ export function TokenCard({
               <Stat label="Market cap" value={formatUsd(token.marketCap)} />
               <div className="text-right">
                 <div className="tf-label">Bonding curve</div>
-                <div className="text-sm font-bold tabular-nums text-mint">
+                <div className="text-sm font-bold tabular-nums text-mint-deep">
                   {token.progress === null ? "—" : `${token.progress.toFixed(1)}%`}
                 </div>
               </div>
@@ -169,7 +169,7 @@ export function TokenCard({
             <Stat
               label="24h"
               value={formatPct(token.change24h)}
-              className={up ? "text-mint" : "text-loss"}
+              className={up ? "text-mint-deep" : "text-loss"}
             />
             <Stat label="Liquidity" value={formatUsd(token.liquidity)} />
             <Stat label="Vol 24h" value={formatUsd(token.volume24h)} />
@@ -189,10 +189,10 @@ export function TokenCard({
           <BuyButton
             mint={ca}
             symbol={token?.symbol}
-            className="rounded-md bg-mint/10 px-2 py-0.5 text-[11px] font-bold text-mint transition hover:bg-mint/20"
+            className="rounded-md bg-mint/10 px-2 py-0.5 text-[11px] font-bold text-mint-deep transition hover:bg-mint/20"
           />
           <button
-            className="transition hover:text-mint"
+            className="transition hover:text-mint-deep"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

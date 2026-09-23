@@ -24,7 +24,7 @@ function PostText({ text }: { text: string }) {
           return (
             <button
               key={i}
-              className="font-mono text-sm text-mint hover:underline"
+              className="font-mono text-sm text-mint-deep hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -42,7 +42,7 @@ function PostText({ text }: { text: string }) {
               href={bare}
               target="_blank"
               rel="noreferrer"
-              className="text-mint hover:underline"
+              className="text-mint-deep hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
               {bare.length > 40 ? `${bare.slice(0, 40)}…` : bare}
@@ -157,7 +157,7 @@ export function PostCard({
           {post.radar?.postId && (
             <Link
               href={`/post/${post.radar.postId}`}
-              className="mt-1 inline-block text-xs text-muted transition hover:text-mint"
+              className="mt-1 inline-block text-xs text-muted transition hover:text-mint-deep"
               onClick={(e) => e.stopPropagation()}
             >
               see the original call →
@@ -193,8 +193,8 @@ export function PostCard({
 
           <div className="mt-3 flex items-center gap-5 text-sm text-muted">
             <button
-              className={`inline-flex items-center gap-1.5 transition hover:text-mint ${
-                liked ? "text-mint" : ""
+              className={`inline-flex items-center gap-1.5 transition hover:text-mint-deep ${
+                liked ? "text-mint-deep" : ""
               }`}
               onClick={(e) => {
                 e.stopPropagation();

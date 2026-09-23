@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Baloo_2, Nunito, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
 import { MobileNav } from "@/components/MobileNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Chunky rounded display type for headings, warm and round for reading.
+const display = Baloo_2({
+  variable: "--font-display",
+  subsets: ["latin"],
+});
+
+const body = Nunito({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
@@ -46,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Providers>

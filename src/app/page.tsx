@@ -12,11 +12,19 @@ import { getRewardsSnapshot } from "@/lib/rewards";
 
 export const dynamic = "force-dynamic";
 
-function HeroStat({ label, value }: { label: string; value: string }) {
+function HeroStat({
+  label,
+  value,
+  tone = "#fffaf1",
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+}) {
   return (
-    <div className="tf-inset px-3 py-2">
-      <div className="tf-label tf-label-plain">{label}</div>
-      <div className="mt-0.5 text-base font-bold tabular-nums text-mint">{value}</div>
+    <div className="tf-inset px-3 py-2.5" style={{ background: tone }}>
+      <div className="tf-label tf-label-plain text-ink-soft">{label}</div>
+      <div className="mt-0.5 text-xl font-bold tabular-nums">{value}</div>
     </div>
   );
 }
@@ -39,28 +47,18 @@ export default async function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-5">
       <section className="tf-card relative overflow-hidden p-5 sm:p-6">
-        {/* logo glow bleeding into the panel, like the banner artwork */}
+        {/* flat sticker blobs, in the logo's colours */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, #90ffd0, transparent 70%)" }}
+          className="pointer-events-none absolute -right-14 -top-20 h-44 w-44 rounded-full bg-sun/60"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-24 bottom-[-6rem] h-56 w-56 rounded-full opacity-20 blur-3xl"
-          style={{ background: "radial-gradient(circle, #9040f0, transparent 70%)" }}
+          className="pointer-events-none absolute -left-20 bottom-[-5rem] h-40 w-40 rounded-full bg-bubble/25"
         />
 
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
           <div className="relative shrink-0">
-            <div
-              aria-hidden
-              className="absolute inset-0 rounded-full blur-xl"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(144,64,240,0.55), rgba(144,255,208,0.28) 55%, transparent 72%)",
-              }}
-            />
             <Image
               src="/logo.png"
               alt=""
@@ -75,7 +73,7 @@ export default async function HomePage() {
             <h1 className="text-2xl font-bold leading-none tracking-tight sm:text-3xl">
               <span className="tf-neon">TRENCH</span> SOCIALS
             </h1>
-            <p className="tf-label tf-label-plain mt-2 inline-block rounded-full border border-mint/25 bg-mint/5 px-3 py-1 text-mint">
+            <p className="tf-chip tf-chip-sun mt-2 inline-flex">
               Posting from the trenches
             </p>
             <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted">
@@ -88,29 +86,32 @@ export default async function HomePage() {
 
         <Link
           href="/rewards"
-          className="relative mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-mint/25 bg-mint/[0.07] px-3.5 py-2.5 transition hover:border-mint/50 hover:bg-mint/[0.12]"
+          className="tf-card tf-card-hover relative mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3"
+          style={{ background: "#c7f6e4" }}
         >
           <span className="tf-chip tf-chip-mint">Daily rewards</span>
-          <span className="text-sm font-bold text-mint">
+          <span className="text-sm font-bold text-ink">
             {rewards.payable === null
               ? "Call coins, get paid"
               : `${rewards.payable.toFixed(2)} SOL in today's pot`}
           </span>
-          <span className="text-xs text-muted">
+          <span className="text-xs text-ink-soft">
             The $socials creator fees are split between the day&apos;s best callers.
           </span>
-          <span className="ml-auto text-xs font-bold text-mint">How it pays →</span>
+          <span className="ml-auto text-xs font-bold text-lav-deep">How it pays →</span>
         </Link>
 
         <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           <HeroStat label="Posts" value={String(stats.posts)} />
-          <HeroStat label="Calls" value={String(stats.calls)} />
-          <HeroStat label="Best call" value={best ? formatMultiple(best) : "—"} />
-          <Link href="/communities" className="tf-inset px-3 py-2 transition hover:border-mint/40">
-            <div className="tf-label tf-label-plain">Communities</div>
-            <div className="mt-0.5 text-base font-bold tabular-nums text-mint">
-              {stats.communities}
-            </div>
+          <HeroStat label="Calls" value={String(stats.calls)} tone="#c7f6e4" />
+          <HeroStat label="Best call" value={best ? formatMultiple(best) : "—"} tone="#ffeaa1" />
+          <Link
+            href="/communities"
+            className="tf-inset px-3 py-2.5 transition hover:brightness-95"
+            style={{ background: "#e4d4ff" }}
+          >
+            <div className="tf-label tf-label-plain text-ink-soft">Communities</div>
+            <div className="mt-0.5 text-xl font-bold tabular-nums">{stats.communities}</div>
           </Link>
         </div>
       </section>

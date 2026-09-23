@@ -198,7 +198,7 @@ export function Composer({
 
               <p className="mt-1.5 text-[11px] text-muted">
                 This call scores for today&apos;s reward pot.{" "}
-                <Link href="/rewards" className="text-mint hover:underline">
+                <Link href="/rewards" className="text-mint-deep hover:underline">
                   How it pays →
                 </Link>
               </p>
@@ -229,7 +229,7 @@ export function Composer({
                               {" · "}
                               <span
                                 className={
-                                  (shownToken.change24h ?? 0) >= 0 ? "text-mint" : "text-loss"
+                                  (shownToken.change24h ?? 0) >= 0 ? "text-mint-deep" : "text-loss"
                                 }
                               >
                                 {formatPct(shownToken.change24h)} 24h

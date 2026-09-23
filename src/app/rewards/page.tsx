@@ -33,7 +33,7 @@ function Tile({
     <div className="tf-inset px-4 py-3">
       <div className="tf-label tf-label-plain">{label}</div>
       <div
-        className={`mt-1 text-xl font-bold tabular-nums ${accent ? "text-mint" : "text-foreground"}`}
+        className={`mt-1 text-xl font-bold tabular-nums ${accent ? "text-mint-deep" : "text-foreground"}`}
       >
         {value}
       </div>
@@ -86,7 +86,7 @@ export default async function RewardsPage() {
                 href={`https://solscan.io/account/${snap.treasury}`}
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-mint"
+                className="hover:text-mint-deep"
               >
                 Solscan ↗
               </a>
@@ -124,7 +124,7 @@ export default async function RewardsPage() {
                       i === 0
                         ? "bg-mint text-mint-ink shadow-[0_0_16px_-4px_rgba(144,255,208,0.9)]"
                         : i < 3
-                          ? "bg-lav/20 text-lav"
+                          ? "bg-lav/20 text-lav-deep"
                           : "bg-surface-2 text-muted"
                     }`}
                   >
@@ -141,7 +141,7 @@ export default async function RewardsPage() {
                   </div>
 
                   <div className="shrink-0 text-right">
-                    <div className="text-sm font-bold tabular-nums text-mint">
+                    <div className="text-sm font-bold tabular-nums text-mint-deep">
                       {row.sol === null ? `${(row.share * 100).toFixed(1)}%` : sol(row.sol, 3)}
                     </div>
                     <div className="font-mono text-[10px] text-muted">
@@ -222,13 +222,13 @@ async function PayoutHistory() {
               timeZone: "UTC",
             })}
           </span>
-          <span className="text-sm font-bold text-mint">{p.sol.toFixed(3)} SOL</span>
+          <span className="text-sm font-bold text-mint-deep">{p.sol.toFixed(3)} SOL</span>
           {p.signature && (
             <a
               href={`https://solscan.io/tx/${p.signature}`}
               target="_blank"
               rel="noreferrer"
-              className="ml-auto font-mono text-[11px] text-muted hover:text-mint"
+              className="ml-auto font-mono text-[11px] text-muted hover:text-mint-deep"
             >
               {shortAddress(p.signature, 6)} ↗
             </a>

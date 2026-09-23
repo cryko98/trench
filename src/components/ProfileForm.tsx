@@ -180,7 +180,7 @@ export function ProfileForm() {
       </label>
 
       {error && <p className="text-sm text-loss">{error}</p>}
-      {saved && <p className="text-sm text-mint">Saved.</p>}
+      {saved && <p className="text-sm text-mint-deep">Saved.</p>}
 
       <div className="flex justify-end">
         <button className="tf-btn tf-btn-primary" onClick={() => void save()} disabled={saving}>

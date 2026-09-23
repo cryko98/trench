@@ -1,49 +1,58 @@
 @import "tailwindcss";
 
 /*
- * Trench Socials, softened: the logo's mint (#90ffd0) and violet (#9040f0)
- * on a deep teal that is a shade lighter and warmer than the old near-black,
- * with rounder shapes, calmer type and gentler shadows.
+ * Sticker-book theme, taken from the logo's own world: cream paper with
+ * diagonal stripes, thick ink outlines, hard offset shadows and the logo's
+ * violet, mint, yellow and pink.
  */
 :root {
-  --background: #0c1a17;
-  --surface: #152924;
-  --surface-2: #1d382f;
-  --surface-3: #26483d;
-  --border: #27473d;
-  --border-soft: #1f3a32;
-  --foreground: #f0fbf6;
-  --muted: #9dbbae;
-  --mint: #90ffd0;
-  --mint-soft: #bdffe6;
-  --mint-dim: #5fd9ae;
-  --mint-ink: #05261d;
-  /* straight off the logo: the circle behind the helmet */
-  --lav: #9040f0;
-  --lav-deep: #7838c8;
-  --lav-text: #c6a4ff;
-  --red: #ff8d8d;
+  --paper: #fbf2e4;
+  --paper-2: #fffaf1;
+  --surface: #ffffff;
+  --surface-2: #f4e9d6;
+  --surface-3: #ece0c9;
+  --ink: #1d1628;
+  --ink-soft: #3a3049;
+  --muted: #6f6680;
+  --border: #e2d4bc;
 
-  --radius-card: 18px;
-  --radius-inner: 14px;
+  --mint: #2bd79b;
+  --mint-deep: #0b8f68;
+  --mint-ink: #05261b;
+  --lav: #8b3df5;
+  --lav-deep: #6a22d6;
+  --sun: #ffd84d;
+  --bubble: #ff7ac6;
+  --red: #e0453b;
+
+  --radius-card: 20px;
+  --radius-inner: 16px;
+  --shadow-sticker: 4px 4px 0 rgba(29, 22, 40, 0.9);
+  --shadow-sticker-sm: 3px 3px 0 rgba(29, 22, 40, 0.9);
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--paper);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-line: var(--border);
-  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-foreground: var(--ink);
   --color-muted: var(--muted);
   --color-mint: var(--mint);
-  --color-mint-soft: var(--mint-soft);
-  --color-mint-dim: var(--mint-dim);
+  --color-mint-deep: var(--mint-deep);
+  --color-mint-soft: #9ff0d3;
   --color-mint-ink: var(--mint-ink);
-  --color-lav: var(--lav-text);
+  --color-lav: var(--lav);
+  --color-lav-deep: var(--lav-deep);
   --color-lav-solid: var(--lav);
+  --color-sun: var(--sun);
+  --color-bubble: var(--bubble);
   --color-loss: var(--red);
-  --font-sans: var(--font-geist-sans);
+  --color-ink-soft: var(--ink-soft);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -53,105 +62,107 @@
 
 html,
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
 }
 
-/* A warm glow at the top of the page instead of a hard, empty black. */
+/* Cream paper with the logo's diagonal stripes and a couple of colour blobs. */
 body {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15.5px;
   background-image:
-    radial-gradient(48rem 30rem at 15% -12%, rgba(144, 255, 208, 0.09), transparent 62%),
-    radial-gradient(42rem 26rem at 88% -6%, rgba(144, 64, 240, 0.12), transparent 60%);
-  background-repeat: no-repeat;
+    radial-gradient(36rem 22rem at 12% -8%, rgba(139, 61, 245, 0.16), transparent 62%),
+    radial-gradient(32rem 20rem at 92% -4%, rgba(43, 215, 155, 0.2), transparent 60%),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(139, 61, 245, 0.05) 0 2px,
+      transparent 2px 16px
+    );
   background-attachment: fixed;
 }
 
+h1,
+h2,
+h3,
+.tf-display {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  letter-spacing: -0.01em;
+}
+
 ::selection {
-  background: var(--mint);
-  color: var(--mint-ink);
+  background: var(--sun);
+  color: var(--ink);
 }
 
 /* ---------- surfaces ---------- */
 
 .tf-card {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(144, 255, 208, 0.045), rgba(144, 255, 208, 0) 40%),
-    var(--surface);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 2px solid var(--ink);
   border-radius: var(--radius-card);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 10px 30px -22px rgba(0, 0, 0, 0.9);
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  box-shadow: var(--shadow-sticker);
+  transition: transform 140ms ease, box-shadow 140ms ease;
 }
 
 .tf-card-hover:hover {
-  border-color: rgba(144, 255, 208, 0.4);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 14px 34px -20px rgba(144, 255, 208, 0.45);
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(29, 22, 40, 0.9);
 }
 
 .tf-inset {
-  background: rgba(12, 26, 23, 0.6);
-  border: 1px solid var(--border-soft);
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
   border-radius: var(--radius-inner);
 }
 
 /* ---------- type ---------- */
 
-/* Calm section labels: no shouting, just a mint tick and a soft word. */
 .tf-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--muted);
+  gap: 0.45rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .tf-label::before {
   content: "";
-  width: 3px;
-  height: 13px;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
+  border: 2px solid var(--ink);
   background: var(--mint);
-  box-shadow: 0 0 10px rgba(144, 255, 208, 0.5);
 }
 
 .tf-label-plain::before {
   display: none;
 }
 
-/* Wordmark: mint with a soft violet halo rather than a hard offset. */
+/* Comic wordmark: violet with a mint sticker offset. */
 .tf-neon {
-  color: var(--mint);
-  text-shadow:
-    0 0 18px rgba(144, 255, 208, 0.45),
-    0 2px 14px rgba(144, 64, 240, 0.65);
+  color: var(--lav);
+  text-shadow: 2px 2px 0 var(--mint), 4px 4px 0 rgba(29, 22, 40, 0.25);
 }
 
 /* ---------- controls ---------- */
 
 .tf-input {
-  background: rgba(12, 26, 23, 0.55);
-  border: 1px solid var(--border);
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
   border-radius: 14px;
-  padding: 0.65rem 0.9rem;
+  padding: 0.6rem 0.9rem;
   width: 100%;
   outline: none;
-  font-size: 0.9rem;
-  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: box-shadow 120ms ease, transform 120ms ease;
 }
 
 .tf-input:focus {
-  border-color: rgba(144, 255, 208, 0.55);
-  background: rgba(12, 26, 23, 0.8);
-  box-shadow: 0 0 0 4px rgba(144, 255, 208, 0.1);
+  box-shadow: var(--shadow-sticker-sm);
 }
 
 .tf-input::placeholder {
@@ -164,52 +175,50 @@ body {
   justify-content: center;
   gap: 0.45rem;
   border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.55rem 1.15rem;
-  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease,
-    border-color 140ms ease, color 140ms ease;
+  border: 2px solid var(--ink);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.15rem;
+  box-shadow: var(--shadow-sticker-sm);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
   cursor: pointer;
   white-space: nowrap;
 }
 
+.tf-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(29, 22, 40, 0.9);
+}
+
 .tf-btn:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(29, 22, 40, 0.9);
 }
 
 .tf-btn:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .tf-btn-primary {
-  background: linear-gradient(180deg, var(--mint-soft), var(--mint));
-  color: var(--mint-ink);
-  box-shadow: 0 6px 18px -10px rgba(144, 255, 208, 0.9);
-}
-
-.tf-btn-primary:hover:not(:disabled) {
-  box-shadow: 0 10px 26px -10px rgba(144, 255, 208, 0.95);
+  background: var(--mint);
+  color: var(--ink);
 }
 
 .tf-btn-lav {
-  background: linear-gradient(180deg, #b47dff, var(--lav));
-  color: #f6f1ff;
-}
-
-.tf-btn-lav:hover:not(:disabled) {
-  box-shadow: 0 10px 26px -10px rgba(144, 64, 240, 0.9);
+  background: var(--lav);
+  color: #fff8ff;
 }
 
 .tf-btn-ghost {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--foreground);
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .tf-btn-ghost:hover:not(:disabled) {
-  background: var(--surface-3);
-  border-color: rgba(144, 255, 208, 0.35);
+  background: var(--surface-2);
 }
 
 /* ---------- chips ---------- */
@@ -220,59 +229,61 @@ body {
   gap: 0.3rem;
   border-radius: 999px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  padding: 0.15rem 0.55rem;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--muted);
+  border: 2px solid var(--ink);
+  padding: 0.05rem 0.55rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .tf-chip-mint {
-  background: rgba(144, 255, 208, 0.14);
-  border-color: rgba(144, 255, 208, 0.3);
-  color: var(--mint);
+  background: var(--mint);
+  color: var(--ink);
 }
 
 .tf-chip-lav {
-  background: rgba(144, 64, 240, 0.2);
-  border-color: rgba(144, 64, 240, 0.45);
-  color: var(--lav-text);
+  background: var(--lav);
+  color: #fff8ff;
+}
+
+.tf-chip-sun {
+  background: var(--sun);
+  color: var(--ink);
 }
 
 /* ---------- bits ---------- */
 
 .tf-ring {
-  box-shadow: 0 0 0 2px rgba(144, 255, 208, 0.22);
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 .tf-ring-violet {
-  box-shadow: 0 0 0 2px rgba(144, 64, 240, 0.4);
+  box-shadow: 0 0 0 2px var(--lav);
 }
 
 .tf-bar {
-  height: 8px;
+  height: 12px;
   border-radius: 999px;
-  background: rgba(12, 26, 23, 0.75);
+  background: var(--surface-2);
   overflow: hidden;
-  border: 1px solid var(--border-soft);
+  border: 2px solid var(--ink);
 }
 
 .tf-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--lav-deep), var(--lav) 35%, var(--mint));
-  box-shadow: 0 0 12px rgba(144, 255, 208, 0.35), 0 0 10px rgba(144, 64, 240, 0.3);
+  background: linear-gradient(90deg, var(--lav), var(--bubble) 45%, var(--mint));
   transition: width 500ms ease;
 }
 
 @keyframes tf-live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(144, 255, 208, 0.5); }
-  50% { opacity: 0.55; box-shadow: 0 0 0 6px rgba(144, 255, 208, 0); }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.82); }
 }
 
 .tf-live-dot {
-  animation: tf-live-pulse 2s ease-in-out infinite;
+  animation: tf-live-pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes tf-shimmer {
@@ -283,7 +294,7 @@ body {
   position: relative;
   overflow: hidden;
   background: var(--surface-2);
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .tf-skeleton::after {
@@ -291,8 +302,8 @@ body {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(144, 255, 208, 0.09), transparent);
-  animation: tf-shimmer 1.6s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: tf-shimmer 1.5s infinite;
 }
 
 /* Jupiter mounts its widget with no stacking context of its own, which put

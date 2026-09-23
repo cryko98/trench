@@ -33,7 +33,7 @@ export function MostCalledRow({
       ) : (
         <span
           className={`text-[11px] font-bold tabular-nums ${
-            (token?.change24h ?? 0) >= 0 ? "text-mint" : "text-loss"
+            (token?.change24h ?? 0) >= 0 ? "text-mint-deep" : "text-loss"
           }`}
         >
           {formatPct(token?.change24h ?? null)}

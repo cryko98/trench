@@ -10,7 +10,7 @@ export const metadata = {
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <li className="flex gap-3">
-      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-mint/10 font-mono text-[11px] font-bold text-mint">
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-mint/10 font-mono text-[11px] font-bold text-mint-deep">
         {n}
       </span>
       <div className="min-w-0">
@@ -73,7 +73,7 @@ export default function HowItWorksPage() {
             transaction, and nothing leaves your wallet. No email, no password.
           </Step>
           <Step n={3} title="Set up your profile">
-            Open <Link href="/settings" className="text-mint hover:underline">Edit profile</Link> to
+            Open <Link href="/settings" className="text-mint-deep hover:underline">Edit profile</Link> to
             pick a display name, an @handle, a picture and a bio. Everything is tied to your wallet
             address, so your profile follows you.
           </Step>
@@ -94,8 +94,8 @@ export default function HowItWorksPage() {
           </Step>
           <Step n={3} title="Your entry is locked in">
             The moment you post, the coin&apos;s market cap is saved with the call. From then on the
-            card shows <span className="text-mint">Now</span> (where it stands) and{" "}
-            <span className="text-lav">Peak</span> (the best it ever got) — so a coin that ran and
+            card shows <span className="text-mint-deep">Now</span> (where it stands) and{" "}
+            <span className="text-lav-deep">Peak</span> (the best it ever got) — so a coin that ran and
             came back still shows what your call was worth.
           </Step>
           <Step n={4} title="Replies and likes">
@@ -126,7 +126,7 @@ export default function HowItWorksPage() {
       <Section label="Scoreboards" title="Calls are judged in public">
         <ul className="space-y-3 text-sm text-muted">
           <li>
-            <Link href="/top-calls" className="text-mint hover:underline">
+            <Link href="/top-calls" className="text-mint-deep hover:underline">
               Top calls
             </Link>{" "}
             ranks calls by the peak market cap the coin reached after the call, with where it sits
@@ -155,7 +155,7 @@ export default function HowItWorksPage() {
           A call counts for the day it was posted on, and is scored on its peak — a 6x call is worth
           five points, a 2x one, a flat call nothing. The top ten share the pot in proportion to
           their points, paid to the wallet they posted from.{" "}
-          <Link href="/rewards" className="text-mint hover:underline">
+          <Link href="/rewards" className="text-mint-deep hover:underline">
             See the running pot and today&apos;s standings →
           </Link>
         </p>
@@ -165,7 +165,7 @@ export default function HowItWorksPage() {
         <ol className="space-y-4">
           <Step n={1} title="Open one">
             On the{" "}
-            <Link href="/communities" className="text-mint hover:underline">
+            <Link href="/communities" className="text-mint-deep hover:underline">
               Communities
             </Link>{" "}
             page, paste the contract of a coin you hold and give the room a name. You can require a

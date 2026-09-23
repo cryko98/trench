@@ -17,7 +17,7 @@ export function ProfileNudge() {
       href="/settings"
       className="tf-card tf-card-hover flex items-center gap-3 p-3"
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-mint/10 text-mint">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-sun text-ink">
         ✎
       </span>
       <div className="min-w-0 flex-1 text-sm">

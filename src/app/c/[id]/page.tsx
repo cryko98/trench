@@ -57,7 +57,7 @@ export default async function CommunityPage({ params }: PageProps<"/c/[id]">) {
               <CopyAddress address={community.ca} />
             </div>
             {community.minTokens > 0 && (
-              <p className="mt-2 text-xs text-lav">
+              <p className="mt-2 text-xs text-lav-deep">
                 Holding at least {community.minTokens.toLocaleString()} $
                 {community.token?.symbol ?? "tokens"} is required.
               </p>

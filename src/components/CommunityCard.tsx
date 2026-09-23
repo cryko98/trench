@@ -101,7 +101,7 @@ export function CommunityCard({ community }: { community: CommunityView }) {
           </span>
           <span>{formatUsd(state.token?.marketCap ?? null)} MC</span>
           {state.minTokens > 0 && (
-            <span className="text-lav">min {state.minTokens.toLocaleString()} tokens</span>
+            <span className="text-lav-deep">min {state.minTokens.toLocaleString()} tokens</span>
           )}
         </div>
       </div>

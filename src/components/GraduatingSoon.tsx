@@ -110,7 +110,7 @@ export function GraduatingSoon({ initial = [] }: { initial?: Graduating[] }) {
                       <div className="truncate text-[11px] text-muted">{coin.name}</div>
                     </div>
                     <div className="shrink-0 text-right">
-                      <div className="text-xs font-bold tabular-nums text-mint">
+                      <div className="text-xs font-bold tabular-nums text-mint-deep">
                         {coin.progress.toFixed(1)}%
                       </div>
                       <div className="font-mono text-[10px] text-muted">

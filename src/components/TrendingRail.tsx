@@ -26,7 +26,7 @@ export function TrendingRail({
             <h2 className="tf-label">Top calls</h2>
             <Link
               href="/top-calls"
-              className="text-[11px] font-medium text-muted transition hover:text-mint"
+              className="text-[11px] font-medium text-muted transition hover:text-mint-deep"
             >
               All ↗
             </Link>
@@ -48,7 +48,7 @@ export function TrendingRail({
                   </div>
                   <span
                     className={`rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums ${
-                      peakMultiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
+                      peakMultiple >= 1 ? "bg-mint/10 text-mint-deep" : "bg-loss/10 text-loss"
                     }`}
                   >
                     {formatMultiple(peakMultiple)}
@@ -80,7 +80,7 @@ export function TrendingRail({
           <h2 className="tf-label">How it works</h2>
           <Link
             href="/how-it-works"
-            className="text-[11px] font-medium text-muted transition hover:text-mint"
+            className="text-[11px] font-medium text-muted transition hover:text-mint-deep"
           >
             Full guide ↗
           </Link>
@@ -93,7 +93,7 @@ export function TrendingRail({
             "Hold a coin? Join or open its community.",
           ].map((step, i) => (
             <li key={i} className="flex gap-2.5">
-              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded bg-mint/10 font-mono text-[10px] font-bold text-mint">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-mint font-mono text-[10px] font-bold text-ink">
                 {i + 1}
               </span>
               <span>{step}</span>

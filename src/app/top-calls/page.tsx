@@ -13,7 +13,7 @@ export default async function TopCallsPage() {
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="mb-4">
         <h1 className="text-xl font-bold tracking-tight">
-          Top <span className="text-mint">calls</span>
+          Top <span className="text-mint-deep">calls</span>
         </h1>
         <p className="mt-1 text-sm text-muted">
           Ranked by the peak market cap each coin reached after the call, with where it stands now.

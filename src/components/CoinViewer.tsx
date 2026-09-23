@@ -101,13 +101,13 @@ function CoinModal({ ca, onClose }: { ca: string; onClose: () => void }) {
               <Stat
                 label="Curve"
                 value={token.progress === null ? "—" : `${token.progress.toFixed(1)}%`}
-                className="text-mint"
+                className="text-mint-deep"
               />
             ) : (
               <Stat
                 label="24h"
                 value={formatPct(token?.change24h ?? null)}
-                className={up ? "text-mint" : "text-loss"}
+                className={up ? "text-mint-deep" : "text-loss"}
               />
             )}
             <Stat label="Liquidity" value={formatUsd(token?.liquidity ?? null)} />

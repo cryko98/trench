@@ -13,7 +13,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
         <h2 className="tf-label">Today&apos;s reward pot</h2>
         <Link
           href="/rewards"
-          className="text-[11px] font-medium text-muted transition hover:text-mint"
+          className="text-[11px] font-medium text-muted transition hover:text-mint-deep"
         >
           Rules ↗
         </Link>
@@ -22,7 +22,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
       <div className="px-3.5 py-3">
         <div className="flex items-end justify-between">
           <div>
-            <div className="text-2xl font-bold tabular-nums text-mint">
+            <div className="text-2xl font-bold tabular-nums text-mint-deep">
               {payable === null ? "Soon" : `${payable.toFixed(2)} SOL`}
             </div>
             <div className="mt-0.5 text-[11px] text-muted">
@@ -53,7 +53,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
                   <span className="font-mono text-[11px] text-muted">
                     best {formatMultiple(row.best)}
                   </span>
-                  <span className="text-xs font-bold tabular-nums text-mint">
+                  <span className="text-xs font-bold tabular-nums text-mint-deep">
                     {row.sol === null
                       ? `${(row.share * 100).toFixed(0)}%`
                       : `${row.sol.toFixed(2)}`}
@@ -67,7 +67,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
 
       <Link
         href="/rewards"
-        className="flex items-center justify-between border-t border-line px-3.5 py-2.5 text-[11px] text-muted transition hover:text-mint"
+        className="flex items-center justify-between border-t border-line px-3.5 py-2.5 text-[11px] text-muted transition hover:text-mint-deep"
       >
         <span>Every call you post scores for today</span>
         <span>→</span>

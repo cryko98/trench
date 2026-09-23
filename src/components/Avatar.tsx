@@ -30,7 +30,7 @@ export function Avatar({
         />
       ) : (
         <div
-          className="flex h-full w-full items-center justify-center bg-surface-2 font-bold text-mint"
+          className="flex h-full w-full items-center justify-center bg-surface-2 font-bold text-mint-deep"
           style={{ fontSize: px / 2.8 }}
         >
           {initials}
