@@ -35,7 +35,7 @@ export default async function ProfilePage({ params }: PageProps<"/u/[id]">) {
         <div className="flex items-start gap-4">
           <Avatar profile={profile} size="lg" />
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-xl font-black">{profile.name}</h1>
+            <h1 className="truncate text-xl font-bold">{profile.name}</h1>
             <p className="text-sm text-muted">@{profile.handle}</p>
             {profile.bio && <p className="mt-2 text-sm leading-relaxed">{profile.bio}</p>}
             <div className="mt-3 flex flex-wrap items-center gap-4 text-sm">

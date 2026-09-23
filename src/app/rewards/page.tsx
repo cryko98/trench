@@ -33,7 +33,7 @@ function Tile({
     <div className="tf-inset px-4 py-3">
       <div className="tf-label tf-label-plain">{label}</div>
       <div
-        className={`mt-1 text-xl font-black tabular-nums ${accent ? "text-mint" : "text-foreground"}`}
+        className={`mt-1 text-xl font-bold tabular-nums ${accent ? "text-mint" : "text-foreground"}`}
       >
         {value}
       </div>
@@ -58,7 +58,7 @@ export default async function RewardsPage() {
         />
         <div className="relative">
           <span className="tf-label">Caller rewards</span>
-          <h1 className="mt-3 text-2xl font-black tracking-tight">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight">
             The creator fees go back to <span className="tf-neon">the callers</span>
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted">
@@ -102,7 +102,7 @@ export default async function RewardsPage() {
       <section className="tf-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <h2 className="tf-label">Today&apos;s standings</h2>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+          <span className="text-[11px] font-medium text-muted">
             {snap.epoch.label} · UTC
           </span>
         </div>
@@ -120,7 +120,7 @@ export default async function RewardsPage() {
                   className="flex items-center gap-3 px-4 py-3 transition hover:bg-surface-2/50"
                 >
                   <span
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-[11px] font-black tabular-nums ${
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-mono text-[11px] font-bold tabular-nums ${
                       i === 0
                         ? "bg-mint text-mint-ink shadow-[0_0_16px_-4px_rgba(144,255,208,0.9)]"
                         : i < 3
@@ -141,7 +141,7 @@ export default async function RewardsPage() {
                   </div>
 
                   <div className="shrink-0 text-right">
-                    <div className="text-sm font-black tabular-nums text-mint">
+                    <div className="text-sm font-bold tabular-nums text-mint">
                       {row.sol === null ? `${(row.share * 100).toFixed(1)}%` : sol(row.sol, 3)}
                     </div>
                     <div className="font-mono text-[10px] text-muted">

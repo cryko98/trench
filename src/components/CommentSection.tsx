@@ -43,7 +43,7 @@ export function CommentSection({
 
   return (
     <section className="space-y-3">
-      <h2 className="px-1 text-xs font-bold uppercase tracking-widest text-muted">
+      <h2 className="tf-label px-1">
         Replies · {comments.length}
       </h2>
 
@@ -58,7 +58,7 @@ export function CommentSection({
                 if ((e.metaKey || e.ctrlKey) && e.key === "Enter") void submit();
               }}
               rows={2}
-              placeholder="Add your take…"
+              placeholder="Add your take"
               className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted"
             />
             {error && <p className="text-xs text-loss">{error}</p>}
@@ -75,12 +75,14 @@ export function CommentSection({
         </div>
       ) : (
         <div className="tf-card p-4 text-center text-sm text-muted">
-          Connect your wallet to join the conversation.
+          Connect your wallet to join in.
         </div>
       )}
 
       {comments.length === 0 ? (
-        <div className="tf-card p-6 text-center text-sm text-muted">No replies yet.</div>
+        <div className="tf-card p-6 text-center text-sm text-muted">
+          No replies yet — be the first.
+        </div>
       ) : (
         <ul className="space-y-2">
           {comments.map((c) => (

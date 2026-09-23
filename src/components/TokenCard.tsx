@@ -66,7 +66,7 @@ export function CoinImage({
   return (
     <div
       style={{ width: size, height: size, fontSize: size / 3 }}
-      className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-black text-mint ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-lg bg-surface-2 font-bold text-mint ${className}`}
     >
       {(token?.symbol ?? "?").replace(/^\$+/, "").slice(0, 2).toUpperCase()}
     </div>
@@ -125,17 +125,17 @@ export function TokenCard({
                 multiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
               }`}
             >
-              <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
+              <div className="text-[11px] font-semibold opacity-80">
                 Now
               </div>
-              <div className="text-sm font-black tabular-nums">{formatMultiple(multiple)}</div>
+              <div className="text-sm font-bold tabular-nums">{formatMultiple(multiple)}</div>
             </div>
             {peak !== null && peak > multiple * 1.05 && (
               <div className="rounded-lg bg-lav/15 px-2.5 py-1.5 text-center text-lav">
-                <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">
+                <div className="text-[11px] font-semibold opacity-80">
                   Peak
                 </div>
-                <div className="text-sm font-black tabular-nums">{formatMultiple(peak)}</div>
+                <div className="text-sm font-bold tabular-nums">{formatMultiple(peak)}</div>
               </div>
             )}
           </div>
@@ -149,7 +149,7 @@ export function TokenCard({
               <Stat label="Market cap" value={formatUsd(token.marketCap)} />
               <div className="text-right">
                 <div className="tf-label">Bonding curve</div>
-                <div className="text-sm font-black tabular-nums text-mint">
+                <div className="text-sm font-bold tabular-nums text-mint">
                   {token.progress === null ? "—" : `${token.progress.toFixed(1)}%`}
                 </div>
               </div>

@@ -21,9 +21,9 @@ export function ProfileNudge() {
         ✎
       </span>
       <div className="min-w-0 flex-1 text-sm">
-        <div className="font-bold">Set up your profile</div>
+        <div className="font-bold">Make yourself at home</div>
         <div className="text-xs text-muted">
-          Pick a name, a handle and a profile picture — it is tied to your wallet.
+          Add a name, a handle and a picture so people know who is calling.
         </div>
       </div>
       <span className="tf-btn tf-btn-ghost">Edit</span>

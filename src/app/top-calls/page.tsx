@@ -12,7 +12,7 @@ export default async function TopCallsPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="mb-4">
-        <h1 className="text-xl font-black tracking-tight">
+        <h1 className="text-xl font-bold tracking-tight">
           Top <span className="text-mint">calls</span>
         </h1>
         <p className="mt-1 text-sm text-muted">

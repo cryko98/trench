@@ -23,7 +23,7 @@ function Stat({ label, value, className = "" }: { label: string; value: string; 
   return (
     <div className="tf-inset px-2.5 py-2">
       <div className="tf-label tf-label-plain">{label}</div>
-      <div className={`mt-0.5 text-sm font-black tabular-nums ${className}`}>{value}</div>
+      <div className={`mt-0.5 text-sm font-bold tabular-nums ${className}`}>{value}</div>
     </div>
   );
 }
@@ -77,7 +77,7 @@ function CoinModal({ ca, onClose }: { ca: string; onClose: () => void }) {
           <CoinImage token={token} size={44} className="tf-ring" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="truncate text-lg font-black">
+              <span className="truncate text-lg font-bold">
                 {loading ? "Loading…" : token ? ticker(token.symbol) : "Unknown coin"}
               </span>
               {token && <span className="truncate text-sm text-muted">{token.name}</span>}

@@ -20,7 +20,7 @@ export default async function CoinPage({ params }: PageProps<"/coin/[ca]">) {
   return (
     <div className="mx-auto max-w-2xl space-y-4 px-4 py-6">
       <section className="tf-card p-5">
-        <h1 className="text-xl font-black">
+        <h1 className="text-xl font-bold">
           {token ? (
             <>
               {ticker(token.symbol)} <span className="font-normal text-muted">{token.name}</span>

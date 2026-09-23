@@ -13,7 +13,7 @@ export default async function CommunitiesPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
       <div className="mb-4">
-        <h1 className="text-xl font-black tracking-tight">
+        <h1 className="text-xl font-bold tracking-tight">
           Coin <span className="text-mint">communities</span>
         </h1>
         <p className="mt-1 text-sm text-muted">

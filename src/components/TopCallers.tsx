@@ -24,7 +24,7 @@ export function TopCallers({ callers, compact = false }: { callers: Caller[]; co
     <div className="tf-card overflow-hidden">
       <div className="flex items-center justify-between border-b border-line px-3.5 py-3">
         <h2 className="tf-label">Top callers</h2>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+        <span className="text-[11px] font-medium text-muted">
           by avg peak
         </span>
       </div>
@@ -37,7 +37,7 @@ export function TopCallers({ callers, compact = false }: { callers: Caller[]; co
               className="flex items-center gap-3 px-3.5 py-2.5 transition hover:bg-surface-2/50"
             >
               <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-mono text-[11px] font-black tabular-nums ${medal(i)}`}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-mono text-[11px] font-bold tabular-nums ${medal(i)}`}
               >
                 {i + 1}
               </span>
@@ -53,7 +53,7 @@ export function TopCallers({ callers, compact = false }: { callers: Caller[]; co
               </div>
 
               <div className="shrink-0 text-right">
-                <div className="text-sm font-black tabular-nums text-mint">
+                <div className="text-sm font-bold tabular-nums text-mint">
                   {formatMultiple(caller.average)}
                 </div>
                 <div className="font-mono text-[10px] text-muted">

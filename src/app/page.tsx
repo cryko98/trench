@@ -16,7 +16,7 @@ function HeroStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="tf-inset px-3 py-2">
       <div className="tf-label tf-label-plain">{label}</div>
-      <div className="mt-0.5 text-base font-black tabular-nums text-mint">{value}</div>
+      <div className="mt-0.5 text-base font-bold tabular-nums text-mint">{value}</div>
     </div>
   );
 }
@@ -72,15 +72,16 @@ export default async function HomePage() {
           </div>
 
           <div className="min-w-0">
-            <h1 className="text-2xl font-black leading-none tracking-tight sm:text-3xl">
+            <h1 className="text-2xl font-bold leading-none tracking-tight sm:text-3xl">
               <span className="tf-neon">TRENCH</span> SOCIALS
             </h1>
-            <p className="tf-label tf-label-plain mt-2 inline-block rounded border border-mint/25 bg-mint/5 px-2 py-1 text-mint">
+            <p className="tf-label tf-label-plain mt-2 inline-block rounded-full border border-mint/25 bg-mint/5 px-3 py-1 text-mint">
               Posting from the trenches
             </p>
-            <p className="mt-2.5 max-w-xl text-sm text-muted">
-              Post anything, or call a coin by its contract address — pump.fun bonding curve
-              included. Your entry market cap is locked in, so every call is scored in public.
+            <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted">
+              Hang out, post whatever you like, and when you spot something — call it by its
+              contract address. We save the market cap at that moment, so your call speaks for
+              itself later.
             </p>
           </div>
         </div>
@@ -107,7 +108,7 @@ export default async function HomePage() {
           <HeroStat label="Best call" value={best ? formatMultiple(best) : "—"} />
           <Link href="/communities" className="tf-inset px-3 py-2 transition hover:border-mint/40">
             <div className="tf-label tf-label-plain">Communities</div>
-            <div className="mt-0.5 text-base font-black tabular-nums text-mint">
+            <div className="mt-0.5 text-base font-bold tabular-nums text-mint">
               {stats.communities}
             </div>
           </Link>

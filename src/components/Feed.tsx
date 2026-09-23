@@ -18,7 +18,7 @@ export function Feed({
   title = "Live feed",
   showComposer = true,
   onlyCalls = false,
-  emptyMessage = "Nothing here yet. Be the first to call something.",
+  emptyMessage = "Quiet in here. Say something, or call the first coin.",
 }: {
   initialPosts: PostView[];
   wallet?: string;

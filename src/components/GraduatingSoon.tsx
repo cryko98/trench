@@ -65,7 +65,7 @@ export function GraduatingSoon({ initial = [] }: { initial?: Graduating[] }) {
     <div className="tf-card overflow-hidden">
       <div className="flex items-center justify-between border-b border-line px-3.5 py-3">
         <h2 className="tf-label">Closest to migration</h2>
-        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted">
+        <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted">
           <span className="tf-live-dot h-1.5 w-1.5 rounded-full bg-mint" />
           Live
         </span>
@@ -110,7 +110,7 @@ export function GraduatingSoon({ initial = [] }: { initial?: Graduating[] }) {
                       <div className="truncate text-[11px] text-muted">{coin.name}</div>
                     </div>
                     <div className="shrink-0 text-right">
-                      <div className="text-xs font-black tabular-nums text-mint">
+                      <div className="text-xs font-bold tabular-nums text-mint">
                         {coin.progress.toFixed(1)}%
                       </div>
                       <div className="font-mono text-[10px] text-muted">

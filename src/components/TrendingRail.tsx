@@ -26,7 +26,7 @@ export function TrendingRail({
             <h2 className="tf-label">Top calls</h2>
             <Link
               href="/top-calls"
-              className="font-mono text-[10px] uppercase tracking-widest text-muted transition hover:text-mint"
+              className="text-[11px] font-medium text-muted transition hover:text-mint"
             >
               All ↗
             </Link>
@@ -47,7 +47,7 @@ export function TrendingRail({
                     <div className="truncate text-[11px] text-muted">by {post.profile.name}</div>
                   </div>
                   <span
-                    className={`rounded-md px-1.5 py-0.5 text-xs font-black tabular-nums ${
+                    className={`rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums ${
                       peakMultiple >= 1 ? "bg-mint/10 text-mint" : "bg-loss/10 text-loss"
                     }`}
                   >
@@ -80,7 +80,7 @@ export function TrendingRail({
           <h2 className="tf-label">How it works</h2>
           <Link
             href="/how-it-works"
-            className="font-mono text-[10px] uppercase tracking-widest text-muted transition hover:text-mint"
+            className="text-[11px] font-medium text-muted transition hover:text-mint"
           >
             Full guide ↗
           </Link>

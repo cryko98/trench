@@ -13,7 +13,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
         <h2 className="tf-label">Today&apos;s reward pot</h2>
         <Link
           href="/rewards"
-          className="font-mono text-[10px] uppercase tracking-widest text-muted transition hover:text-mint"
+          className="text-[11px] font-medium text-muted transition hover:text-mint"
         >
           Rules ↗
         </Link>
@@ -22,7 +22,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
       <div className="px-3.5 py-3">
         <div className="flex items-end justify-between">
           <div>
-            <div className="text-2xl font-black tabular-nums text-mint">
+            <div className="text-2xl font-bold tabular-nums text-mint">
               {payable === null ? "Soon" : `${payable.toFixed(2)} SOL`}
             </div>
             <div className="mt-0.5 text-[11px] text-muted">
@@ -53,7 +53,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
                   <span className="font-mono text-[11px] text-muted">
                     best {formatMultiple(row.best)}
                   </span>
-                  <span className="text-xs font-black tabular-nums text-mint">
+                  <span className="text-xs font-bold tabular-nums text-mint">
                     {row.sol === null
                       ? `${(row.share * 100).toFixed(0)}%`
                       : `${row.sol.toFixed(2)}`}

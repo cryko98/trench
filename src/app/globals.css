@@ -1,27 +1,31 @@
 @import "tailwindcss";
 
 /*
- * Palette sampled straight from the $socials logo: neon aqua-mint (#90ffd0),
- * the logo's violet (#9040f0) and the dark teal trench it sits in.
+ * Trench Socials, softened: the logo's mint (#90ffd0) and violet (#9040f0)
+ * on a deep teal that is a shade lighter and warmer than the old near-black,
+ * with rounder shapes, calmer type and gentler shadows.
  */
 :root {
-  --background: #071310;
-  --surface: #0d1b18;
-  --surface-2: #142521;
-  --surface-3: #1b302a;
-  --border: #1c302a;
-  --border-soft: #172723;
-  --foreground: #e9fbf4;
-  --muted: #7f9a91;
+  --background: #0c1a17;
+  --surface: #152924;
+  --surface-2: #1d382f;
+  --surface-3: #26483d;
+  --border: #27473d;
+  --border-soft: #1f3a32;
+  --foreground: #f0fbf6;
+  --muted: #9dbbae;
   --mint: #90ffd0;
-  --mint-dim: #52e0b0;
-  --mint-ink: #04221a;
+  --mint-soft: #bdffe6;
+  --mint-dim: #5fd9ae;
+  --mint-ink: #05261d;
   /* straight off the logo: the circle behind the helmet */
   --lav: #9040f0;
   --lav-deep: #7838c8;
-  /* lighter tint, so violet text stays readable on the dark surface */
-  --lav-text: #bb8cff;
-  --red: #ff7b7b;
+  --lav-text: #c6a4ff;
+  --red: #ff8d8d;
+
+  --radius-card: 18px;
+  --radius-inner: 14px;
 }
 
 @theme inline {
@@ -33,6 +37,7 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
   --color-mint-dim: var(--mint-dim);
   --color-mint-ink: var(--mint-ink);
   --color-lav: var(--lav-text);
@@ -52,16 +57,14 @@ body {
   color: var(--foreground);
 }
 
-/* Trench floor: two soft glows plus the logo's halftone dot grid. */
+/* A warm glow at the top of the page instead of a hard, empty black. */
 body {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   background-image:
-    radial-gradient(42rem 26rem at 12% -8%, rgba(144, 255, 208, 0.07), transparent 65%),
-    radial-gradient(38rem 24rem at 88% -4%, rgba(144, 64, 240, 0.10), transparent 60%),
-    radial-gradient(circle at center, rgba(144, 255, 208, 0.05) 0.5px, transparent 0.5px);
-  background-size: auto, auto, 22px 22px;
+    radial-gradient(48rem 30rem at 15% -12%, rgba(144, 255, 208, 0.09), transparent 62%),
+    radial-gradient(42rem 26rem at 88% -6%, rgba(144, 64, 240, 0.12), transparent 60%);
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-repeat: no-repeat, no-repeat, repeat;
 }
 
 ::selection {
@@ -74,82 +77,81 @@ body {
 .tf-card {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(144, 255, 208, 0.035), rgba(144, 255, 208, 0) 45%),
+    linear-gradient(180deg, rgba(144, 255, 208, 0.045), rgba(144, 255, 208, 0) 40%),
     var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-card);
   box-shadow:
-    inset 0 1px 0 rgba(233, 251, 244, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px -22px rgba(0, 0, 0, 0.9);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .tf-card-hover:hover {
-  border-color: rgba(144, 255, 208, 0.34);
+  border-color: rgba(144, 255, 208, 0.4);
   box-shadow:
-    inset 0 1px 0 rgba(233, 251, 244, 0.05),
-    0 6px 22px -10px rgba(144, 255, 208, 0.35);
-  transform: translateY(-1px);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 34px -20px rgba(144, 255, 208, 0.45);
+  transform: translateY(-2px);
 }
 
 .tf-inset {
-  background: rgba(4, 12, 10, 0.55);
+  background: rgba(12, 26, 23, 0.6);
   border: 1px solid var(--border-soft);
-  border-radius: 12px;
+  border-radius: var(--radius-inner);
 }
 
 /* ---------- type ---------- */
 
+/* Calm section labels: no shouting, just a mint tick and a soft word. */
 .tf-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  gap: 0.5rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--muted);
 }
 
-/* Mint tick in front of a section label. */
 .tf-label::before {
   content: "";
   width: 3px;
-  height: 11px;
-  border-radius: 2px;
+  height: 13px;
+  border-radius: 999px;
   background: var(--mint);
-  box-shadow: 0 0 8px rgba(144, 255, 208, 0.6);
+  box-shadow: 0 0 10px rgba(144, 255, 208, 0.5);
 }
 
 .tf-label-plain::before {
   display: none;
 }
 
-/* Wordmark: mint with the logo's violet offset. */
+/* Wordmark: mint with a soft violet halo rather than a hard offset. */
 .tf-neon {
   color: var(--mint);
   text-shadow:
-    0 0 14px rgba(144, 255, 208, 0.5),
-    2px 2px 0 rgba(144, 64, 240, 0.7);
+    0 0 18px rgba(144, 255, 208, 0.45),
+    0 2px 14px rgba(144, 64, 240, 0.65);
 }
 
 /* ---------- controls ---------- */
 
 .tf-input {
-  background: rgba(4, 12, 10, 0.6);
+  background: rgba(12, 26, 23, 0.55);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.55rem 0.8rem;
+  border-radius: 14px;
+  padding: 0.65rem 0.9rem;
   width: 100%;
   outline: none;
-  font-size: 0.875rem;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  font-size: 0.9rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 
 .tf-input:focus {
   border-color: rgba(144, 255, 208, 0.55);
-  box-shadow: 0 0 0 3px rgba(144, 255, 208, 0.1);
+  background: rgba(12, 26, 23, 0.8);
+  box-shadow: 0 0 0 4px rgba(144, 255, 208, 0.1);
 }
 
 .tf-input::placeholder {
@@ -160,13 +162,13 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 0.875rem;
-  padding: 0.5rem 0.95rem;
-  transition: background 120ms ease, box-shadow 120ms ease, transform 120ms ease,
-    border-color 120ms ease, color 120ms ease;
+  gap: 0.45rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.55rem 1.15rem;
+  transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease,
+    border-color 140ms ease, color 140ms ease;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -176,29 +178,27 @@ body {
 }
 
 .tf-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .tf-btn-primary {
-  background: linear-gradient(180deg, #b6ffe2, var(--mint));
+  background: linear-gradient(180deg, var(--mint-soft), var(--mint));
   color: var(--mint-ink);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  box-shadow: 0 6px 18px -10px rgba(144, 255, 208, 0.9);
 }
 
 .tf-btn-primary:hover:not(:disabled) {
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 0 22px -4px rgba(144, 255, 208, 0.65);
+  box-shadow: 0 10px 26px -10px rgba(144, 255, 208, 0.95);
 }
 
 .tf-btn-lav {
   background: linear-gradient(180deg, #b47dff, var(--lav));
-  color: #150c2a;
+  color: #f6f1ff;
 }
 
 .tf-btn-lav:hover:not(:disabled) {
-  box-shadow: 0 0 22px -4px rgba(144, 64, 240, 0.7);
+  box-shadow: 0 10px 26px -10px rgba(144, 64, 240, 0.9);
 }
 
 .tf-btn-ghost {
@@ -209,7 +209,7 @@ body {
 
 .tf-btn-ghost:hover:not(:disabled) {
   background: var(--surface-3);
-  border-color: rgba(144, 255, 208, 0.3);
+  border-color: rgba(144, 255, 208, 0.35);
 }
 
 /* ---------- chips ---------- */
@@ -217,45 +217,43 @@ body {
 .tf-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  border-radius: 6px;
+  gap: 0.3rem;
+  border-radius: 999px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  padding: 0.1rem 0.4rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--muted);
 }
 
 .tf-chip-mint {
-  background: rgba(144, 255, 208, 0.12);
-  border-color: rgba(144, 255, 208, 0.25);
+  background: rgba(144, 255, 208, 0.14);
+  border-color: rgba(144, 255, 208, 0.3);
   color: var(--mint);
 }
 
 .tf-chip-lav {
-  background: rgba(144, 64, 240, 0.18);
+  background: rgba(144, 64, 240, 0.2);
   border-color: rgba(144, 64, 240, 0.45);
   color: var(--lav-text);
 }
 
 /* ---------- bits ---------- */
 
-.tf-ring-violet {
-  box-shadow: 0 0 0 1px rgba(144, 64, 240, 0.45);
+.tf-ring {
+  box-shadow: 0 0 0 2px rgba(144, 255, 208, 0.22);
 }
 
-.tf-ring {
-  box-shadow: 0 0 0 1px rgba(144, 255, 208, 0.25);
+.tf-ring-violet {
+  box-shadow: 0 0 0 2px rgba(144, 64, 240, 0.4);
 }
 
 .tf-bar {
-  height: 6px;
+  height: 8px;
   border-radius: 999px;
-  background: rgba(4, 12, 10, 0.7);
+  background: rgba(12, 26, 23, 0.75);
   overflow: hidden;
   border: 1px solid var(--border-soft);
 }
@@ -264,24 +262,17 @@ body {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--lav-deep), var(--lav) 35%, var(--mint));
-  box-shadow: 0 0 12px rgba(144, 255, 208, 0.45);
-  transition: width 400ms ease;
+  box-shadow: 0 0 12px rgba(144, 255, 208, 0.35), 0 0 10px rgba(144, 64, 240, 0.3);
+  transition: width 500ms ease;
 }
 
 @keyframes tf-live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(144, 255, 208, 0.55); }
-  50% { opacity: 0.5; box-shadow: 0 0 0 5px rgba(144, 255, 208, 0); }
-}
-
-/* Jupiter mounts its widget with no stacking context of its own, which put
-   it behind the coin window. */
-#jupiter-plugin-instance {
-  position: relative;
-  z-index: 100;
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(144, 255, 208, 0.5); }
+  50% { opacity: 0.55; box-shadow: 0 0 0 6px rgba(144, 255, 208, 0); }
 }
 
 .tf-live-dot {
-  animation: tf-live-pulse 1.7s ease-in-out infinite;
+  animation: tf-live-pulse 2s ease-in-out infinite;
 }
 
 @keyframes tf-shimmer {
@@ -292,6 +283,7 @@ body {
   position: relative;
   overflow: hidden;
   background: var(--surface-2);
+  border-radius: 12px;
 }
 
 .tf-skeleton::after {
@@ -299,6 +291,13 @@ body {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(144, 255, 208, 0.08), transparent);
-  animation: tf-shimmer 1.4s infinite;
+  background: linear-gradient(90deg, transparent, rgba(144, 255, 208, 0.09), transparent);
+  animation: tf-shimmer 1.6s infinite;
+}
+
+/* Jupiter mounts its widget with no stacking context of its own, which put
+   it behind the coin window. */
+#jupiter-plugin-instance {
+  position: relative;
+  z-index: 100;
 }

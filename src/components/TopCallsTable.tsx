@@ -31,7 +31,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
             className="tf-card tf-card-hover flex items-center gap-3 p-3"
           >
             <span
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black tabular-nums ${rankStyle(i)}`}
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold tabular-nums ${rankStyle(i)}`}
             >
               {i + 1}
             </span>
@@ -65,7 +65,7 @@ export function TopCallsTable({ calls }: { calls: TopCall[] }) {
             </div>
 
             <div className="shrink-0 text-right">
-              <span className="rounded-lg bg-lav/15 px-3 py-1.5 text-base font-black tabular-nums text-lav">
+              <span className="rounded-lg bg-lav/15 px-3 py-1.5 text-base font-bold tabular-nums text-lav">
                 {formatMultiple(peakMultiple)}
               </span>
               <div

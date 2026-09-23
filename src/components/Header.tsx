@@ -33,7 +33,7 @@ function SolPrice() {
     <span className="hidden items-center gap-1.5 rounded-lg border border-line bg-surface/80 px-2.5 py-1.5 md:inline-flex">
       <span className="tf-live-dot h-1.5 w-1.5 rounded-full bg-mint" />
       <span className="font-mono text-[11px] font-bold tracking-wide text-muted">SOL</span>
-      <span className="font-mono text-[11px] font-black tabular-nums text-mint">
+      <span className="font-mono text-[11px] font-bold tabular-nums text-mint">
         ${price.toFixed(2)}
       </span>
     </span>
@@ -76,11 +76,11 @@ export function Header() {
             />
           </span>
           <span className="hidden flex-col leading-none sm:flex">
-            <span className="text-[15px] font-black tracking-tight">
+            <span className="text-[15px] font-bold tracking-tight">
               TRENCH <span className="text-mint">SOCIALS</span>
             </span>
             <span className="mt-1 flex items-center gap-1.5">
-              <span className="rounded bg-mint/10 px-1.5 py-0.5 font-mono text-[9px] font-black tracking-[0.18em] text-mint">
+              <span className="rounded bg-mint/10 px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-[0.18em] text-mint">
                 $socials
               </span>
               <span className="font-mono text-[9px] tracking-[0.14em] text-muted">SOLANA</span>
@@ -88,14 +88,14 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="ml-1 hidden items-center gap-0.5 rounded-xl border border-line bg-surface/60 p-1 sm:flex">
+        <nav className="ml-1 hidden items-center gap-0.5 rounded-full border border-line bg-surface/60 p-1 sm:flex">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-bold transition sm:px-3 ${
+                className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition sm:px-3.5 ${
                   active
                     ? "bg-mint/12 text-mint shadow-[0_0_20px_-8px_rgba(144,255,208,0.9)]"
                     : "text-muted hover:bg-surface-2 hover:text-foreground"

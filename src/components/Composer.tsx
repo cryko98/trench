@@ -38,7 +38,7 @@ export function Composer({
   onPosted,
   presetCa,
   communityId,
-  placeholder = "What's on your mind, anon?",
+  placeholder = "What's on your mind?",
 }: {
   onPosted: (post: PostView) => void;
   presetCa?: string;
@@ -136,9 +136,10 @@ export function Composer({
   if (!profile) {
     return (
       <div className="tf-card p-5 text-center">
-        <h2 className="text-base font-bold">Drop into the trenches</h2>
+        <h2 className="text-base font-bold">Welcome to the trenches</h2>
         <p className="mt-1 text-sm text-muted">
-          Connect your Solana wallet to post, call coins, and reply to other degens.
+          Connect your Solana wallet and you are in — post, call coins, reply to anyone. It takes
+          one signature and costs nothing.
         </p>
       </div>
     );
@@ -153,18 +154,18 @@ export function Composer({
         <Avatar profile={profile} />
         <div className="min-w-0 flex-1">
           {/* Plain thoughts by default; call mode attaches a coin. */}
-          <div className="mb-2 inline-flex rounded-lg bg-surface-2 p-0.5 text-xs font-bold">
+          <div className="mb-2 inline-flex rounded-full bg-surface-2 p-1 text-xs font-semibold">
             <button
-              className={`rounded-md px-3 py-1.5 transition ${
-                mode === "post" ? "bg-background text-foreground" : "text-muted"
+              className={`rounded-full px-3.5 py-1.5 transition ${
+                mode === "post" ? "bg-background text-foreground" : "text-muted hover:text-foreground"
               }`}
               onClick={() => setMode("post")}
             >
               Post
             </button>
             <button
-              className={`rounded-md px-3 py-1.5 transition ${
-                mode === "call" ? "bg-mint text-mint-ink" : "text-muted"
+              className={`rounded-full px-3.5 py-1.5 transition ${
+                mode === "call" ? "bg-mint text-mint-ink" : "text-muted hover:text-foreground"
               }`}
               onClick={() => setMode("call")}
             >
@@ -190,7 +191,7 @@ export function Composer({
               <input
                 value={caInput}
                 onChange={(e) => setCaInput(e.target.value)}
-                placeholder="Contract address — pump.fun, PumpSwap, Raydium…"
+                placeholder="Paste a contract address — pump.fun, PumpSwap, Raydium…"
                 spellCheck={false}
                 className="tf-input mt-2 font-mono text-xs"
               />

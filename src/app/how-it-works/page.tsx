@@ -10,7 +10,7 @@ export const metadata = {
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <li className="flex gap-3">
-      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-mint/10 font-mono text-[11px] font-black text-mint">
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-mint/10 font-mono text-[11px] font-bold text-mint">
         {n}
       </span>
       <div className="min-w-0">
@@ -33,7 +33,7 @@ function Section({
   return (
     <section className="tf-card p-5">
       <span className="tf-label">{label}</span>
-      <h2 className="mt-3 text-lg font-black tracking-tight">{title}</h2>
+      <h2 className="mt-3 text-lg font-bold tracking-tight">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -51,7 +51,7 @@ export default function HowItWorksPage() {
         <div className="relative flex items-center gap-4">
           <Image src="/logo.png" alt="" width={64} height={64} />
           <div>
-            <h1 className="text-xl font-black tracking-tight sm:text-2xl">
+            <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
               How <span className="tf-neon">Trench Socials</span> works
             </h1>
             <p className="mt-1 text-sm text-muted">
