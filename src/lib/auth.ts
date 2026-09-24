@@ -31,6 +31,12 @@ export async function clearSession() {
   jar.delete(COOKIE);
 }
 
+/** The one wallet allowed to moderate: remove anyone's post, record payouts. */
+export function isAdminWallet(wallet: string | null | undefined): boolean {
+  const admin = process.env.ADMIN_WALLET;
+  return Boolean(admin) && wallet === admin;
+}
+
 /** Wallet address of the signed-in user, or null. */
 export async function getSessionWallet(): Promise<string | null> {
   const jar = await cookies();

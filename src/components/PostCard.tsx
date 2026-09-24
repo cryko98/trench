@@ -65,7 +65,7 @@ export function PostCard({
   clickable?: boolean;
 }) {
   const router = useRouter();
-  const { profile: me } = useAuth();
+  const { profile: me, admin } = useAuth();
   const isRadar = post.author === RADAR_AUTHOR;
   const [likes, setLikes] = useState(post.likes);
   const [liked, setLiked] = useState(post.liked);
@@ -137,9 +137,11 @@ export function PostCard({
                 Call
               </span>
             )}
-            {!isRadar && me?.wallet === post.author && (
+            {/* Your own post, or any post at all for the moderating wallet. */}
+            {((!isRadar && me?.wallet === post.author) || admin) && (
               <button
                 className="ml-auto text-xs text-muted hover:text-loss"
+                title={admin && me?.wallet !== post.author ? "Remove as admin" : undefined}
                 onClick={(e) => {
                   e.stopPropagation();
                   void remove();

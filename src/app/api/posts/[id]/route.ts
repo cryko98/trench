@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
-import { getSessionWallet } from "@/lib/auth";
+import { getSessionWallet, isAdminWallet } from "@/lib/auth";
 import { getPost, getComments } from "@/lib/data";
 import type { Post } from "@/lib/types";
 
@@ -22,11 +22,14 @@ export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string 
 
   const post = await store.get<Post>(K.post(id));
   if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
-  if (post.author !== wallet) return NextResponse.json({ error: "Not your post" }, { status: 403 });
+  // The author can take their post down; the admin wallet can take anyone's.
+  if (post.author !== wallet && !isAdminWallet(wallet)) {
+    return NextResponse.json({ error: "Not your post" }, { status: 403 });
+  }
 
   await store.del(K.post(id));
   await store.zrem(K.feed, id);
-  await store.zrem(K.userPosts(wallet), id);
+  await store.zrem(K.userPosts(post.author), id);
   if (post.communityId) await store.zrem(K.communityPosts(post.communityId), id);
   if (post.ca) {
     await store.zrem(K.callPosts(post.ca), id);

@@ -7,6 +7,8 @@ import type { Profile } from "@/lib/types";
 
 type AuthState = {
   profile: Profile | null;
+  /** Signed in as the moderating wallet: may remove anyone's post. */
+  admin: boolean;
   loading: boolean;
   signingIn: boolean;
   error: string | null;
@@ -20,27 +22,31 @@ type AuthState = {
 
 const Ctx = createContext<AuthState | null>(null);
 
+type Me = { profile: Profile | null; admin: boolean };
+
 /** Reads the session-backed profile, or null when signed out. */
-async function loadMe(): Promise<Profile | null> {
+async function loadMe(): Promise<Me> {
   try {
     const res = await fetch("/api/me", { cache: "no-store" });
-    const json = (await res.json()) as { profile: Profile | null };
-    return json.profile;
+    const json = (await res.json()) as Partial<Me>;
+    return { profile: json.profile ?? null, admin: json.admin === true };
   } catch {
-    return null;
+    return { profile: null, admin: false };
   }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { publicKey, signMessage, disconnect, connected } = useWallet();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [admin, setAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     const next = await loadMe();
-    setProfile(next);
+    setProfile(next.profile);
+    setAdmin(next.admin);
     setLoading(false);
   }, []);
 
@@ -48,7 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let active = true;
     loadMe().then((next) => {
       if (!active) return;
-      setProfile(next);
+      setProfile(next.profile);
+      setAdmin(next.admin);
       setLoading(false);
     });
     return () => {
@@ -88,6 +95,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!verifyRes.ok || !verify.profile) throw new Error(verify.error ?? "Sign in failed");
 
       setProfile(verify.profile);
+      // Whether this wallet moderates is the server's call, so ask it.
+      setAdmin((await loadMe()).admin);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Sign in failed";
       setError(msg.includes("User rejected") ? "Signature rejected" : msg);
@@ -99,6 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setProfile(null);
+    setAdmin(false);
     try {
       await disconnect();
     } catch {
@@ -117,6 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AuthState>(
     () => ({
       profile,
+      admin,
       loading,
       signingIn,
       error,
@@ -126,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refresh,
       setProfile,
     }),
-    [profile, loading, signingIn, error, connected, publicKey, signIn, signOut, refresh]
+    [profile, admin, loading, signingIn, error, connected, publicKey, signIn, signOut, refresh]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

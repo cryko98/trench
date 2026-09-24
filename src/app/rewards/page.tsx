@@ -3,7 +3,7 @@ import { getRewardsSnapshot, REWARD_PLACES } from "@/lib/rewards";
 import { formatMultiple, shortAddress } from "@/lib/format";
 import { Avatar } from "@/components/Avatar";
 import { PayoutRecorder } from "@/components/PayoutRecorder";
-import { getSessionWallet } from "@/lib/auth";
+import { getSessionWallet, isAdminWallet } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ function Tile({ label, value, sub }: { label: string; value: string; sub?: strin
 
 export default async function RewardsPage() {
   const [snap, viewer] = await Promise.all([getRewardsSnapshot(), getSessionWallet()]);
-  const isAdmin = Boolean(process.env.ADMIN_WALLET) && viewer === process.env.ADMIN_WALLET;
+  const isAdmin = isAdminWallet(viewer);
 
   return (
     <div className="mx-auto max-w-3xl space-y-4 px-4 py-6">
