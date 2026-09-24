@@ -15,8 +15,14 @@ export function CommentSection({
   postId: string;
   initialComments: CommentView[];
 }) {
-  const { profile } = useAuth();
+  const { profile, admin } = useAuth();
   const [comments, setComments] = useState(initialComments);
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this reply?")) return;
+    const res = await fetch(`/api/comments/${id}`, { method: "DELETE" });
+    if (res.ok) setComments((prev) => prev.filter((c) => c.id !== id));
+  };
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +111,16 @@ export function CommentSection({
                   <span className="truncate text-muted">@{c.profile.handle}</span>
                   <span className="text-muted">·</span>
                   <TimeAgo ts={c.createdAt} className="text-muted" />
+                  {/* Your own reply, or any reply at all for the moderating wallet. */}
+                  {(profile?.wallet === c.author || admin) && (
+                    <button
+                      className="ml-auto text-xs text-muted hover:text-loss"
+                      title={admin && profile?.wallet !== c.author ? "Remove as admin" : undefined}
+                      onClick={() => void remove(c.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">
                   {c.text}

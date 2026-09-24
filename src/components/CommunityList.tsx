@@ -167,20 +167,68 @@ function CreateCommunity({ onCreated }: { onCreated: (c: CommunityView) => void 
   );
 }
 
+/** Coin name, ticker (with or without the $), community name, or the CA. */
+function matches(c: CommunityView, query: string): boolean {
+  const q = query.trim().toLowerCase().replace(/^\$/, "");
+  if (!q) return true;
+  const fields = [
+    c.name,
+    c.description,
+    c.token?.symbol?.replace(/^\$/, ""),
+    c.token?.name,
+    c.ca,
+  ];
+  return fields.some((f) => f?.toLowerCase().includes(q));
+}
+
 export function CommunityList({ initial }: { initial: CommunityView[] }) {
   const [communities, setCommunities] = useState(initial);
+  const [query, setQuery] = useState("");
+  const shown = communities.filter((c) => matches(c, query));
 
   return (
     <div className="space-y-4">
       <CreateCommunity onCreated={(c) => setCommunities((prev) => [c, ...prev])} />
 
+      {communities.length > 0 && (
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">
+            🔎
+          </span>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by coin name, ticker or contract address…"
+            spellCheck={false}
+            aria-label="Search communities"
+            className="tf-input !pl-10"
+          />
+          {query && (
+            <button
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
+
       {communities.length === 0 ? (
         <div className="tf-card p-8 text-center text-sm text-muted">
           No communities yet. Open the first one for a coin you hold.
         </div>
+      ) : shown.length === 0 ? (
+        <div className="tf-card p-8 text-center text-sm text-muted">
+          Nothing matches “{query.trim()}”.
+          {isSolanaAddress(query.trim()) && (
+            <> No community for this coin yet — hold it, and you can open one above.</>
+          )}
+        </div>
       ) : (
         <div className="space-y-2">
-          {communities.map((c) => (
+          {shown.map((c) => (
             <CommunityCard key={c.id} community={c} />
           ))}
         </div>
