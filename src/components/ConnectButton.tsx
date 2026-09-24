@@ -16,15 +16,28 @@ export function ConnectButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
+  const [connectError, setConnectError] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const autoSignIn = useRef(false);
+  const tried = useRef<string | null>(null);
 
-  // Connect as soon as a wallet is picked in the modal.
+  // Connect as soon as a wallet is picked in the modal — once per pick, or a
+  // wallet that refuses would be asked again on every render.
   useEffect(() => {
-    if (wallet && !connected && !connecting) {
-      connect().catch(() => undefined);
-    }
+    if (!wallet || connected || connecting) return;
+    if (tried.current === wallet.adapter.name) return;
+    tried.current = wallet.adapter.name;
+    connect().catch((e: unknown) => {
+      setConnectError(e instanceof Error ? e.message : "Could not reach the wallet");
+    });
   }, [wallet, connected, connecting, connect]);
+
+  // Opening the picker starts a fresh attempt, even for the same wallet.
+  const openPicker = useCallback(() => {
+    tried.current = null;
+    setConnectError(null);
+    setModalOpen(true);
+  }, []);
 
   // Then ask for the sign-in signature once, automatically.
   useEffect(() => {
@@ -37,10 +50,9 @@ export function ConnectButton() {
 
   // The Jupiter swap widget asks us to open the wallet picker.
   useEffect(() => {
-    const onAsk = () => setModalOpen(true);
-    window.addEventListener(CONNECT_WALLET_EVENT, onAsk);
-    return () => window.removeEventListener(CONNECT_WALLET_EVENT, onAsk);
-  }, []);
+    window.addEventListener(CONNECT_WALLET_EVENT, openPicker);
+    return () => window.removeEventListener(CONNECT_WALLET_EVENT, openPicker);
+  }, [openPicker]);
 
   const place = useCallback(() => {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -142,11 +154,37 @@ export function ConnectButton() {
     );
   }
 
+  // A retry has to come straight off a click: some browsers only let the
+  // wallet raise its window while the user's gesture is still warm.
+  const retry = () => {
+    setConnectError(null);
+    connect().catch((e: unknown) => {
+      setConnectError(e instanceof Error ? e.message : "Could not reach the wallet");
+    });
+  };
+
+  // A connection that came good makes the old error moot.
+  const shownError = connected ? null : connectError;
+
   return (
     <>
-      <button className="tf-btn tf-btn-primary" onClick={() => setModalOpen(true)}>
-        {connecting ? "Connecting…" : "Connect wallet"}
-      </button>
+      {shownError && wallet ? (
+        <div className="flex items-center gap-2">
+          <span
+            className="hidden max-w-44 truncate text-xs text-loss lg:inline"
+            title={shownError}
+          >
+            {shownError}
+          </span>
+          <button className="tf-btn tf-btn-primary" onClick={retry} disabled={connecting}>
+            {connecting ? "Connecting…" : `Open ${wallet.adapter.name}`}
+          </button>
+        </div>
+      ) : (
+        <button className="tf-btn tf-btn-primary" onClick={openPicker}>
+          {connecting ? "Connecting…" : "Connect wallet"}
+        </button>
+      )}
       {picker}
     </>
   );

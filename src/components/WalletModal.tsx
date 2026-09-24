@@ -12,6 +12,31 @@ const INSTALL_LINKS = [
   { name: "Backpack", url: "https://backpack.app/download" },
 ];
 
+/** Phones have no extensions: the wallet's own browser opens the site instead. */
+function mobileLinks(): { name: string; url: string }[] {
+  if (typeof window === "undefined") return [];
+  const here = window.location.href;
+  return [
+    {
+      name: "Phantom",
+      url: `https://phantom.app/ul/browse/${encodeURIComponent(here)}?ref=${encodeURIComponent(
+        window.location.origin
+      )}`,
+    },
+    {
+      name: "Solflare",
+      url: `https://solflare.com/ul/v1/browse/${encodeURIComponent(here)}?ref=${encodeURIComponent(
+        window.location.origin
+      )}`,
+    },
+  ];
+}
+
+function isPhone(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+}
+
 export function WalletModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { wallets, select } = useWallet();
   useEffect(() => {
@@ -28,6 +53,8 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
     (w) =>
       w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
   );
+  const phone = isPhone();
+  const fallback = phone ? mobileLinks() : INSTALL_LINKS;
 
   return createPortal(
     <div
@@ -56,7 +83,7 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
             {available.map((w) => (
               <li key={w.adapter.name}>
                 <button
-                  className="flex w-full items-center gap-3 rounded-xl border border-line bg-surface-2 px-3 py-3 text-left transition hover:border-mint/50"
+                  className="flex w-full items-center gap-3 rounded-xl border-2 border-ink bg-surface-2 px-3 py-3 text-left transition hover:bg-sun"
                   onClick={() => {
                     select(w.adapter.name);
                     onClose();
@@ -73,21 +100,31 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
           </ul>
         ) : (
           <div className="space-y-3">
-            <p className="text-sm text-muted">No Solana wallet found in this browser.</p>
+            <p className="text-sm text-muted">
+              {phone
+                ? "No wallet in this browser — open the site inside your wallet's own browser and you are in."
+                : "No Solana wallet found in this browser. Install one, then reload the page."}
+            </p>
             <ul className="space-y-2">
-              {INSTALL_LINKS.map((l) => (
+              {fallback.map((l) => (
                 <li key={l.name}>
                   <a
                     href={l.url}
-                    target="_blank"
+                    target={phone ? undefined : "_blank"}
                     rel="noreferrer"
-                    className="flex items-center justify-between rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold transition hover:border-mint/50"
+                    className="flex items-center justify-between rounded-xl border-2 border-ink bg-surface-2 px-3 py-3 text-sm font-semibold transition hover:bg-sun"
                   >
-                    {l.name} <span className="text-muted">Install ↗</span>
+                    {l.name} <span className="text-muted">{phone ? "Open ↗" : "Install ↗"}</span>
                   </a>
                 </li>
               ))}
             </ul>
+            {!phone && (
+              <p className="text-[11px] text-muted">
+                Already have one? Some browsers only hand the wallet to the page after a reload —
+                give the page a refresh and try again.
+              </p>
+            )}
           </div>
         )}
       </div>
