@@ -3,14 +3,18 @@ import { store, K } from "@/lib/store";
 import { getSessionWallet } from "@/lib/auth";
 import { getCommunity, hydrateCommunity, meetsGate } from "@/lib/data";
 import { forgetBalance } from "@/lib/holdings";
+import { clientIp, limited } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
 /** Join (or re-verify) — membership requires holding the gating coin. */
-export async function POST(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   const wallet = await getSessionWallet();
   if (!wallet) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  // Every join asks the chain fresh, so it is metered.
+  const block = await limited("join", clientIp(req), 30, 60);
+  if (block) return block;
 
   const community = await getCommunity(id);
   if (!community) return NextResponse.json({ error: "Community not found" }, { status: 404 });

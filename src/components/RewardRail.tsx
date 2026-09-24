@@ -29,7 +29,7 @@ export function RewardRail({ rewards }: { rewards: RewardsSnapshot }) {
 
         {board.length === 0 ? (
           <p className="mt-3 text-[11px] text-muted">
-            No scoring calls yet today — the board resets at 00:00 UTC, so an early call counts.
+            No scoring calls yet today — the day pays out at 09:00 UTC, so an early call counts.
           </p>
         ) : (
           <ul className="mt-3 space-y-2">

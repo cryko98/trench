@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
 import { isSolanaAddress } from "@/lib/format";
+import { clientIp, limited } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,11 @@ export function signInMessage(wallet: string, nonce: string) {
 }
 
 export async function POST(req: Request) {
-  const { wallet } = (await req.json()) as { wallet?: string };
+  // Unauthenticated and it writes: the first thing a bot would hammer.
+  const block = await limited("nonce", clientIp(req), 20, 60);
+  if (block) return block;
+
+  const { wallet } = (await req.json().catch(() => ({}))) as { wallet?: string };
   if (!wallet || !isSolanaAddress(wallet)) {
     return NextResponse.json({ error: "Invalid wallet address" }, { status: 400 });
   }

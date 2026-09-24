@@ -14,12 +14,13 @@ import type {
 } from "./types";
 import { callMultiple, shortAddress } from "./format";
 import { RADAR_AUTHOR } from "./constants";
+import logo from "@/assets/logo.png";
 
 export const RADAR_PROFILE: Profile = {
   wallet: RADAR_AUTHOR,
   name: "Trench Radar",
   handle: "radar",
-  avatar: "/logo.png",
+  avatar: logo.src,
   bio: "Automated reports from the trenches.",
   createdAt: 0,
 };

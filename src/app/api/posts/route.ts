@@ -6,6 +6,8 @@ import { sweepRadar } from "@/lib/radar";
 import { getToken } from "@/lib/token";
 import { extractCa, isSolanaAddress } from "@/lib/format";
 import { checkText } from "@/lib/moderation";
+import { clientIp, limited } from "@/lib/ratelimit";
+import { fundedOr403 } from "@/lib/holdings";
 import type { Post } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -55,8 +57,14 @@ export async function POST(req: Request) {
   if (await store.get<number>(cooldownKey)) {
     return NextResponse.json({ error: "Slow down, anon" }, { status: 429 });
   }
+  // Per wallet is not enough when wallets are free: cap the address too, and
+  // ask the wallet to be funded before it may write.
+  const block = await limited("post", clientIp(req), 15, 60);
+  if (block) return block;
+  const unfunded = await fundedOr403(wallet);
+  if (unfunded) return unfunded;
 
-  const body = (await req.json()) as {
+  const body = (await req.json().catch(() => ({}))) as {
     text?: string;
     ca?: string;
     communityId?: string;

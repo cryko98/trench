@@ -45,7 +45,7 @@ export default async function RewardsPage() {
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             <Tile label="Rewarded daily" value={`Top ${REWARD_PLACES}`} sub="on the day's board" />
             <Tile label="Scored on" value="Peak" sub="market cap since the call" />
-            <Tile label="Board resets" value="00:00" sub="UTC, every day" />
+            <Tile label="Payout time" value="09:00" sub="UTC, every day" />
             <Tile label="Today" value={snap.epoch.label} sub="running now" />
           </div>
         </div>
@@ -59,7 +59,7 @@ export default async function RewardsPage() {
 
         {snap.board.length === 0 ? (
           <p className="px-4 py-6 text-sm text-muted">
-            No scoring calls yet today. Post a call — the board resets at 00:00 UTC.
+            No scoring calls yet today. Post a call — the day closes and pays out at 09:00 UTC.
           </p>
         ) : (
           <ul className="divide-y divide-line">
@@ -114,7 +114,7 @@ export default async function RewardsPage() {
         <ol className="mt-3 space-y-3 text-sm text-muted">
           <li>
             <span className="text-foreground">1.</span> Only calls posted inside the running day
-            count. A new day starts at 00:00 UTC.
+            count. A reward day runs from 09:00 UTC to 09:00 UTC, and pays out when it closes.
           </li>
           <li>
             <span className="text-foreground">2.</span> A call is scored on its{" "}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import logo from "@/assets/logo.png";
 
 export const metadata = {
   title: "How it works — Trench Social",
@@ -49,7 +50,7 @@ export default function HowItWorksPage() {
           style={{ background: "radial-gradient(circle, #90ffd0, transparent 70%)" }}
         />
         <div className="relative flex items-center gap-4">
-          <Image src="/logo.png" alt="" width={64} height={64} />
+          <Image src={logo} alt="" width={64} height={64} />
           <div>
             <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
               How <span className="tf-neon">Trench Social</span> works
@@ -150,7 +151,7 @@ export default function HowItWorksPage() {
 
       <Section label="Rewards" title="Good calls get rewarded">
         <p className="text-sm leading-relaxed text-muted">
-          The top callers are rewarded every day. A call counts for the day it was posted on and is
+          The top callers are rewarded every day at 09:00 UTC. A call counts for the reward day it was posted in (09:00 to 09:00 UTC) and is
           scored on its peak — a 6x call is worth five points, a 2x one, a flat call nothing. Your
           points are the sum across your calls, and the top ten on the board at the end of the day
           are rewarded, to the wallet they posted from. Nothing to claim.{" "}

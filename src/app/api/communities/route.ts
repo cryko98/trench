@@ -3,8 +3,9 @@ import { store, K } from "@/lib/store";
 import { getSessionWallet, isHouseException } from "@/lib/auth";
 import { getCommunities, hydrateCommunity } from "@/lib/data";
 import { getToken } from "@/lib/token";
-import { getTokenBalance } from "@/lib/holdings";
+import { getTokenBalance, fundedOr403 } from "@/lib/holdings";
 import { isSolanaAddress } from "@/lib/format";
+import { clientIp, limited } from "@/lib/ratelimit";
 import type { Community } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -18,8 +19,13 @@ export async function GET() {
 export async function POST(req: Request) {
   const wallet = await getSessionWallet();
   if (!wallet) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  // Opening rooms is rare for a person and cheap for a bot.
+  const block =
+    (await limited("community:wallet", wallet, 3, 3600)) ??
+    (await limited("community:ip", clientIp(req), 10, 3600));
+  if (block) return block;
 
-  const body = (await req.json()) as {
+  const body = (await req.json().catch(() => ({}))) as {
     ca?: string;
     name?: string;
     description?: string;
@@ -29,6 +35,10 @@ export async function POST(req: Request) {
   const ca = (body.ca ?? "").trim();
   if (!isSolanaAddress(ca)) {
     return NextResponse.json({ error: "Enter a valid contract address" }, { status: 400 });
+  }
+  if (!isHouseException(wallet, ca)) {
+    const unfunded = await fundedOr403(wallet);
+    if (unfunded) return unfunded;
   }
 
   const existing = await store.get<string>(K.communityByCa(ca));

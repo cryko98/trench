@@ -25,6 +25,7 @@ interface Store {
   set(key: string, value: unknown, opts?: { ex?: number }): Promise<void>;
   del(key: string): Promise<void>;
   incr(key: string): Promise<number>;
+  expire(key: string, seconds: number): Promise<void>;
   zadd(key: string, member: string, score: number): Promise<void>;
   zrem(key: string, member: string): Promise<void>;
   zrange(key: string, start: number, stop: number, rev: boolean): Promise<string[]>;
@@ -51,6 +52,9 @@ class UpstashStore implements Store {
   }
   async incr(key: string) {
     return await this.r.incr(key);
+  }
+  async expire(key: string, seconds: number) {
+    await this.r.expire(key, seconds);
   }
   async zadd(key: string, member: string, score: number) {
     await this.r.zadd(key, { score, member });
@@ -170,10 +174,17 @@ class LocalStore implements Store {
     this.flush();
   }
   async incr(key: string) {
-    const cur = Number((this.alive(key)?.value as number) ?? 0) + 1;
-    this.kv.set(key, { value: cur });
+    const entry = this.alive(key);
+    const cur = Number((entry?.value as number) ?? 0) + 1;
+    // A counter keeps the window it was given.
+    this.kv.set(key, { value: cur, expires: entry?.expires });
     this.flush();
     return cur;
+  }
+  async expire(key: string, seconds: number) {
+    const entry = this.alive(key);
+    if (entry) this.kv.set(key, { ...entry, expires: Date.now() + seconds * 1000 });
+    this.flush();
   }
   async zadd(key: string, member: string, score: number) {
     this.z(key).set(member, score);
@@ -264,6 +275,7 @@ export const K = {
   // v2: the old entries held unverified guesses; they age out on their own.
   image: (mint: string) => `img2:${mint}`,
   balance: (wallet: string, mint: string) => `bal:${wallet}:${mint}`,
+  sol: (wallet: string) => `sol:${wallet}`,
   community: (id: string) => `community:${id}`,
   communities: "communities",
   communityByCa: (ca: string) => `community:ca:${ca}`,

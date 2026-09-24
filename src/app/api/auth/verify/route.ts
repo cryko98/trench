@@ -6,11 +6,18 @@ import { createSession } from "@/lib/auth";
 import { getProfile } from "@/lib/data";
 import { isSolanaAddress } from "@/lib/format";
 import { signInMessage } from "../nonce/route";
+import { clientIp, limited } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const { wallet, signature } = (await req.json()) as { wallet?: string; signature?: string };
+  const block = await limited("verify", clientIp(req), 20, 60);
+  if (block) return block;
+
+  const { wallet, signature } = (await req.json().catch(() => ({}))) as {
+    wallet?: string;
+    signature?: string;
+  };
 
   if (!wallet || !isSolanaAddress(wallet) || !signature) {
     return NextResponse.json({ error: "Missing wallet or signature" }, { status: 400 });

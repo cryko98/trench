@@ -13,6 +13,7 @@ import {
   siteOrigin,
   sticker,
 } from "@/lib/og";
+import logo from "@/assets/logo.png";
 
 export const alt = "A call on Trench Social";
 export const size = OG_SIZE;
@@ -66,7 +67,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         >
           {/* brand row */}
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <img src={`${origin}/logo.png`} width={60} height={60} />
+            <img src={`${origin}${logo.src}`} width={60} height={60} />
             <div
               style={{
                 display: "flex",

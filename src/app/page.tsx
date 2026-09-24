@@ -9,6 +9,7 @@ import { Feed } from "@/components/Feed";
 import { TrendingRail } from "@/components/TrendingRail";
 import { RewardRail } from "@/components/RewardRail";
 import { getRewardsSnapshot } from "@/lib/rewards";
+import logo from "@/assets/logo.png";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,7 @@ export default async function HomePage() {
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
           <div className="relative shrink-0">
             <Image
-              src="/logo.png"
+              src={logo}
               alt=""
               width={88}
               height={88}
@@ -92,7 +93,7 @@ export default async function HomePage() {
           <span className="tf-chip tf-chip-mint">Daily rewards</span>
           <span className="text-sm font-bold text-ink">Call coins, get rewarded</span>
           <span className="text-xs text-ink-soft">
-            Every day the top callers on the board are rewarded for their calls.
+            Every day at 09:00 UTC the top callers on the board are rewarded for their calls.
           </span>
           <span className="ml-auto text-xs font-bold text-lav-deep">How it works →</span>
         </Link>

@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import { ConnectButton } from "./ConnectButton";
 import { NAV } from "./nav";
 import { TokenBar } from "./TokenBar";
+// Imported, not served from /public: the URL carries a content hash, so a
+// new logo is a new URL and no cache anywhere can keep showing the old one.
+import logo from "@/assets/logo.png";
 
 /** Live SOL price chip — the same cached number the coin cards use. */
 function SolPrice() {
@@ -67,7 +70,7 @@ export function Header() {
               }}
             />
             <Image
-              src="/logo.png"
+              src={logo}
               alt="Trench Social"
               width={40}
               height={40}

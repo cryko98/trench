@@ -13,7 +13,7 @@ import type { Profile } from "./types";
 export const REWARD_PLACES = 10;
 
 export type RewardEpoch = {
-  /** 00:00 UTC of the running day. */
+  /** 09:00 UTC that opened the running reward day. */
   start: number;
   end: number;
   label: string;
@@ -38,11 +38,16 @@ export type Payout = {
   at: number;
 };
 
-/** Rewards run on UTC days: the board resets at midnight UTC. */
+/** Hour (UTC) at which a reward day closes, pays out, and the next begins. */
+export const PAYOUT_HOUR_UTC = 9;
+
+/** A reward day runs from 09:00 UTC to 09:00 UTC the next day. */
 export function currentEpoch(now = Date.now()): RewardEpoch {
   const d = new Date(now);
-  const start = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
-  const end = start + 24 * 60 * 60 * 1000;
+  const todayAtNine = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), PAYOUT_HOUR_UTC);
+  const day = 24 * 60 * 60 * 1000;
+  const start = now >= todayAtNine ? todayAtNine : todayAtNine - day;
+  const end = start + day;
   const label = new Date(start).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",

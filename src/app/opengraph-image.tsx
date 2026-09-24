@@ -14,6 +14,7 @@ import {
   siteOrigin,
   sticker,
 } from "@/lib/og";
+import logo from "@/assets/logo.png";
 
 export const alt = "Trench Social — the Solana trenches in one feed";
 export const size = OG_SIZE;
@@ -103,7 +104,7 @@ export default async function Image() {
         >
           {/* brand row */}
           <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
-            <img src={`${origin}/logo.png`} width={112} height={112} />
+            <img src={`${origin}${logo.src}`} width={112} height={112} />
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div
                 style={{
