@@ -83,6 +83,11 @@ export async function siteOrigin(): Promise<string> {
   return vercel ? `https://${vercel}` : "http://localhost:3000";
 }
 
+/** The domain printed on a card: the one it is served from, without the www. */
+export async function siteHost(): Promise<string> {
+  return new URL(await siteOrigin()).hostname.replace(/^www\./, "");
+}
+
 type OgFont = { name: string; data: ArrayBuffer; weight: 600 | 800; style: "normal" };
 
 /**

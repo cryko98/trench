@@ -3,7 +3,17 @@ import { ImageResponse } from "next/og";
 import { getFeed, getProfile } from "@/lib/data";
 import { store, K } from "@/lib/store";
 import { callMultiple, formatMultiple, isSolanaAddress, shortAddress } from "@/lib/format";
-import { OG_SIZE, OG_TYPE, og, ogBackground, ogFonts, chip, siteOrigin, sticker } from "@/lib/og";
+import {
+  OG_SIZE,
+  OG_TYPE,
+  og,
+  ogBackground,
+  ogFonts,
+  chip,
+  siteHost,
+  siteOrigin,
+  sticker,
+} from "@/lib/og";
 
 export const alt = "A caller on Trench Social";
 export const size = OG_SIZE;
@@ -56,7 +66,7 @@ function Stat({
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [origin, fonts] = await Promise.all([siteOrigin(), ogFonts()]);
+  const [origin, host, fonts] = await Promise.all([siteOrigin(), siteHost(), ogFonts()]);
   const raw = decodeURIComponent(id);
   const wallet = isSolanaAddress(raw)
     ? raw
@@ -175,7 +185,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
               tone={og.sunSoft}
               color={best ? og.mintDeep : og.muted}
             />
-            <span style={{ ...chip(og.mint), marginLeft: "auto" }}>trenchsocials.fun</span>
+            <span style={{ ...chip(og.mint), marginLeft: "auto" }}>{host}</span>
           </div>
         </div>
       </div>

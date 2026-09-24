@@ -3,7 +3,17 @@ import { ImageResponse } from "next/og";
 import { getStats, getTopCalls } from "@/lib/data";
 import { getGraduatingCoins } from "@/lib/graduating";
 import { formatMultiple, formatUsd, ticker } from "@/lib/format";
-import { OG_SIZE, OG_TYPE, og, ogBackground, ogFonts, chip, siteOrigin, sticker } from "@/lib/og";
+import {
+  OG_SIZE,
+  OG_TYPE,
+  og,
+  ogBackground,
+  ogFonts,
+  chip,
+  siteHost,
+  siteOrigin,
+  sticker,
+} from "@/lib/og";
 
 export const alt = "Trench Social — the Solana trenches in one feed";
 export const size = OG_SIZE;
@@ -56,7 +66,7 @@ function Tile({
 }
 
 export default async function Image() {
-  const origin = await siteOrigin();
+  const [origin, host] = await Promise.all([siteOrigin(), siteHost()]);
   const [stats, topCalls, graduating, fonts] = await Promise.all([
     getStats().catch(() => ({ posts: 0, calls: 0, communities: 0 })),
     getTopCalls(1, 60).catch(() => []),
@@ -182,7 +192,7 @@ export default async function Image() {
                   </div>
                 </div>
               ) : null}
-              <span style={chip(og.mint)}>trenchsocials.fun</span>
+              <span style={chip(og.mint)}>{host}</span>
             </div>
           </div>
         </div>

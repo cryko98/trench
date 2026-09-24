@@ -2,7 +2,17 @@
 import { ImageResponse } from "next/og";
 import { getPost } from "@/lib/data";
 import { callMultiple, formatMultiple, formatUsd, shortAddress, ticker } from "@/lib/format";
-import { OG_SIZE, OG_TYPE, og, ogBackground, ogFonts, chip, siteOrigin, sticker } from "@/lib/og";
+import {
+  OG_SIZE,
+  OG_TYPE,
+  og,
+  ogBackground,
+  ogFonts,
+  chip,
+  siteHost,
+  siteOrigin,
+  sticker,
+} from "@/lib/og";
 
 export const alt = "A call on Trench Social";
 export const size = OG_SIZE;
@@ -13,7 +23,12 @@ export const dynamic = "force-dynamic";
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [post, origin, fonts] = await Promise.all([getPost(id, null), siteOrigin(), ogFonts()]);
+  const [post, origin, host, fonts] = await Promise.all([
+    getPost(id, null),
+    siteOrigin(),
+    siteHost(),
+    ogFonts(),
+  ]);
 
   const multiple = post ? callMultiple(post.callMcap, post.token?.marketCap ?? null) : null;
   const peak = post ? callMultiple(post.callMcap, post.peakMcap) : null;
@@ -222,7 +237,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
                 {post ? shortAddress(post.author, 4) : "solana"}
               </div>
             </div>
-            <span style={{ ...chip(og.mint), marginLeft: "auto" }}>trenchsocials.fun</span>
+            <span style={{ ...chip(og.mint), marginLeft: "auto" }}>{host}</span>
           </div>
         </div>
       </div>
