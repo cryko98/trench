@@ -37,6 +37,16 @@ export function isAdminWallet(wallet: string | null | undefined): boolean {
   return Boolean(admin) && wallet === admin;
 }
 
+/**
+ * The one exception to "hold the coin": the admin wallet and the site's own
+ * coin. Its community has to exist before anyone holds a single token, and
+ * only the admin may open it that way. Dormant until the CA is configured.
+ */
+export function isHouseException(wallet: string | null | undefined, ca: string): boolean {
+  const house = process.env.NEXT_PUBLIC_TOKEN_CA?.trim();
+  return Boolean(house) && ca === house && isAdminWallet(wallet);
+}
+
 /** Wallet address of the signed-in user, or null. */
 export async function getSessionWallet(): Promise<string | null> {
   const jar = await cookies();

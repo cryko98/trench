@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
-import { getSessionWallet } from "@/lib/auth";
+import { getSessionWallet, isHouseException } from "@/lib/auth";
 import { getCommunities, hydrateCommunity } from "@/lib/data";
 import { getToken } from "@/lib/token";
 import { getTokenBalance } from "@/lib/holdings";
@@ -39,19 +39,22 @@ export async function POST(req: Request) {
     );
   }
 
-  // The founder has to hold the coin too.
-  const balance = await getTokenBalance(wallet, ca);
-  if (balance === null) {
-    return NextResponse.json(
-      { error: "Could not verify your balance right now, try again" },
-      { status: 503 }
-    );
-  }
-  if (balance <= 0) {
-    return NextResponse.json(
-      { error: "You need to hold this coin to open its community" },
-      { status: 403 }
-    );
+  // The founder has to hold the coin too — any amount, but more than none.
+  // The single exception: the admin opening the site's own coin's room.
+  if (!isHouseException(wallet, ca)) {
+    const balance = await getTokenBalance(wallet, ca);
+    if (balance === null) {
+      return NextResponse.json(
+        { error: "Could not verify your balance right now, try again" },
+        { status: 503 }
+      );
+    }
+    if (balance <= 0) {
+      return NextResponse.json(
+        { error: "You need to hold this coin to open its community" },
+        { status: 403 }
+      );
+    }
   }
 
   const token = await getToken(ca);

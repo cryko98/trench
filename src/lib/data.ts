@@ -1,6 +1,7 @@
 import { store, K } from "./store";
 import { getToken, getTokens } from "./token";
 import { getTokenBalance } from "./holdings";
+import { isHouseException } from "./auth";
 import type {
   Comment,
   CommentView,
@@ -280,6 +281,10 @@ export async function meetsGate(
   wallet: string,
   community: Community
 ): Promise<{ ok: boolean; balance: number | null }> {
+  // The admin runs the site's own coin's room without holding it.
+  // (A zero, not a null: null means "could not check", which callers refuse.)
+  if (isHouseException(wallet, community.ca)) return { ok: true, balance: 0 };
+
   const balance = await getTokenBalance(wallet, community.ca);
   if (balance === null) return { ok: false, balance: null };
   return { ok: balance >= Math.max(community.minTokens, 0) && balance > 0, balance };
