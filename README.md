@@ -1,4 +1,4 @@
-# Trench Socials — $socials
+# Trench Social — $social
 
 The Solana trenches in one feed. Connect a wallet, post whatever is on your mind, call coins by
 contract address, and open token-gated communities for the coins you hold.

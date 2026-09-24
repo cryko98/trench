@@ -71,7 +71,7 @@ export default async function HomePage() {
 
           <div className="min-w-0">
             <h1 className="text-2xl font-bold leading-none tracking-tight sm:text-3xl">
-              <span className="tf-neon">TRENCH</span> SOCIALS
+              <span className="tf-neon">TRENCH</span> SOCIAL
             </h1>
             <p className="tf-chip tf-chip-sun mt-2 inline-flex">
               Posting from the trenches

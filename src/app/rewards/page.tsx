@@ -8,9 +8,9 @@ import { getSessionWallet, isAdminWallet } from "@/lib/auth";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Caller rewards — Trench Socials",
+  title: "Caller rewards — Trench Social",
   description:
-    "The best callers on Trench Socials are rewarded every day. Post a call, climb the board, get paid.",
+    "The best callers on Trench Social are rewarded every day. Post a call, climb the board, get paid.",
 };
 
 function Tile({ label, value, sub }: { label: string; value: string; sub?: string }) {

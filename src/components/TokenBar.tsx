@@ -14,7 +14,7 @@ function XLogo() {
   );
 }
 
-/** Contract address and socials for $socials itself. */
+/** Contract address and socials for $social itself. */
 export function TokenBar() {
   const [copied, setCopied] = useState(false);
 
@@ -52,7 +52,7 @@ export function TokenBar() {
           href={X_URL}
           target="_blank"
           rel="noreferrer"
-          aria-label="Trench Socials on X"
+          aria-label="Trench Social on X"
           className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-ink bg-surface text-ink transition hover:bg-sun"
         >
           <XLogo />

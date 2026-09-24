@@ -68,7 +68,7 @@ export function Header() {
             />
             <Image
               src="/logo.png"
-              alt="Trench Socials"
+              alt="Trench Social"
               width={40}
               height={40}
               priority
@@ -77,11 +77,11 @@ export function Header() {
           </span>
           <span className="hidden flex-col leading-none sm:flex">
             <span className="text-[15px] font-bold tracking-tight">
-              TRENCH <span className="text-mint-deep">SOCIALS</span>
+              TRENCH <span className="text-mint-deep">SOCIAL</span>
             </span>
             <span className="mt-1 flex items-center gap-1.5">
               <span className="rounded-full border-2 border-ink bg-sun px-2 py-0.5 font-mono text-[9px] font-bold tracking-[0.12em] text-ink">
-                $socials
+                $social
               </span>
               <span className="font-mono text-[9px] tracking-[0.12em] text-muted">SOLANA</span>
             </span>

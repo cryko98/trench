@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
-  title: "How it works — Trench Socials",
+  title: "How it works — Trench Social",
   description:
-    "Everything you can do on Trench Socials: connect a wallet, post, call coins, buy them, open token-gated communities and get scored on your calls.",
+    "Everything you can do on Trench Social: connect a wallet, post, call coins, buy them, open token-gated communities and get scored on your calls.",
 };
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
@@ -52,7 +52,7 @@ export default function HowItWorksPage() {
           <Image src="/logo.png" alt="" width={64} height={64} />
           <div>
             <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-              How <span className="tf-neon">Trench Socials</span> works
+              How <span className="tf-neon">Trench Social</span> works
             </h1>
             <p className="mt-1 text-sm text-muted">
               A feed for the Solana trenches: post, call coins, and let the market score you in

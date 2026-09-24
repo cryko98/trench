@@ -3,9 +3,9 @@ import { ImageResponse } from "next/og";
 import { getStats, getTopCalls } from "@/lib/data";
 import { getGraduatingCoins } from "@/lib/graduating";
 import { formatMultiple, formatUsd, ticker } from "@/lib/format";
-import { OG_SIZE, OG_TYPE, og, siteOrigin } from "@/lib/og";
+import { OG_SIZE, OG_TYPE, og, ogBackground, ogFonts, chip, siteOrigin, sticker } from "@/lib/og";
 
-export const alt = "Trench Socials — the Solana trenches in one feed";
+export const alt = "Trench Social — the Solana trenches in one feed";
 export const size = OG_SIZE;
 export const contentType = OG_TYPE;
 
@@ -13,37 +13,59 @@ export const contentType = OG_TYPE;
 // the card is regenerated at most every few minutes.
 export const revalidate = 300;
 
-function Tile({ label, value, color = og.text }: { label: string; value: string; color?: string }) {
+function Tile({
+  label,
+  value,
+  tone = og.panelSoft,
+  color = og.ink,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+  color?: string;
+}) {
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 8,
-        background: og.panel,
-        border: `1px solid ${og.line}`,
-        borderRadius: 18,
-        padding: "18px 26px",
-        minWidth: 200,
+        gap: 2,
+        background: tone,
+        border: `3px solid ${og.ink}`,
+        borderRadius: 20,
+        padding: "14px 24px",
+        minWidth: 190,
       }}
     >
-      <div style={{ display: "flex", fontSize: 18, letterSpacing: 3, color: og.muted }}>
+      <div
+        style={{
+          display: "flex",
+          fontFamily: og.display,
+          fontSize: 20,
+          fontWeight: 800,
+          color: og.inkSoft,
+        }}
+      >
         {label}
       </div>
-      <div style={{ display: "flex", fontSize: 46, fontWeight: 800, color }}>{value}</div>
+      <div style={{ display: "flex", fontFamily: og.display, fontSize: 48, fontWeight: 800, color }}>
+        {value}
+      </div>
     </div>
   );
 }
 
 export default async function Image() {
   const origin = await siteOrigin();
-  const [stats, topCalls, graduating] = await Promise.all([
+  const [stats, topCalls, graduating, fonts] = await Promise.all([
     getStats().catch(() => ({ posts: 0, calls: 0, communities: 0 })),
     getTopCalls(1, 60).catch(() => []),
     getGraduatingCoins(3).catch(() => []),
+    ogFonts(),
   ]);
 
   const best = topCalls[0];
+  const next = graduating[0];
 
   return new ImageResponse(
     (
@@ -52,54 +74,71 @@ export default async function Image() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: og.bg,
-          backgroundImage: `radial-gradient(900px 430px at 6% -12%, rgba(144,255,208,0.16), transparent 60%), radial-gradient(800px 400px at 96% 0%, rgba(144,64,240,0.22), transparent 60%)`,
-          padding: 56,
-          color: og.text,
+          padding: 40,
+          fontFamily: og.body,
+          color: og.ink,
+          ...ogBackground,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
-          <img src={`${origin}/logo.png`} width={116} height={116} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ display: "flex", fontSize: 62, fontWeight: 800, letterSpacing: -1 }}>
-              TRENCH <span style={{ color: og.mint, marginLeft: 14 }}>SOCIALS</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span
+        <div
+          style={{
+            ...sticker(32, 10),
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%",
+            padding: "38px 44px",
+          }}
+        >
+          {/* brand row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
+            <img src={`${origin}/logo.png`} width={112} height={112} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div
                 style={{
                   display: "flex",
-                  border: `1px solid rgba(144,255,208,0.35)`,
-                  borderRadius: 8,
-                  padding: "6px 12px",
-                  fontSize: 18,
-                  letterSpacing: 4,
-                  color: og.mint,
+                  fontFamily: og.display,
+                  fontSize: 64,
+                  fontWeight: 800,
+                  letterSpacing: -1,
+                  lineHeight: 1,
                 }}
               >
-                POSTING FROM THE TRENCHES
-              </span>
-              <span style={{ display: "flex", fontSize: 20, color: og.muted }}>$socials</span>
+                <span style={{ color: og.lav, textShadow: `3px 3px 0 ${og.mint}` }}>TRENCH</span>
+                <span style={{ marginLeft: 16 }}>SOCIAL</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={chip(og.sun)}>Posting from the trenches</span>
+                <span style={chip(og.panelSoft, og.lavDeep)}>$social</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ display: "flex", fontSize: 30, color: og.muted, maxWidth: 900 }}>
-          Call a coin by its contract address — pump.fun bonding curve included — and the feed
-          scores the call from the market cap you called it at.
-        </div>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 30,
+              lineHeight: 1.35,
+              color: og.inkSoft,
+              maxWidth: 940,
+            }}
+          >
+            Call a coin by its contract address — pump.fun curve included — and the feed scores
+            the call from the market cap you called it at.
+          </div>
 
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 18 }}>
-          <Tile label="POSTS" value={String(stats.posts)} />
-          <Tile label="CALLS" value={String(stats.calls)} />
-          <Tile
-            label="BEST CALL"
-            value={best ? formatMultiple(best.peakMultiple) : "—"}
-            color={best ? og.mint : og.muted}
-          />
+          {/* stat stickers */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 16 }}>
+            <Tile label="Posts" value={String(stats.posts)} />
+            <Tile label="Calls" value={String(stats.calls)} tone={og.mintSoft} />
+            <Tile
+              label="Best call"
+              value={best ? formatMultiple(best.peakMultiple) : "—"}
+              tone={og.sunSoft}
+              color={best ? og.mintDeep : og.muted}
+            />
 
-          {graduating[0] ? (
             <div
               style={{
                 display: "flex",
@@ -109,48 +148,46 @@ export default async function Image() {
                 alignItems: "flex-end",
               }}
             >
-              <div style={{ display: "flex", fontSize: 18, letterSpacing: 3, color: og.muted }}>
-                CLOSEST TO MIGRATION
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                {graduating[0].image ? (
-                  <img
-                    src={graduating[0].image}
-                    width={44}
-                    height={44}
-                    style={{ borderRadius: 12 }}
-                  />
-                ) : null}
-                <span style={{ display: "flex", fontSize: 30, fontWeight: 800 }}>
-                  {ticker(graduating[0].symbol)}
-                </span>
-                <span style={{ display: "flex", fontSize: 26, color: og.mint }}>
-                  {graduating[0].progress.toFixed(0)}%
-                </span>
-                <span style={{ display: "flex", fontSize: 22, color: og.muted }}>
-                  {formatUsd(graduating[0].marketCap)}
-                </span>
-              </div>
-              <div style={{ display: "flex", fontSize: 22, color: og.muted }}>
-                trenchsocials.fun
-              </div>
+              {next ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      fontFamily: og.display,
+                      fontSize: 20,
+                      fontWeight: 800,
+                      color: og.inkSoft,
+                    }}
+                  >
+                    Closest to migration
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    {next.image ? (
+                      <img
+                        src={next.image}
+                        width={44}
+                        height={44}
+                        style={{ borderRadius: 12, border: `3px solid ${og.ink}` }}
+                      />
+                    ) : null}
+                    <span
+                      style={{ display: "flex", fontFamily: og.display, fontSize: 30, fontWeight: 800 }}
+                    >
+                      {ticker(next.symbol)}
+                    </span>
+                    <span style={chip(og.lav, "#fff8ff")}>{next.progress.toFixed(0)}%</span>
+                    <span style={{ display: "flex", fontSize: 22, color: og.muted }}>
+                      {formatUsd(next.marketCap)}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+              <span style={chip(og.mint)}>trenchsocials.fun</span>
             </div>
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                marginLeft: "auto",
-                alignItems: "flex-end",
-                fontSize: 22,
-                color: og.muted,
-              }}
-            >
-              trenchsocials.fun
-            </div>
-          )}
+          </div>
         </div>
       </div>
     ),
-    size
+    { ...size, ...(fonts && { fonts }) }
   );
 }

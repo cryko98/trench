@@ -4,7 +4,7 @@ import { TopCallers } from "@/components/TopCallers";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Top calls — Trench Socials" };
+export const metadata = { title: "Top calls — Trench Social" };
 
 export default async function TopCallsPage() {
   const [calls, callers] = await Promise.all([getTopCalls(30), getTopCallers(10)]);

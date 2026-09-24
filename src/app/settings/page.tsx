@@ -1,6 +1,6 @@
 import { ProfileForm } from "@/components/ProfileForm";
 
-export const metadata = { title: "Edit profile — Trench Socials" };
+export const metadata = { title: "Edit profile — Trench Social" };
 
 export default function SettingsPage() {
   return (

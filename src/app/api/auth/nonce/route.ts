@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 export function signInMessage(wallet: string, nonce: string) {
   return [
-    "Trench Socials — sign in",
+    "Trench Social — sign in",
     "",
     "Signing this message proves you own this wallet.",
     "It is free and does not send a transaction.",

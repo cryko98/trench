@@ -3,40 +3,60 @@ import { ImageResponse } from "next/og";
 import { getFeed, getProfile } from "@/lib/data";
 import { store, K } from "@/lib/store";
 import { callMultiple, formatMultiple, isSolanaAddress, shortAddress } from "@/lib/format";
-import { OG_SIZE, OG_TYPE, og, siteOrigin } from "@/lib/og";
+import { OG_SIZE, OG_TYPE, og, ogBackground, ogFonts, chip, siteOrigin, sticker } from "@/lib/og";
 
-export const alt = "A caller on Trench Socials";
+export const alt = "A caller on Trench Social";
 export const size = OG_SIZE;
 export const contentType = OG_TYPE;
 
 // The card reflects live market data, so it is rendered per request.
 export const dynamic = "force-dynamic";
 
-function Stat({ label, value, color }: { label: string; value: string; color: string }) {
+function Stat({
+  label,
+  value,
+  tone = og.panelSoft,
+  color = og.ink,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+  color?: string;
+}) {
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 6,
-        background: og.panel,
-        border: `1px solid ${og.line}`,
-        borderRadius: 18,
-        padding: "20px 28px",
-        minWidth: 230,
+        gap: 2,
+        background: tone,
+        border: `3px solid ${og.ink}`,
+        borderRadius: 20,
+        padding: "16px 26px",
+        minWidth: 210,
       }}
     >
-      <div style={{ display: "flex", fontSize: 20, color: og.muted, letterSpacing: 3 }}>
+      <div
+        style={{
+          display: "flex",
+          fontFamily: og.display,
+          fontSize: 20,
+          fontWeight: 800,
+          color: og.inkSoft,
+        }}
+      >
         {label}
       </div>
-      <div style={{ display: "flex", fontSize: 52, fontWeight: 800, color }}>{value}</div>
+      <div style={{ display: "flex", fontFamily: og.display, fontSize: 52, fontWeight: 800, color }}>
+        {value}
+      </div>
     </div>
   );
 }
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const origin = await siteOrigin();
+  const [origin, fonts] = await Promise.all([siteOrigin(), ogFonts()]);
   const raw = decodeURIComponent(id);
   const wallet = isSolanaAddress(raw)
     ? raw
@@ -57,85 +77,109 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: og.bg,
-          backgroundImage: `radial-gradient(900px 420px at 10% -10%, rgba(144,255,208,0.13), transparent 60%), radial-gradient(760px 380px at 95% 0%, rgba(144,64,240,0.2), transparent 60%)`,
-          padding: 56,
-          color: og.text,
+          padding: 40,
+          fontFamily: og.body,
+          color: og.ink,
+          ...ogBackground,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <img src={`${origin}/logo.png`} width={56} height={56} />
-          <div style={{ display: "flex", fontSize: 26, fontWeight: 800 }}>
-            TRENCH <span style={{ color: og.mint, marginLeft: 8 }}>SOCIALS</span>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          {profile?.avatar ? (
-            <img
-              src={profile.avatar}
-              width={168}
-              height={168}
-              style={{ borderRadius: 999, border: `3px solid ${og.line}` }}
-            />
-          ) : (
+        <div
+          style={{
+            ...sticker(32, 10),
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "100%",
+            padding: "34px 44px",
+          }}
+        >
+          {/* brand row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <img src={`${origin}/logo.png`} width={60} height={60} />
             <div
               style={{
                 display: "flex",
-                width: 168,
-                height: 168,
-                borderRadius: 999,
-                background: og.panel,
-                color: og.mint,
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 64,
+                fontFamily: og.display,
+                fontSize: 32,
                 fontWeight: 800,
+                lineHeight: 1,
               }}
             >
-              {(profile?.name ?? "TS").slice(0, 2).toUpperCase()}
+              <span style={{ color: og.lav, textShadow: `2px 2px 0 ${og.mint}` }}>TRENCH</span>
+              <span style={{ marginLeft: 10 }}>SOCIAL</span>
             </div>
-          )}
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ display: "flex", fontSize: 64, fontWeight: 800 }}>
-              {profile?.name ?? "Unknown trencher"}
-            </div>
-            <div style={{ display: "flex", fontSize: 30, color: og.muted }}>
-              @{profile?.handle ?? "anon"} · {wallet ? shortAddress(wallet, 5) : ""}
-            </div>
-            {profile?.bio ? (
-              <div style={{ display: "flex", fontSize: 26, color: og.muted, maxWidth: 700 }}>
-                {profile.bio.length > 90 ? `${profile.bio.slice(0, 90)}…` : profile.bio}
-              </div>
-            ) : null}
+            <span style={{ ...chip(og.panelSoft, og.lavDeep), marginLeft: "auto" }}>$social</span>
           </div>
-        </div>
 
-        <div style={{ display: "flex", gap: 20 }}>
-          <Stat label="POSTS" value={String(posts.length)} color={og.text} />
-          <Stat label="CALLS" value={String(calls.length)} color={og.text} />
-          <Stat
-            label="BEST CALL"
-            value={best ? formatMultiple(best) : "—"}
-            color={best ? og.mint : og.muted}
-          />
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              marginLeft: "auto",
-              fontSize: 22,
-              color: og.muted,
-            }}
-          >
-            trenchsocials.fun
+          {/* the caller */}
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            {profile?.avatar ? (
+              <img
+                src={profile.avatar}
+                width={160}
+                height={160}
+                style={{ borderRadius: 999, border: `4px solid ${og.ink}` }}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  width: 160,
+                  height: 160,
+                  borderRadius: 999,
+                  border: `4px solid ${og.ink}`,
+                  background: og.lavSoft,
+                  color: og.lavDeep,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: og.display,
+                  fontSize: 64,
+                  fontWeight: 800,
+                }}
+              >
+                {(profile?.name ?? "TS").slice(0, 2).toUpperCase()}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div
+                style={{
+                  display: "flex",
+                  fontFamily: og.display,
+                  fontSize: 62,
+                  fontWeight: 800,
+                  lineHeight: 1.05,
+                }}
+              >
+                {profile?.name ?? "Unknown trencher"}
+              </div>
+              <div style={{ display: "flex", fontSize: 28, color: og.muted }}>
+                @{profile?.handle ?? "anon"} · {wallet ? shortAddress(wallet, 5) : ""}
+              </div>
+              {profile?.bio ? (
+                <div style={{ display: "flex", fontSize: 26, color: og.inkSoft, maxWidth: 760 }}>
+                  {profile.bio.length > 90 ? `${profile.bio.slice(0, 90)}…` : profile.bio}
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          {/* stat stickers */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 16 }}>
+            <Stat label="Posts" value={String(posts.length)} />
+            <Stat label="Calls" value={String(calls.length)} tone={og.mintSoft} />
+            <Stat
+              label="Best call"
+              value={best ? formatMultiple(best) : "—"}
+              tone={og.sunSoft}
+              color={best ? og.mintDeep : og.muted}
+            />
+            <span style={{ ...chip(og.mint), marginLeft: "auto" }}>trenchsocials.fun</span>
           </div>
         </div>
       </div>
     ),
-    size
+    { ...size, ...(fonts && { fonts }) }
   );
 }

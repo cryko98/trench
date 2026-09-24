@@ -39,7 +39,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: "Trench Socials — $socials",
+  title: "Trench Social — $social",
   description:
     "The Solana trenches, in one feed. Connect your wallet, call coins with live market caps, and let the trenches reply.",
   twitter: {
@@ -47,11 +47,11 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Trench Socials — $socials",
+    title: "Trench Social — $social",
     description: "Call coins. Track market caps. Talk trenches.",
     type: "website",
     url: siteUrl(),
-    siteName: "Trench Socials",
+    siteName: "Trench Social",
     locale: "en_US",
   },
 };
@@ -70,7 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <MobileNav />
           <footer className="border-t-2 border-ink/10 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-center text-xs text-muted lg:pb-6">
-            Trench Socials · $socials · built on Solana · data by DexScreener &amp; pump.fun
+            Trench Social · $social · built on Solana · data by DexScreener &amp; pump.fun
           </footer>
         </Providers>
       </body>
