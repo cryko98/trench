@@ -92,12 +92,6 @@ export async function getPayouts(limit = 10): Promise<Payout[]> {
   return rows.filter((p): p is Payout => Boolean(p));
 }
 
-export async function recordPayout(payout: Payout) {
-  const id = `${payout.epochStart}-${payout.at}`;
-  await store.set(`rewards:payout:${id}`, payout);
-  await store.zadd("rewards:payouts", id, payout.at);
-}
-
 export type RewardsSnapshot = Awaited<ReturnType<typeof buildSnapshot>>;
 
 /**

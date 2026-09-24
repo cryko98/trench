@@ -2,8 +2,6 @@ import Link from "next/link";
 import { getRewardsSnapshot, REWARD_PLACES } from "@/lib/rewards";
 import { formatMultiple, shortAddress } from "@/lib/format";
 import { Avatar } from "@/components/Avatar";
-import { PayoutRecorder } from "@/components/PayoutRecorder";
-import { getSessionWallet, isAdminWallet } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +22,7 @@ function Tile({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 export default async function RewardsPage() {
-  const [snap, viewer] = await Promise.all([getRewardsSnapshot(), getSessionWallet()]);
-  const isAdmin = isAdminWallet(viewer);
+  const snap = await getRewardsSnapshot();
 
   return (
     <div className="mx-auto max-w-3xl space-y-4 px-4 py-6">
@@ -142,8 +139,6 @@ export default async function RewardsPage() {
           ever reaches it, and the site never holds your funds.
         </p>
       </section>
-
-      <PayoutRecorder epochStart={snap.epoch.start} isAdmin={isAdmin} />
 
       <section className="tf-card overflow-hidden">
         <h2 className="tf-label border-b border-line px-4 py-3">Reward history</h2>
