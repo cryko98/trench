@@ -1,28 +1,16 @@
 import { store } from "./store";
 import { getTopCalls } from "./data";
-import { getSolUsd } from "./pumpCurve";
 import type { Profile } from "./types";
 
 /**
- * Creator rewards from $socials flow into one wallet, and a share of that pool
- * goes to the callers whose calls ran the furthest that day.
+ * The callers whose calls ran the furthest on a given day are rewarded for it.
  *
- * The site only ever *computes and publishes* the split. Payouts are sent by
- * the treasury wallet itself — no key ever touches this server.
+ * The site only ever *computes and publishes* the standings — nothing is paid
+ * from here, and no key ever touches this server.
  */
 
-/** How many callers share the pot. */
+/** How many callers are rewarded each day. */
 export const REWARD_PLACES = 10;
-
-/** Share of the pool paid out each day, the rest rolls over. */
-export const PAYOUT_RATIO = Number(process.env.NEXT_PUBLIC_REWARD_PAYOUT_RATIO ?? 0.5);
-
-export const TREASURY = process.env.NEXT_PUBLIC_REWARD_WALLET ?? "";
-
-const RPC =
-  process.env.SOLANA_RPC ||
-  process.env.NEXT_PUBLIC_SOLANA_RPC ||
-  "https://api.mainnet-beta.solana.com";
 
 export type RewardEpoch = {
   /** 00:00 UTC of the running day. */
@@ -37,7 +25,7 @@ export type RewardRow = {
   best: number;
   /** Total x gained across the day's calls. */
   score: number;
-  /** Share of the payout, 0-1. */
+  /** Weight inside the day's standings, 0-1. */
   share: number;
 };
 
@@ -61,38 +49,6 @@ export function currentEpoch(now = Date.now()): RewardEpoch {
     timeZone: "UTC",
   });
   return { start, end, label };
-}
-
-/** SOL sitting in the reward wallet right now. */
-export async function getPoolSol(): Promise<number | null> {
-  if (!TREASURY) return null;
-
-  const cached = await store.get<number>("rewards:pool");
-  if (cached !== null) return cached;
-
-  try {
-    const res = await fetch(RPC, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      cache: "no-store",
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: 1,
-        method: "getBalance",
-        params: [TREASURY, { commitment: "confirmed" }],
-      }),
-    });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { result?: { value?: number } };
-    const lamports = json.result?.value;
-    if (typeof lamports !== "number") return null;
-
-    const sol = lamports / 1e9;
-    await store.set("rewards:pool", sol, { ex: 60 });
-    return sol;
-  } catch {
-    return null;
-  }
 }
 
 /**
@@ -159,27 +115,6 @@ export async function getRewardsSnapshot(): Promise<RewardsSnapshot> {
 
 async function buildSnapshot() {
   const epoch = currentEpoch();
-  const [pool, board, payouts, solUsd] = await Promise.all([
-    getPoolSol(),
-    getRewardBoard(epoch),
-    getPayouts(),
-    getSolUsd(),
-  ]);
-
-  const payable = pool === null ? null : pool * PAYOUT_RATIO;
-  const paidOut = payouts.reduce((sum, p) => sum + p.sol, 0);
-
-  return {
-    epoch,
-    pool,
-    payable,
-    paidOut,
-    solUsd,
-    treasury: TREASURY || null,
-    payoutRatio: PAYOUT_RATIO,
-    board: board.map((row) => ({
-      ...row,
-      sol: payable === null ? null : payable * row.share,
-    })),
-  };
+  const board = await getRewardBoard(epoch);
+  return { epoch, board, places: REWARD_PLACES };
 }

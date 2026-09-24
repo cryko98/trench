@@ -9,7 +9,7 @@ export async function GET() {
   return NextResponse.json(await getRewardsSnapshot());
 }
 
-/** The creator records a payout once it has been sent from the treasury. */
+/** The admin logs a reward once it has been sent, so the history stays public. */
 export async function POST(req: Request) {
   const wallet = await getSessionWallet();
   const admin = process.env.ADMIN_WALLET;

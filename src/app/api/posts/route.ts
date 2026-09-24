@@ -5,6 +5,7 @@ import { getCommunity, getFeed, hydratePosts, meetsGate } from "@/lib/data";
 import { sweepRadar } from "@/lib/radar";
 import { getToken } from "@/lib/token";
 import { extractCa, isSolanaAddress } from "@/lib/format";
+import { checkText } from "@/lib/moderation";
 import type { Post } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -63,6 +64,9 @@ export async function POST(req: Request) {
   };
   const text = (body.text ?? "").trim().slice(0, MAX_LEN);
   if (!text) return NextResponse.json({ error: "Say something" }, { status: 400 });
+
+  const blocked = checkText(text);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: 400 });
 
   // Community posts are gated: member, and still holding the coin.
   const communityId = body.communityId?.trim() || null;

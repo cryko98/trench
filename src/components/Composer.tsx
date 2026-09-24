@@ -6,6 +6,7 @@ import { useAuth } from "./AuthContext";
 import { Avatar } from "./Avatar";
 import { CoinImage } from "./TokenCard";
 import { extractCa, formatPct, formatUsd, isSolanaAddress, ticker } from "@/lib/format";
+import { checkText } from "@/lib/moderation";
 import type { PostView, TokenSnapshot } from "@/lib/types";
 
 const MAX_LEN = 500;
@@ -91,7 +92,7 @@ export function Composer({
   const tokenLoading = Boolean(ca) && resolved?.ca !== ca;
 
   const submit = async () => {
-    if (!text.trim() || posting) return;
+    if (!text.trim() || posting || checkText(text)) return;
     setPosting(true);
     setError(null);
     try {
@@ -147,6 +148,7 @@ export function Composer({
 
   const remaining = MAX_LEN - text.length;
   const missingCa = mode === "call" && !ca;
+  const blocked = checkText(text);
 
   return (
     <div className="tf-card p-4">
@@ -197,9 +199,9 @@ export function Composer({
               />
 
               <p className="mt-1.5 text-[11px] text-muted">
-                This call scores for today&apos;s reward pot.{" "}
+                This call scores on today&apos;s reward board.{" "}
                 <Link href="/rewards" className="text-mint-deep hover:underline">
-                  How it pays →
+                  How it works →
                 </Link>
               </p>
 
@@ -265,7 +267,8 @@ export function Composer({
             </div>
           )}
 
-          {error && <p className="mt-2 text-sm text-loss">{error}</p>}
+          {blocked && <p className="mt-2 text-sm font-semibold text-loss">{blocked}</p>}
+          {error && !blocked && <p className="mt-2 text-sm text-loss">{error}</p>}
 
           <div className="mt-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -294,7 +297,7 @@ export function Composer({
             <button
               className="tf-btn tf-btn-primary"
               onClick={() => void submit()}
-              disabled={!text.trim() || posting || missingCa}
+              disabled={!text.trim() || posting || missingCa || Boolean(blocked)}
             >
               {posting ? "Posting…" : mode === "call" ? "Post call" : "Post"}
             </button>

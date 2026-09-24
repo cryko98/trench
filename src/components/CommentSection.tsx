@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { CommentView } from "@/lib/types";
+import { checkText } from "@/lib/moderation";
 import { useAuth } from "./AuthContext";
 import { Avatar } from "./Avatar";
 import { TimeAgo } from "./TimeAgo";
@@ -21,7 +22,7 @@ export function CommentSection({
   const [error, setError] = useState<string | null>(null);
 
   const submit = async () => {
-    if (!text.trim() || busy) return;
+    if (!text.trim() || busy || checkText(text)) return;
     setBusy(true);
     setError(null);
     try {
@@ -40,6 +41,8 @@ export function CommentSection({
       setBusy(false);
     }
   };
+
+  const blocked = checkText(text);
 
   return (
     <section className="space-y-3">
@@ -61,12 +64,16 @@ export function CommentSection({
               placeholder="Add your take"
               className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted"
             />
-            {error && <p className="text-xs text-loss">{error}</p>}
+            {blocked ? (
+              <p className="text-xs font-semibold text-loss">{blocked}</p>
+            ) : (
+              error && <p className="text-xs text-loss">{error}</p>
+            )}
             <div className="flex justify-end">
               <button
                 className="tf-btn tf-btn-primary"
                 onClick={() => void submit()}
-                disabled={!text.trim() || busy}
+                disabled={!text.trim() || busy || Boolean(blocked)}
               >
                 {busy ? "Sending…" : "Reply"}
               </button>

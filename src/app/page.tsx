@@ -90,15 +90,11 @@ export default async function HomePage() {
           style={{ background: "#c7f6e4" }}
         >
           <span className="tf-chip tf-chip-mint">Daily rewards</span>
-          <span className="text-sm font-bold text-ink">
-            {rewards.payable === null
-              ? "Call coins, get paid"
-              : `${rewards.payable.toFixed(2)} SOL in today's pot`}
-          </span>
+          <span className="text-sm font-bold text-ink">Call coins, get rewarded</span>
           <span className="text-xs text-ink-soft">
-            The $socials creator fees are split between the day&apos;s best callers.
+            Every day the top callers on the board are rewarded for their calls.
           </span>
-          <span className="ml-auto text-xs font-bold text-lav-deep">How it pays →</span>
+          <span className="ml-auto text-xs font-bold text-lav-deep">How it works →</span>
         </Link>
 
         <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { store, K } from "@/lib/store";
 import { getSessionWallet } from "@/lib/auth";
 import { getComments, getProfile } from "@/lib/data";
+import { checkText } from "@/lib/moderation";
 import type { Comment } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -23,6 +24,9 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   const { text } = (await req.json()) as { text?: string };
   const clean = (text ?? "").trim().slice(0, 300);
   if (!clean) return NextResponse.json({ error: "Say something" }, { status: 400 });
+
+  const blocked = checkText(clean);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: 400 });
 
   const comment: Comment = {
     id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
