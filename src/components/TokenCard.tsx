@@ -6,6 +6,7 @@ import { useCoinViewer } from "./CoinViewer";
 import { BuyButton } from "./BuyButton";
 import type { TokenSnapshot } from "@/lib/types";
 import { callMultiple, formatMultiple, formatPct, formatUsd, shortAddress, ticker } from "@/lib/format";
+import { imageCandidates } from "@/lib/ipfs";
 
 function Stat({ label, value, className = "" }: { label: string; value: string; className?: string }) {
   return (
@@ -47,18 +48,20 @@ export function CoinImage({
   size?: number;
   className?: string;
 }) {
-  // A logo URL can still 404 or time out (IPFS), so keep the tile as a net.
-  const [broken, setBroken] = useState(false);
-  const src = token?.image;
+  // A logo URL can still 404 or time out (IPFS), so keep the tile as a net —
+  // but an IPFS logo gets one more try on a different gateway first.
+  const [attempt, setAttempt] = useState(0);
+  const candidates = imageCandidates(token?.image);
+  const src = candidates[attempt];
 
-  if (src && !broken) {
+  if (src) {
     return (
       <img
         src={src}
         alt=""
         style={{ width: size, height: size }}
         className={`shrink-0 rounded-lg bg-surface-2 object-cover ${className}`}
-        onError={() => setBroken(true)}
+        onError={() => setAttempt((n) => n + 1)}
       />
     );
   }

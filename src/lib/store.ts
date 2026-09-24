@@ -261,7 +261,8 @@ export const K = {
   peak: (postId: string) => `peak:${postId}`,
   callPosts: (ca: string) => `call:${ca}:posts`,
   token: (mint: string) => `token:${mint}`,
-  image: (mint: string) => `img:${mint}`,
+  // v2: the old entries held unverified guesses; they age out on their own.
+  image: (mint: string) => `img2:${mint}`,
   balance: (wallet: string, mint: string) => `bal:${wallet}:${mint}`,
   community: (id: string) => `community:${id}`,
   communities: "communities",

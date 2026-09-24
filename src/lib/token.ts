@@ -1,5 +1,6 @@
 import { store, K } from "./store";
-import { getCurveState } from "./pumpCurve";
+import { getCurveState, RPC } from "./pumpCurve";
+import { fastGateway } from "./ipfs";
 import type { TokenSnapshot } from "./types";
 
 const CACHE_SECONDS = 30;
@@ -284,8 +285,10 @@ export async function getToken(mint: string): Promise<TokenSnapshot | null> {
     return null;
   }
 
-  // Every coin should show a logo, whatever source answered first.
+  // Every coin should show a logo, whatever source answered first — and an
+  // IPFS logo is served through the gateway that actually answers.
   if (!snapshot.image) snapshot.image = await resolveImage(mint);
+  snapshot.image = fastGateway(snapshot.image);
 
   // Anything that looks like it is still on the curve is checked against the
   // chain: the curve account is the only source that knows the moment it
@@ -348,12 +351,59 @@ async function resolveImage(mint: string): Promise<string | null> {
     image = pump?.image ?? null;
   }
 
-  // DexScreener also serves logos under a predictable path; if it 404s the
-  // card falls back to the letter tile in the browser.
-  if (!image) image = `https://dd.dexscreener.com/ds-data/tokens/solana/${mint}.png`;
+  // The indexers can be rate-limited or late; the chain never is.
+  if (!image) image = await fromChainMetadata(mint);
+
+  // DexScreener serves logos under a predictable path — but only for coins
+  // it has picked up, and a guess that 404s must not be cached as a hit for
+  // a day, so it is checked before it is trusted.
+  if (!image) {
+    const guess = `https://dd.dexscreener.com/ds-data/tokens/solana/${mint}.png`;
+    if (await isImage(guess)) image = guess;
+  }
 
   await store.set(K.image(mint), image ?? "", {
     ex: image ? IMAGE_TTL_SECONDS : IMAGE_MISS_TTL_SECONDS,
   });
   return image;
+}
+
+type DasAsset = {
+  content?: {
+    links?: { image?: string };
+    files?: { uri?: string; cdn_uri?: string; mime?: string }[];
+  };
+};
+
+/**
+ * The logo from the token's own metadata, through the RPC's DAS index. A
+ * pump.fun coin has this from the moment it is created. Helius also offers a
+ * resized copy on its CDN, which beats a public IPFS gateway.
+ */
+async function fromChainMetadata(mint: string): Promise<string | null> {
+  try {
+    const res = await fetch(RPC, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "getAsset", params: { id: mint } }),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { result?: DasAsset };
+    const content = json.result?.content;
+    const file = content?.files?.find((f) => f.mime?.startsWith("image/")) ?? content?.files?.[0];
+    return file?.cdn_uri || file?.uri || content?.links?.image || null;
+  } catch {
+    return null;
+  }
+}
+
+/** True when the URL answers with an image, redirects followed. */
+async function isImage(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, { method: "HEAD", redirect: "follow", cache: "no-store" });
+    return res.ok && (res.headers.get("content-type") ?? "").startsWith("image/");
+  } catch {
+    return false;
+  }
 }

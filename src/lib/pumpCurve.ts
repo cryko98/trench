@@ -8,7 +8,7 @@ const WSOL = "So11111111111111111111111111111111111111112";
 /** Share of the supply that sits on the curve at launch. */
 const CURVE_SUPPLY_RATIO = 0.7931;
 
-const RPC =
+export const RPC =
   process.env.SOLANA_RPC ||
   process.env.NEXT_PUBLIC_SOLANA_RPC ||
   "https://api.mainnet-beta.solana.com";

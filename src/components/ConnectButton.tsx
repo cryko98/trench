@@ -27,6 +27,12 @@ export function ConnectButton() {
   useEffect(() => {
     if (!wallet || connected || connecting) return;
     if (tried.current === wallet.adapter.name) return;
+    // A remembered wallet that this browser does not have is not an error
+    // to show — it is just not here. Only a present one gets a knock.
+    const ready =
+      wallet.readyState === WalletReadyState.Installed ||
+      wallet.readyState === WalletReadyState.Loadable;
+    if (!ready) return;
     tried.current = wallet.adapter.name;
     connect().catch((e: unknown) => {
       setConnectError(e instanceof Error ? e.message : "Could not reach the wallet");
