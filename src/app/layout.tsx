@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Baloo_2, Nunito, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -29,6 +29,14 @@ function siteUrl(): string {
   return vercel ? `https://${vercel}` : "http://localhost:3000";
 }
 
+// Draw under the phone's home bar too, or the browser reports its height as
+// zero and the bottom tabs cannot be told to clear it.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: "Trench Socials — $socials",
@@ -57,9 +65,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Providers>
           <Header />
-          <main className="flex-1 pb-20 lg:pb-0">{children}</main>
+          <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0">
+            {children}
+          </main>
           <MobileNav />
-          <footer className="border-t-2 border-ink/10 pb-24 pt-6 text-center text-xs text-muted lg:pb-6">
+          <footer className="border-t-2 border-ink/10 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-center text-xs text-muted lg:pb-6">
             Trench Socials · $socials · built on Solana · data by DexScreener &amp; pump.fun
           </footer>
         </Providers>
