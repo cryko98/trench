@@ -12,23 +12,29 @@ const INSTALL_LINKS = [
   { name: "Backpack", url: "https://backpack.app/download" },
 ];
 
+/** Query flag the site reads once it is open inside a wallet's own browser. */
+export const AUTO_CONNECT_PARAM = "connect";
+
+/**
+ * Where a wallet app should open this page. The flag makes the site pick
+ * that wallet by itself on arrival, so the phone user taps once, not twice.
+ */
+function browseLink(wallet: "phantom" | "solflare"): string {
+  const here = new URL(window.location.href);
+  here.searchParams.set(AUTO_CONNECT_PARAM, wallet);
+  const url = encodeURIComponent(here.toString());
+  const ref = encodeURIComponent(window.location.origin);
+  return wallet === "phantom"
+    ? `https://phantom.app/ul/browse/${url}?ref=${ref}`
+    : `https://solflare.com/ul/v1/browse/${url}?ref=${ref}`;
+}
+
 /** Phones have no extensions: the wallet's own browser opens the site instead. */
 function mobileLinks(): { name: string; url: string }[] {
   if (typeof window === "undefined") return [];
-  const here = window.location.href;
   return [
-    {
-      name: "Phantom",
-      url: `https://phantom.app/ul/browse/${encodeURIComponent(here)}?ref=${encodeURIComponent(
-        window.location.origin
-      )}`,
-    },
-    {
-      name: "Solflare",
-      url: `https://solflare.com/ul/v1/browse/${encodeURIComponent(here)}?ref=${encodeURIComponent(
-        window.location.origin
-      )}`,
-    },
+    { name: "Phantom", url: browseLink("phantom") },
+    { name: "Solflare", url: browseLink("solflare") },
   ];
 }
 
@@ -49,12 +55,26 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
   // Rendered only on click, but guard anyway so SSR never touches document.
   if (!open || typeof document === "undefined") return null;
 
-  const available = wallets.filter(
-    (w) =>
-      w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
-  );
   const phone = isPhone();
   const fallback = phone ? mobileLinks() : INSTALL_LINKS;
+
+  // On a phone Phantom is only really there inside the Phantom app itself.
+  // Its adapter offers a hand-off on iPhone Safari alone, and that lands the
+  // user on the site with nothing selected; on Android it stays silent. So
+  // outside the app the row is ours: it opens this page in Phantom's own
+  // browser with the flag that connects on arrival.
+  const phantom = wallets.find((w) => w.adapter.name === "Phantom");
+  const phantomHandoff =
+    phone && phantom && phantom.readyState !== WalletReadyState.Installed
+      ? { icon: phantom.adapter.icon, url: browseLink("phantom") }
+      : null;
+
+  const available = wallets.filter(
+    (w) =>
+      (w.readyState === WalletReadyState.Installed ||
+        w.readyState === WalletReadyState.Loadable) &&
+      !(phantomHandoff && w.adapter.name === "Phantom")
+  );
 
   return createPortal(
     <div
@@ -78,8 +98,20 @@ export function WalletModal({ open, onClose }: { open: boolean; onClose: () => v
           Your wallet is your account. No email, no password.
         </p>
 
-        {available.length > 0 ? (
+        {available.length > 0 || phantomHandoff ? (
           <ul className="space-y-2">
+            {phantomHandoff && (
+              <li>
+                <a
+                  href={phantomHandoff.url}
+                  className="flex w-full items-center gap-3 rounded-xl border-2 border-ink bg-surface-2 px-3 py-3 text-left transition hover:bg-sun"
+                >
+                  <img src={phantomHandoff.icon} alt="" className="h-7 w-7 rounded-md" />
+                  <span className="font-semibold">Phantom</span>
+                  <span className="ml-auto text-xs text-muted">Open in app</span>
+                </a>
+              </li>
+            )}
             {available.map((w) => (
               <li key={w.adapter.name}>
                 <button

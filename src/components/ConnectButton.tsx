@@ -5,13 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAuth } from "./AuthContext";
-import { WalletModal } from "./WalletModal";
+import { WalletModal, AUTO_CONNECT_PARAM } from "./WalletModal";
+import { WalletReadyState } from "@solana/wallet-adapter-base";
 import { Avatar } from "./Avatar";
 import { shortAddress } from "@/lib/format";
 import { CONNECT_WALLET_EVENT } from "./BuyButton";
 
 export function ConnectButton() {
-  const { connected, wallet, connect, connecting } = useWallet();
+  const { connected, wallet, wallets, connect, connecting, select } = useWallet();
   const { profile, loading, signIn, signingIn, signOut, needsSignIn, error } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,6 +32,30 @@ export function ConnectButton() {
       setConnectError(e instanceof Error ? e.message : "Could not reach the wallet");
     });
   }, [wallet, connected, connecting, connect]);
+
+  // Arriving inside a wallet's own browser (the picker sent us there with
+  // ?connect=<wallet>) picks that wallet at once; the effects above then
+  // connect and ask for the sign-in. The wallet injects itself a beat after
+  // load, so this waits for it to show up as installed.
+  const handedOff = useRef(false);
+  useEffect(() => {
+    if (handedOff.current || connected) return;
+    const params = new URLSearchParams(window.location.search);
+    const wanted = params.get(AUTO_CONNECT_PARAM);
+    if (!wanted) return;
+    const match = wallets.find(
+      (w) =>
+        w.adapter.name.toLowerCase() === wanted.toLowerCase() &&
+        w.readyState === WalletReadyState.Installed
+    );
+    if (!match) return;
+    handedOff.current = true;
+    select(match.adapter.name);
+    params.delete(AUTO_CONNECT_PARAM);
+    const rest = params.toString();
+    const clean = `${window.location.pathname}${rest ? `?${rest}` : ""}${window.location.hash}`;
+    window.history.replaceState(null, "", clean);
+  }, [wallets, connected, select]);
 
   // Opening the picker starts a fresh attempt, even for the same wallet.
   const openPicker = useCallback(() => {
